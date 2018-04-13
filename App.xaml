@@ -5,5 +5,12 @@
     xmlns:prism="using:Prism.Unity.Windows"
     xmlns:local="using:WakeOnDoor"
     RequestedTheme="Light">
+    <prism:PrismUnityApplication.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </prism:PrismUnityApplication.Resources>
 
 </prism:PrismUnityApplication>
