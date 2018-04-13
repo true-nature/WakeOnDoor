@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Services\ISerialCommService.cs" />
     <Compile Include="Services\SerialCommService.cs" />
+    <Compile Include="Services\TweLiteMonitor.cs" />
     <Compile Include="ViewModels\MainPageViewModel .cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
