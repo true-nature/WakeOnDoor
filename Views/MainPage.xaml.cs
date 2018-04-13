@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WakeOnDoor.Services;
+using WakeOnDoor.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +24,12 @@ namespace WakeOnDoor.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public MainPageViewModel ViewModel => this.DataContext as MainPageViewModel;
         public MainPage()
         {
             this.InitializeComponent();
+            ViewModel.SerialCommService = new SerialCommService();
+            ViewModel.Dispatcher = this.Dispatcher;
         }
     }
 }
