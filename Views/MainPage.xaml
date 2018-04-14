@@ -6,14 +6,33 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="using:Prism.Windows.Mvvm"
-    xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
-    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:Converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
     <Page.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Page.Resources>
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Status" Command="{x:Bind ViewModel.StatusViewCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xEB51;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="Settings" Command="{x:Bind ViewModel.MacViewCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE713;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton Label="Exit" Command="{x:Bind ViewModel.ExitCommand}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE805;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,36 +44,30 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="Title" Grid.Column="0" Text="Wake On LAN on Door" FontSize="24"/>
-            <Button x:Name="QuitButton" Grid.Column="1" Content="Quit" FontSize="20" Command="{x:Bind ViewModel.ExitCommand}" Width="{Binding ElementName=PageList,Path=ActualWidth}"/>
         </Grid>
-        <FlipView Grid.Row="1">
-            <FlipViewItem>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Status" FontSize="32"/>
-                    <TextBlock Grid.Row="1" Text="Connected" Visibility="{Binding ElementName=ViewModel,Path=IsConnected, Converter={StaticResource BoolToVisibilityConverter},Mode=OneWay}"/>
-                    <Border Grid.Row="2" BorderBrush="Red" BorderThickness="2">
-                        <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto"
+        <Grid x:Name="StatusView" Grid.Row="1"  Visibility="{Binding IsStatusVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <TextBlock Text="Status" FontSize="32"/>
+                <TextBlock Text="Connected" Visibility="{Binding IsConnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </StackPanel>
+            <Border Grid.Row="1" BorderBrush="Red" BorderThickness="2">
+                <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto"
                           MinHeight="250">
-                            <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
-                        </ScrollViewer>
-                    </Border>
-                </Grid>
-            </FlipViewItem>
-            <FlipViewItem>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="Mac Address" FontSize="32"/>
-                    <TextBlock Grid.Row="1" Text="2"/>
-                </Grid>
-            </FlipViewItem>
-        </FlipView>
+                    <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+        <Grid x:Name="MacAddrView" Grid.Row="1" Visibility="{Binding IsMacVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Mac Address" FontSize="32"/>
+            <TextBlock Grid.Row="1" Text="2"/>
+        </Grid>
     </Grid>
 </Page>

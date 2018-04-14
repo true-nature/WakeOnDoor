@@ -1,11 +1,10 @@
 ﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
-using WakeOnDoor.Views;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
 using Windows.UI.Core;
@@ -19,15 +18,63 @@ namespace WakeOnDoor.ViewModels
         {
             IsConnected = false;
             textLog = "";
+            this.StatusViewCommand = new DelegateCommand(() =>
+            {
+                IsMacVisible = false;
+                IsStatusVisible = true;
+            });
+            this.MacViewCommand = new DelegateCommand(() =>
+            {
+                IsStatusVisible = false;
+                IsMacVisible = true;
+            });
             this.ExitCommand = new DelegateCommand(() =>
             {
                 Application.Current.Exit();
             });
-            SetWatcher();
+            IsMacVisible = false;
+            IsStatusVisible = true;
+            semaphore = new SemaphoreSlim(1, 1);
         }
+        private SemaphoreSlim semaphore;
+        public ICommand MacViewCommand { get; }
+        private bool MacViewVisibility;
+        public bool IsMacVisible
+        {
+            get {
+                return MacViewVisibility;
+            }
+            private set
+            {
+                SetProperty(ref MacViewVisibility, value, nameof(IsMacVisible));
+            }
+        }
+        public ICommand StatusViewCommand { get; }
+        private bool StatusViewVisibility;
+        public bool IsStatusVisible
+        {
+            get { return StatusViewVisibility; }
+            private set
+            {
+                SetProperty(ref StatusViewVisibility, value, nameof(IsStatusVisible));
+            }
+        }
+
         public ICommand ExitCommand { get; }
 
-        public CoreDispatcher Dispatcher { get; set; }
+        private CoreDispatcher dispatcher;
+        public CoreDispatcher Dispatcher
+        {
+            get { return dispatcher; }
+            set
+            {
+                dispatcher = value;
+                if (dispatcher != null && watcher == null)
+                {
+                    SetWatcher();
+                }
+            }
+        }
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
         private ISerialCommService commService;
@@ -44,15 +91,8 @@ namespace WakeOnDoor.ViewModels
             get { return this.isConnected; }
             set
             {
-                this.SetProperty(ref this.isConnected, value);
-                RaisePropertyChanged(nameof(IsConnected));
-                RaisePropertyChanged(nameof(IsDisonnected));
+                this.SetProperty(ref this.isConnected, value, nameof(IsConnected));
             }
-        }
-
-        public bool IsDisonnected
-        {
-            get { return !this.isConnected; }
         }
 
         private string textLog;
@@ -84,41 +124,45 @@ namespace WakeOnDoor.ViewModels
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
                 {
                     TextLog += string.Format("Added: {0}\n", di.Id);
-                    if (IsDisonnected)
-                    {
-                        await ConnectAsync();
-                    }
+                    await ConnectAsync();
                 });
             }
         }
 
         private async Task ConnectAsync()
         {
-            var result = await commService.OpenAsync();
-            IsConnected = result;
-            if (result)
-            {
-                TextLog += string.Format("Connected: {0}\n", commService.DeviceInfo.Id);
+            semaphore.Wait();
+            if (!IsConnected) { 
+                var result = await commService.OpenAsync();
+                IsConnected = result;
+                if (result)
+                {
+                    TextLog += string.Format("Connected: {0}\n", commService.DeviceInfo.Id);
+                }
             }
+            semaphore.Release();
         }
 
         private Task Disconnect()
         {
-            TextLog += string.Format("Disconnected {0}\n", commService.DeviceInfo.Id);
-            commService.Close();
+            semaphore.Wait();
+            if (IsConnected)
+            {
+                TextLog += string.Format("Disconnected {0}\n", commService.DeviceInfo.Id);
+                commService.Close();
+                IsConnected = false;
+            }
+            semaphore.Release();
             return Task.CompletedTask;
         }
 
         async void OnUpdatedAsync(DeviceWatcher sender, DeviceInformationUpdate diu)
         {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
-                {
-                    TextLog += string.Format("Updated: {0}\n", diu.Id);
-                    if (IsDisonnected)
-                    {
-                        await ConnectAsync();
-                    }
-                });
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
+            {
+                TextLog += string.Format("Updated: {0}\n", diu.Id);
+                await ConnectAsync();
+            });
         }
 
         async void OnRemovedAsync(DeviceWatcher sender, DeviceInformationUpdate di)
@@ -139,17 +183,10 @@ namespace WakeOnDoor.ViewModels
         async void OnEnumerationCompletedAsync(DeviceWatcher sender, object args)
         {
             isEnumerated = true;
-            if (Dispatcher != null && Dispatcher.HasThreadAccess)
+            await Dispatcher?.TryRunAsync(CoreDispatcherPriority.Low, async () =>
             {
-                await Dispatcher.TryRunAsync(CoreDispatcherPriority.Low, async () =>
-                {
-                    TextLog += "OnEnumerationCompletedAsync\n";
-                    if (IsDisonnected)
-                    {
-                        await ConnectAsync();
-                    }
-                });
-            }
+                await ConnectAsync();
+            });
         }
     }
 }
