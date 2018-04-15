@@ -3,23 +3,10 @@ using Windows.Devices.Enumeration;
 
 namespace WakeOnDoor.Services
 {
-    public interface ISerialCommService
+    public interface ISerialCommService : ICommService
     {
 
         string PortName { get; set; }
         DeviceInformation DeviceInfo { get; }
-        /// <summary>
-        /// Open serial port.
-        /// </summary>
-        /// <param name="port">port name</param>
-        /// <returns>true if success</returns>
-        Task<bool> OpenAsync();
-
-        /// <summary>
-        /// Close serial port.
-        /// </summary>
-        void Close();
-
-
     }
 }

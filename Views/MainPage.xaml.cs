@@ -28,7 +28,6 @@ namespace WakeOnDoor.Views
         public MainPage()
         {
             this.InitializeComponent();
-            ViewModel.SerialCommService = new SerialCommService();
             ViewModel.Dispatcher = this.Dispatcher;
         }
     }

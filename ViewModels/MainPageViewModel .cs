@@ -35,6 +35,8 @@ namespace WakeOnDoor.ViewModels
             IsMacVisible = false;
             IsStatusVisible = true;
             semaphore = new SemaphoreSlim(1, 1);
+            commService = new SerialCommService();
+            commService.Received += this.OnReceived;
         }
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
@@ -78,12 +80,6 @@ namespace WakeOnDoor.ViewModels
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
         private ISerialCommService commService;
-
-        public ISerialCommService SerialCommService
-        {
-            get { return this.commService; }
-            set { this.SetProperty(ref this.commService, value); }
-        }
 
         private bool isConnected;
         public bool IsConnected
@@ -137,10 +133,19 @@ namespace WakeOnDoor.ViewModels
                 IsConnected = result;
                 if (result)
                 {
-                    TextLog += string.Format("Connected: {0}\n", commService.DeviceInfo.Id);
+                    var msg = string.Format("Connected: {0}\n", commService.Description);
+                    TextLog += msg;
+#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                    commService.StartAsync();
+#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
                 }
             }
             semaphore.Release();
+        }
+
+        private void OnReceived(ICommService sender, MessageEventArgs args)
+        {
+            TextLog += args.Message + "\n";
         }
 
         private Task Disconnect()
@@ -148,7 +153,9 @@ namespace WakeOnDoor.ViewModels
             semaphore.Wait();
             if (IsConnected)
             {
-                TextLog += string.Format("Disconnected {0}\n", commService.DeviceInfo.Id);
+                var msg = string.Format("Disconnected {0}\n", commService.Description);
+                TextLog += msg;
+                commService.Stop();
                 commService.Close();
                 IsConnected = false;
             }
