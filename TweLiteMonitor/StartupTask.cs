@@ -53,8 +53,9 @@ namespace TweLiteMonitor
 
         void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
-            var writeTask = writer.WriteAsync(reason.ToString());
-            writeTask.RunSynchronously();
+#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            writer.WriteAsync(reason.ToString());
+#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             Canceled = true;
         }
 
