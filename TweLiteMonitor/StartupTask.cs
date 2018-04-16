@@ -24,10 +24,6 @@ namespace TweLiteMonitor
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
-            //LogManagerFactory.DefaultConfiguration.AddTarget(LogLevel.Trace, LogLevel.Fatal, new FileStreamingTarget());
-            //ILogger logger = LogManagerFactory.DefaultLogManager.GetLogger<TweLiteMonitor>();
-            //logger.Trace("Run()");
-            /// TODO: code here
             taskInstance.Canceled += this.OnCanceled;
             IsConnected = false;
             semaphore = new SemaphoreSlim(1, 1);
@@ -83,19 +79,25 @@ namespace TweLiteMonitor
         private async Task ConnectAsync()
         {
             semaphore.Wait();
-            if (!IsConnected)
+            try
             {
-                var result = await commService.OpenAsync();
-                IsConnected = result;
-                if (result)
+                if (!IsConnected)
                 {
-                    await writer.WriteAsync(string.Format("Connected: {0}", commService.Description));
+                    var result = await commService.OpenAsync();
+                    IsConnected = result;
+                    if (result)
+                    {
+                        await writer.WriteAsync(string.Format("Connected: {0}", commService.Description));
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                    commService.StartAsync();
+                        commService.StartAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                    }
                 }
             }
-            semaphore.Release();
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         private void OnReceived(ICommService sender, MessageEventArgs args)
@@ -108,14 +110,20 @@ namespace TweLiteMonitor
         private async Task DisconnectAsync()
         {
             semaphore.Wait();
-            if (IsConnected)
+            try
             {
-                await writer.WriteAsync(string.Format("Disconnected {0}", commService.Description));
-                commService.Stop();
-                commService.Close();
-                IsConnected = false;
+                if (IsConnected)
+                {
+                    await writer.WriteAsync(string.Format("Disconnected {0}", commService.Description));
+                    commService.Stop();
+                    commService.Close();
+                    IsConnected = false;
+                }
             }
-            semaphore.Release();
+            finally
+            {
+                semaphore.Release();
+            }
         }
 
         async void OnUpdatedAsync(DeviceWatcher sender, DeviceInformationUpdate diu)

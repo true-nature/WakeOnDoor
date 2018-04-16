@@ -12,8 +12,8 @@ namespace WakeOnDoor.Services
     internal class LogReceiveServer : ICommService
     {
         private const string PORT = "9514";
-        private const string SERVERHOST = "127.0.0.1";
-        //private const string SERVERHOST = "::1";
+        //private const string SERVERHOST = "127.0.0.1";
+        private const string SERVERHOST = "::1";
 
         private DatagramSocket socket;
         StringBuilder builder;
@@ -42,10 +42,11 @@ namespace WakeOnDoor.Services
                         {
                             Received?.Invoke(this, new MessageEventArgs(builder.ToString()));
                             builder.Clear();
-                        } else
-                        {
-                            builder.Append(ch);
                         }
+                    }
+                    else
+                    {
+                        builder.Append(ch);
                     }
                 }
             } catch (Exception)
