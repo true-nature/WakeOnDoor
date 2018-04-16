@@ -28,6 +28,10 @@ namespace WakeOnDoor.ViewModels
                 IsStatusVisible = false;
                 IsMacVisible = true;
             });
+            this.ClearLogCommand = new DelegateCommand(() =>
+            {
+                TextLog = "";
+            });
             this.ExitCommand = new DelegateCommand(() =>
             {
                 Application.Current.Exit();
@@ -61,6 +65,7 @@ namespace WakeOnDoor.ViewModels
                 SetProperty(ref StatusViewVisibility, value, nameof(IsStatusVisible));
             }
         }
+        public ICommand ClearLogCommand { get; }
 
         public ICommand ExitCommand { get; }
 
