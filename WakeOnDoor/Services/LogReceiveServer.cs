@@ -12,13 +12,13 @@ namespace WakeOnDoor.Services
     internal class LogReceiveServer : ICommService
     {
         private const string PORT = "9514";
-        //private const string LOCALHOST = "127.0.0.1";
-        private const string LOCALHOST = "::1";
+        private const string SERVERHOST = "127.0.0.1";
+        //private const string SERVERHOST = "::1";
 
         private DatagramSocket socket;
         StringBuilder builder;
 
-        public string Description { get { return LOCALHOST + ":" + PORT; } }
+        public string Description { get { return SERVERHOST + ":" + PORT; } }
 
         public LogReceiveServer()
         {
@@ -57,6 +57,7 @@ namespace WakeOnDoor.Services
         public void Close()
         {
             socket?.Dispose();
+            socket.MessageReceived -= OnDatagramMessageReceived;
             socket = null;
         }
 
@@ -65,10 +66,12 @@ namespace WakeOnDoor.Services
             var result = false;
             try
             {
-                var hostname = new HostName("::1");
+                var hostname = new HostName(SERVERHOST);
                 socket?.Dispose();
                 socket = new DatagramSocket();
-                await socket.BindEndpointAsync(new HostName(LOCALHOST), PORT);
+                socket.Control.InboundBufferSizeInBytes = 256;
+                //await socket.BindEndpointAsync(hostname, PORT);
+                await socket.BindServiceNameAsync(PORT);
                 result = true;
             } catch (Exception)
             {

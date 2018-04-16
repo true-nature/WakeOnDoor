@@ -34,13 +34,17 @@ namespace WakeOnDoor.ViewModels
             });
             this.ExitCommand = new DelegateCommand(() =>
             {
+                this.Disconnect();
                 Application.Current.Exit();
             });
             IsMacVisible = false;
             IsStatusVisible = true;
             semaphore = new SemaphoreSlim(1, 1);
-            commService = new SerialCommService();
+            commService = new LogReceiveServer();
             commService.Received += this.OnReceived;
+#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            this.ConnectAsync();
+#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
@@ -76,15 +80,9 @@ namespace WakeOnDoor.ViewModels
             set
             {
                 dispatcher = value;
-                if (dispatcher != null && watcher == null)
-                {
-                    SetWatcher();
-                }
             }
         }
-        private static DeviceWatcher watcher = null;
-        private static bool isEnumerated = false;
-        private ISerialCommService commService;
+        private ICommService commService;
 
         private bool isConnected;
         public bool IsConnected
@@ -107,28 +105,6 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-
-        void SetWatcher()
-        {
-            watcher = DeviceInformation.CreateWatcher(SerialDevice.GetDeviceSelector());
-            watcher.Added += OnAddedAsync;
-            watcher.Removed += OnRemovedAsync;
-            watcher.Updated += OnUpdatedAsync;
-            watcher.EnumerationCompleted += OnEnumerationCompletedAsync;
-            watcher.Start();
-        }
-
-        async void OnAddedAsync(DeviceWatcher sender, DeviceInformation di)
-        {
-            if (isEnumerated)
-            {
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
-                {
-                    TextLog += string.Format("Added: {0}\n", di.Id);
-                    await ConnectAsync();
-                });
-            }
-        }
 
         private async Task ConnectAsync()
         {
@@ -166,39 +142,6 @@ namespace WakeOnDoor.ViewModels
             }
             semaphore.Release();
             return Task.CompletedTask;
-        }
-
-        async void OnUpdatedAsync(DeviceWatcher sender, DeviceInformationUpdate diu)
-        {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
-            {
-                TextLog += string.Format("Updated: {0}\n", diu.Id);
-                await ConnectAsync();
-            });
-        }
-
-        async void OnRemovedAsync(DeviceWatcher sender, DeviceInformationUpdate di)
-        {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
-            {
-                TextLog += string.Format("Removed: {0}\n", di.Id);
-                if (IsConnected && commService.DeviceInfo != null)
-                {
-                    if (commService.DeviceInfo.Id.Equals(di.Id))
-                    {
-                        Disconnect();
-                    }
-                }
-            });
-        }
-
-        async void OnEnumerationCompletedAsync(DeviceWatcher sender, object args)
-        {
-            isEnumerated = true;
-            await Dispatcher?.TryRunAsync(CoreDispatcherPriority.Low, async () =>
-            {
-                await ConnectAsync();
-            });
         }
     }
 }

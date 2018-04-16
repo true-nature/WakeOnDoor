@@ -40,11 +40,13 @@ namespace TweLiteMonitor
             {
                 while (true)
                 {
+                    await Task.Delay(100);
                     if (Canceled)
                     {
                         break;
                     }
                 }
+                commService.Stop();
             }
             writer.Close();
             taskInstance.Canceled -= this.OnCanceled;
