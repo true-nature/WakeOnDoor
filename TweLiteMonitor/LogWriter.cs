@@ -13,8 +13,8 @@ namespace TweLiteMonitor
     internal class LogWriter
     {
         private const string PORT = "9514";
-        //private const string LOCALHOST = "127.0.0.1";
-        private const string LOCALHOST = "::1";
+        //private const string SERVERHOST = "127.0.0.1";
+        private const string SERVERHOST = "::1";
         private Stream stream;
         private TextWriter writer;
 
@@ -24,7 +24,7 @@ namespace TweLiteMonitor
             bool result = false;
             try
             {
-                var hostname = new HostName("::1");
+                var hostname = new HostName(SERVERHOST);
                 socket?.Dispose();
                 socket = new DatagramSocket();
                 stream = (await socket.GetOutputStreamAsync(hostname, PORT)).AsStreamForWrite();
