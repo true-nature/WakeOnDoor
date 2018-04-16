@@ -97,14 +97,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\ISerialCommService.cs" />
+    <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="Services\SerialCommService.cs" />
-    <Compile Include="Services\TweLiteMonitor.cs" />
-    <Compile Include="ViewModels\MacAddrPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel .cs" />
-    <Compile Include="Views\MacAddrPage.xaml.cs">
-      <DependentUpon>MacAddrPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -133,10 +130,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="Styles\Styles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MacAddrPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
