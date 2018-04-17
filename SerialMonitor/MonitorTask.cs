@@ -8,9 +8,9 @@ using Windows.UI.Core;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
-namespace TweLiteMonitor
+namespace SerialMonitor
 {
-    public sealed class StartupTask : IBackgroundTask
+    public sealed class MonitorTask : IBackgroundTask
     {
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
@@ -27,13 +27,13 @@ namespace TweLiteMonitor
             taskInstance.Canceled += this.OnCanceled;
             IsConnected = false;
             semaphore = new SemaphoreSlim(1, 1);
-            SetWatcher();
-            writer = new LogWriter();
             commService = new SerialCommService();
-            commService.Received += this.OnReceived;
+            commService.Received += this.OnReceivedAsync;
+            writer = new LogWriter();
             var opened = await writer.OpenAsync();
             if (opened)
             {
+                SetWatcher();
                 while (true)
                 {
                     await Task.Delay(100);
@@ -44,6 +44,7 @@ namespace TweLiteMonitor
                 }
                 commService.Stop();
             }
+            commService.Received -= this.OnReceivedAsync;
             writer.Close();
             taskInstance.Canceled -= this.OnCanceled;
             deferral.Complete();
@@ -69,16 +70,15 @@ namespace TweLiteMonitor
 
         async void OnAddedAsync(DeviceWatcher sender, DeviceInformation di)
         {
-            if (isEnumerated)
+            if (isEnumerated && !IsConnected)
             {
-                await writer.WriteAsync(string.Format("Added: {0}", di.Id));
                 await ConnectAsync();
             }
         }
 
         private async Task ConnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (!IsConnected)
@@ -87,10 +87,10 @@ namespace TweLiteMonitor
                     IsConnected = result;
                     if (result)
                     {
-                        await writer.WriteAsync(string.Format("Connected: {0}", commService.Description));
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
                         commService.StartAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                        await writer.WriteAsync(string.Format("Connected: {0}", commService.Description));
                     }
                 }
             }
@@ -100,24 +100,21 @@ namespace TweLiteMonitor
             }
         }
 
-        private void OnReceived(ICommService sender, MessageEventArgs args)
+        private async void OnReceivedAsync(ICommService sender, MessageEventArgs args)
         {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            writer.WriteAsync(args.Message);
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            await writer.WriteAsync(args.Message);
         }
 
         private async Task DisconnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (IsConnected)
                 {
-                    await writer.WriteAsync(string.Format("Disconnected {0}", commService.Description));
                     commService.Stop();
-                    commService.Close();
                     IsConnected = false;
+                    await writer.WriteAsync(string.Format("Disconnected {0}", commService.Description));
                 }
             }
             finally
@@ -128,13 +125,14 @@ namespace TweLiteMonitor
 
         async void OnUpdatedAsync(DeviceWatcher sender, DeviceInformationUpdate diu)
         {
-            await writer.WriteAsync(string.Format("Updated: {0}", diu.Id));
-            await ConnectAsync();
+            if (!IsConnected)
+            {
+                await ConnectAsync();
+            }
         }
 
         async void OnRemovedAsync(DeviceWatcher sender, DeviceInformationUpdate di)
         {
-            await writer.WriteAsync(string.Format("Removed: {0}", di.Id));
             if (IsConnected && commService.DeviceInfo != null)
             {
                 if (commService.DeviceInfo.Id.Equals(di.Id))
@@ -144,7 +142,7 @@ namespace TweLiteMonitor
             }
         }
 
-        async void OnEnumerationCompletedAsync(DeviceWatcher sender, object args)
+        private async void OnEnumerationCompletedAsync(DeviceWatcher sender, object args)
         {
             isEnumerated = true;
             await ConnectAsync();

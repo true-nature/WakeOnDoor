@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 
-namespace TweLiteMonitor
+namespace SerialMonitor
 {
     internal class MessageEventArgs : EventArgs
     {

@@ -57,8 +57,8 @@ namespace WakeOnDoor.Services
 
         public void Close()
         {
-            socket?.Dispose();
             socket.MessageReceived -= OnDatagramMessageReceived;
+            socket?.Dispose();
             socket = null;
         }
 
