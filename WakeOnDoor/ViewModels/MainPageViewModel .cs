@@ -15,6 +15,7 @@ namespace WakeOnDoor.ViewModels
     {
         public MainPageViewModel()
         {
+            IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
             IsConnected = false;
             textLog = "";
             this.StatusViewCommand = new DelegateCommand(() =>
@@ -45,6 +46,7 @@ namespace WakeOnDoor.ViewModels
             this.ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
+        public bool IsIoTDeviceFamily { get; }
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
         private bool MacViewVisibility;
