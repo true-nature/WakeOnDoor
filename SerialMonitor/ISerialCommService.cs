@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 
-namespace WakeOnDoor.Services
+namespace SerialMonitor
 {
-    public interface ISerialCommService : ICommService
+    internal interface ISerialCommService : ICommService
     {
 
         string PortName { get; set; }

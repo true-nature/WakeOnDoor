@@ -8,7 +8,7 @@ using Windows.Networking;
 using Windows.Networking.Connectivity;
 using Windows.Networking.Sockets;
 
-namespace TweLiteMonitor
+namespace SerialMonitor
 {
     internal class LogWriter
     {
