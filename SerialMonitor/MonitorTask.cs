@@ -78,7 +78,7 @@ namespace SerialMonitor
 
         private async Task ConnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (!IsConnected)
@@ -107,7 +107,7 @@ namespace SerialMonitor
 
         private async Task DisconnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (IsConnected)

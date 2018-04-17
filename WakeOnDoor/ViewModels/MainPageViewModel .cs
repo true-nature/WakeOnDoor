@@ -32,9 +32,9 @@ namespace WakeOnDoor.ViewModels
             {
                 TextLog = "";
             });
-            this.ExitCommand = new DelegateCommand(() =>
+            this.ExitCommand = new DelegateCommand(async () =>
             {
-                this.Disconnect();
+                await DisconnectAsync();
                 Application.Current.Exit();
             });
             IsMacVisible = false;
@@ -109,7 +109,7 @@ namespace WakeOnDoor.ViewModels
 
         private async Task ConnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (!IsConnected)
@@ -140,9 +140,9 @@ namespace WakeOnDoor.ViewModels
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
 
-        private Task Disconnect()
+        private async Task DisconnectAsync()
         {
-            semaphore.Wait();
+            await semaphore.WaitAsync();
             try
             {
                 if (IsConnected)
@@ -156,7 +156,6 @@ namespace WakeOnDoor.ViewModels
             {
                 semaphore.Release();
             }
-            return Task.CompletedTask;
         }
     }
 }
