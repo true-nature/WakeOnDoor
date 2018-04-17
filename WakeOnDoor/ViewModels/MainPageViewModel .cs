@@ -5,8 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
-using Windows.Devices.Enumeration;
-using Windows.Devices.SerialCommunication;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 

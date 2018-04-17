@@ -1,8 +1,11 @@
 ﻿using Prism.Unity.Windows;
+using SerialMonitor;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
+using Windows.System.Profile;
 using Windows.UI.Xaml.Navigation;
 
 namespace WakeOnDoor
@@ -19,38 +22,36 @@ namespace WakeOnDoor
         public App()
         {
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
         }
 
-        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
+            if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
+            {
+                await StarTaskAsync();
+            }
             this.NavigationService.Navigate("Main", null);
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
-
-        /// <summary>
-        /// 特定のページへの移動が失敗したときに呼び出されます
-        /// </summary>
-        /// <param name="sender">移動に失敗したフレーム</param>
-        /// <param name="e">ナビゲーション エラーの詳細</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private BackgroundTaskRegistration taskRegistration;
+        private async Task StarTaskAsync()
         {
-            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
+            var builder = new BackgroundTaskBuilder();
+            builder.Name = "TweLiteMonitorTask";
+            builder.TaskEntryPoint = typeof(MonitorTask).FullName;
+            var trigger = new ApplicationTrigger();
+            builder.SetTrigger(trigger);
+            await BackgroundExecutionManager.RequestAccessAsync();
+            taskRegistration = builder.Register();
+            await trigger.RequestAsync();
         }
-
-        /// <summary>
-        /// アプリケーションの実行が中断されたときに呼び出されます。
-        /// アプリケーションが終了されるか、メモリの内容がそのままで再開されるかに
-        /// かかわらず、アプリケーションの状態が保存されます。
-        /// </summary>
-        /// <param name="sender">中断要求の送信元。</param>
-        /// <param name="e">中断要求の詳細。</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        
+        protected override async Task OnSuspendingApplicationAsync()
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: アプリケーションの状態を保存してバックグラウンドの動作があれば停止します
-            deferral.Complete();
+            taskRegistration?.Unregister(true);
+            taskRegistration = null;
+            await base.OnSuspendingApplicationAsync();
         }
     }
 }
