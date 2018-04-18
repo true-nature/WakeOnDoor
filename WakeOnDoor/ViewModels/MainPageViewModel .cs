@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -18,6 +19,7 @@ namespace WakeOnDoor.ViewModels
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
             IsConnected = false;
             textLog = "";
+            MacList = new List<string>();
             this.StatusViewCommand = new DelegateCommand(() =>
             {
                 IsMacVisible = false;
@@ -70,9 +72,17 @@ namespace WakeOnDoor.ViewModels
                 SetProperty(ref StatusViewVisibility, value, nameof(IsStatusVisible));
             }
         }
+        public ICommand AddMacCommand { get; }
         public ICommand ClearLogCommand { get; }
-
         public ICommand ExitCommand { get; }
+
+        private string macToAdd;
+        public string MacToAdd
+        {
+            get { return macToAdd; }
+            set { SetProperty(ref macToAdd, value, nameof(MacToAdd)); }
+        }
+        public IEnumerable<string> MacList { get; }
 
         private CoreDispatcher dispatcher;
         public CoreDispatcher Dispatcher
