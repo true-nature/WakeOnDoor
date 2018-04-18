@@ -38,7 +38,7 @@ namespace WakeOnDoor
         private async Task StarTaskAsync()
         {
             var builder = new BackgroundTaskBuilder();
-            builder.Name = "TweLiteMonitorTask";
+            builder.Name = "TweLiteMonitor";
             builder.TaskEntryPoint = typeof(MonitorTask).FullName;
             var trigger = new ApplicationTrigger();
             builder.SetTrigger(trigger);

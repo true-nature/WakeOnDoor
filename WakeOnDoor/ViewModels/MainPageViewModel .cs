@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Nito.AsyncEx;
+using Prism.Commands;
 using Prism.Windows.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
+using Windows.ApplicationModel.AppService;
+using Windows.Foundation.Collections;
 using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -14,12 +17,19 @@ namespace WakeOnDoor.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
+        private const string KEY_COMMAND = "Command";
+        private const string KEY_MACLIST = "MacList";
+        private const string KEY_MAC_ADDRESS = "MacAddress";
+        private const string KEY_RESULT = "Result";
+        private const string CMD_ADD = "Add";
+        private const string CMD_REMOVE = "Remove";
+        private const string CMD_GET = "Get";
+
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
             IsConnected = false;
             textLog = "";
-            MacList = new List<string>();
             this.StatusViewCommand = new DelegateCommand(() =>
             {
                 IsMacVisible = false;
@@ -33,6 +43,17 @@ namespace WakeOnDoor.ViewModels
             this.ClearLogCommand = new DelegateCommand(() =>
             {
                 TextLog = "";
+            });
+            this.AddMacCommand = new DelegateCommand(async () => {
+                var values = new ValueSet();
+                values[KEY_COMMAND] = CMD_ADD;
+                values[KEY_MAC_ADDRESS] = MacToAdd;
+                var response = await appConnection.SendMessageAsync(values);
+                if (response.Status == AppServiceResponseStatus.Success)
+                {
+                    var list = response.Message[KEY_MACLIST] as string[];
+                    RefreshMacList(list);
+                }
             });
             this.ExitCommand = new DelegateCommand(async () =>
             {
@@ -48,6 +69,8 @@ namespace WakeOnDoor.ViewModels
             this.ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
+
+        private AppServiceConnection appConnection;
         public bool IsIoTDeviceFamily { get; }
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
@@ -82,7 +105,7 @@ namespace WakeOnDoor.ViewModels
             get { return macToAdd; }
             set { SetProperty(ref macToAdd, value, nameof(MacToAdd)); }
         }
-        public IEnumerable<string> MacList { get; }
+        public ICollection<string> MacList { get; }
 
         private CoreDispatcher dispatcher;
         public CoreDispatcher Dispatcher
@@ -116,6 +139,37 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
+        private void RefreshMacList(string[] list)
+        {
+            MacList.Clear();
+            foreach (var m in list)
+            {
+                MacList.Add(m);
+            }
+        }
+
+        private async Task initMacListAsync()
+        {
+            var conn = new AppServiceConnection();
+            conn.AppServiceName = "TweLiteMonitor";
+            conn.PackageFamilyName = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+            var mre = new AsyncManualResetEvent(false);
+            var op = conn.OpenAsync();
+            op.Completed += (sender, args) => { mre.Set(); };
+            await mre.WaitAsync();
+            var status = op.GetResults();
+            if (status == AppServiceConnectionStatus.Success)
+            {
+                appConnection = conn;
+                ValueSet request = new ValueSet();
+                var response = await appConnection.SendMessageAsync(request);
+                if (response.Status == AppServiceResponseStatus.Success)
+                {
+                    var list = response.Message[KEY_MACLIST] as string[];
+                    RefreshMacList(list);
+                }
+            }
+        }
 
         private async Task ConnectAsync()
         {

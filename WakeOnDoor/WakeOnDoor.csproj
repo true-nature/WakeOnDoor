@@ -151,6 +151,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppServiceMessage\AppServiceMessage.csproj">
+      <Project>{7d9550a2-7e2c-475e-ae9c-afaeb1b0db6c}</Project>
+      <Name>AppServiceMessage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SerialMonitor\SerialMonitor.csproj">
       <Project>{017050ec-2608-41d8-b51a-1643607d9072}</Project>
       <Name>SerialMonitor</Name>
