@@ -1,6 +1,9 @@
 ﻿using AppServiceMessage;
 using Nito.AsyncEx;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
@@ -40,8 +43,8 @@ namespace SerialMonitor
             var settings = ApplicationData.Current.LocalSettings;
             if (!settings.Values.ContainsKey(AppMessage.KEY_MACLIST))
             {
-                string[] list = { "" };
-                settings.Values.Add(AppMessage.KEY_MACLIST, list);
+                var macList = new HashSet<string>();
+                SaveSetting(settings, AppMessage.KEY_MACLIST, macList);
             }
             var conn = new AppServiceConnection();
             conn.AppServiceName = "TweLiteMonitor";
@@ -55,6 +58,30 @@ namespace SerialMonitor
             {
                 conn.RequestReceived += OnRequestReceived;
                 appConn = conn;
+            }
+        }
+
+        private static void SaveSetting(ApplicationDataContainer settings, string key, object value)
+        {
+            using (var stream = new MemoryStream())
+            {
+                var serializer = new DataContractSerializer(value.GetType());
+                serializer.WriteObject(stream, value);
+                stream.Position = 0;
+                using (var reader = new StreamReader(stream))
+                {
+                    settings.Values.Add(key, reader.ReadToEnd());
+                }
+            }
+        }
+
+        private static void ReadSetting(ApplicationDataContainer settings, string key, object value)
+        {
+            var serializer = new DataContractSerializer(value.GetType());
+            var str = (string)settings.Values[key];
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
+            {
+                value = serializer.ReadObject(stream);
             }
         }
 

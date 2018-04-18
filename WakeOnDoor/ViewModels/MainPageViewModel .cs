@@ -68,6 +68,7 @@ namespace WakeOnDoor.ViewModels
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             this.ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            initMacListAsync();
         }
 
         private AppServiceConnection appConnection;
@@ -152,7 +153,8 @@ namespace WakeOnDoor.ViewModels
         {
             var conn = new AppServiceConnection();
             conn.AppServiceName = "TweLiteMonitor";
-            conn.PackageFamilyName = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+            //conn.PackageFamilyName = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+            conn.PackageFamilyName = "23e95b2f-1e21-4934-a371-124d0a6471a0_mtz6gfc7cpfh4";
             var mre = new AsyncManualResetEvent(false);
             var op = conn.OpenAsync();
             op.Completed += (sender, args) => { mre.Set(); };
