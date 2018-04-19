@@ -1,5 +1,4 @@
-﻿using Nito.AsyncEx;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
 using SerialMonitor;
 using System;
@@ -40,9 +39,11 @@ namespace WakeOnDoor.ViewModels
                 TextLog = "";
             });
             this.AddMacCommand = new DelegateCommand(async () => {
-                var values = new ValueSet();
-                values[nameof(Keys.Command)] = nameof(AppCommands.Add);
-                values[nameof(Keys.MacAddress)] = MacToAdd;
+                var values = new ValueSet
+                {
+                    [nameof(Keys.Command)] = nameof(AppCommands.Add),
+                    [nameof(Keys.MacAddress)] = MacToAdd
+                };
                 var response = await appConnection.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
@@ -147,9 +148,11 @@ namespace WakeOnDoor.ViewModels
 
         private async Task InitMacListAsync()
         {
-            var conn = new AppServiceConnection();
-            conn.AppServiceName = "SettingsEditor";
-            conn.PackageFamilyName = "TweLiteMonitor-uwp_13vwvk7mqd5qw";
+            var conn = new AppServiceConnection
+            {
+                AppServiceName = "SettingsEditor",
+                PackageFamilyName = "TweLiteMonitor-uwp_13vwvk7mqd5qw"
+            };
             var status = await conn.OpenAsync();
             if (status == AppServiceConnectionStatus.Success)
             {

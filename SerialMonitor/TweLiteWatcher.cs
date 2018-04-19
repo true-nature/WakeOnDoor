@@ -1,8 +1,4 @@
-﻿using Nito.AsyncEx;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
@@ -19,14 +15,14 @@ namespace SerialMonitor
         private bool IsConnected { get; set; }
         private SemaphoreSlim semaphore;
         private LogWriter writer;
-        private AsyncManualResetEvent mre;
+        private ManualResetEvent mre;
 
         public TweLiteWatcher(LogWriter logWriter)
         {
             IsConnected = false;
             semaphore = new SemaphoreSlim(1, 1);
             commService = new SerialCommService();
-            mre = new AsyncManualResetEvent(false);
+            mre = new ManualResetEvent(false);
             writer = logWriter;
         }
 
@@ -41,7 +37,10 @@ namespace SerialMonitor
         {
             commService.Received += this.OnReceivedAsync;
             SetWatcher();
-            await mre.WaitAsync();
+            await Task.Run(() =>
+            {
+                mre.WaitOne();
+            });
             commService.Stop();
             commService.Received -= this.OnReceivedAsync;
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Collections.Generic;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
@@ -42,8 +38,7 @@ namespace SerialMonitor
 
             var values = new ValueSet();
             var message = args.Request.Message;
-            object command;
-            if (message.TryGetValue(nameof(Keys.Command), out command))
+            if (message.TryGetValue(nameof(Keys.Command), out object command))
             {
                 object macaddr;
                 switch (command)
