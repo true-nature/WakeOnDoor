@@ -2,11 +2,9 @@
 using SerialMonitor;
 using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.System.Profile;
-using Windows.UI.Xaml.Navigation;
 
 namespace WakeOnDoor
 {
@@ -35,16 +33,18 @@ namespace WakeOnDoor
         }
 
         private BackgroundTaskRegistration taskRegistration;
-        private async Task StarTaskAsync()
+        private async Task<ApplicationTriggerResult> StarTaskAsync()
         {
             var builder = new BackgroundTaskBuilder();
-            builder.Name = "TweLiteMonitor";
+            builder.Name = "TweLiteMonitor-uwp";
             builder.TaskEntryPoint = typeof(MonitorTask).FullName;
             var trigger = new ApplicationTrigger();
             builder.SetTrigger(trigger);
             await BackgroundExecutionManager.RequestAccessAsync();
-            taskRegistration = builder.Register();
-            await trigger.RequestAsync();
+            //taskRegistration = builder.Register();
+            //var result = await trigger.RequestAsync();
+            var result = ApplicationTriggerResult.Allowed;
+            return result;
         }
         
         protected override async Task OnSuspendingApplicationAsync()

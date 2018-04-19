@@ -1,6 +1,7 @@
 ﻿using Nito.AsyncEx;
 using Prism.Commands;
 using Prism.Windows.Mvvm;
+using SerialMonitor;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.AppService;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
 using Windows.UI.Core;
@@ -17,13 +19,6 @@ namespace WakeOnDoor.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
-        private const string KEY_COMMAND = "Command";
-        private const string KEY_MACLIST = "MacList";
-        private const string KEY_MAC_ADDRESS = "MacAddress";
-        private const string KEY_RESULT = "Result";
-        private const string CMD_ADD = "Add";
-        private const string CMD_REMOVE = "Remove";
-        private const string CMD_GET = "Get";
 
         public MainPageViewModel()
         {
@@ -46,12 +41,12 @@ namespace WakeOnDoor.ViewModels
             });
             this.AddMacCommand = new DelegateCommand(async () => {
                 var values = new ValueSet();
-                values[KEY_COMMAND] = CMD_ADD;
-                values[KEY_MAC_ADDRESS] = MacToAdd;
+                values[nameof(Keys.Command)] = nameof(AppCommands.Add);
+                values[nameof(Keys.MacAddress)] = MacToAdd;
                 var response = await appConnection.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
-                    var list = response.Message[KEY_MACLIST] as string[];
+                    var list = response.Message[nameof(Keys.MacList)] as string[];
                     RefreshMacList(list);
                 }
             });
@@ -65,10 +60,11 @@ namespace WakeOnDoor.ViewModels
             semaphore = new SemaphoreSlim(1, 1);
             commService = new LogReceiveServer();
             commService.Received += this.OnReceived;
+
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            this.ConnectAsync();
+            InitMacListAsync();
+            ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            initMacListAsync();
         }
 
         private AppServiceConnection appConnection;
@@ -149,17 +145,12 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        private async Task initMacListAsync()
+        private async Task InitMacListAsync()
         {
             var conn = new AppServiceConnection();
-            conn.AppServiceName = "TweLiteMonitor";
-            //conn.PackageFamilyName = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
-            conn.PackageFamilyName = "23e95b2f-1e21-4934-a371-124d0a6471a0_mtz6gfc7cpfh4";
-            var mre = new AsyncManualResetEvent(false);
-            var op = conn.OpenAsync();
-            op.Completed += (sender, args) => { mre.Set(); };
-            await mre.WaitAsync();
-            var status = op.GetResults();
+            conn.AppServiceName = "SettingsEditor";
+            conn.PackageFamilyName = "TweLiteMonitor-uwp_13vwvk7mqd5qw";
+            var status = await conn.OpenAsync();
             if (status == AppServiceConnectionStatus.Success)
             {
                 appConnection = conn;
@@ -167,7 +158,7 @@ namespace WakeOnDoor.ViewModels
                 var response = await appConnection.SendMessageAsync(request);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
-                    var list = response.Message[KEY_MACLIST] as string[];
+                    var list = response.Message[nameof(Keys.MacList)] as string[];
                     RefreshMacList(list);
                 }
             }

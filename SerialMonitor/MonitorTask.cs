@@ -1,5 +1,4 @@
-﻿using AppServiceMessage;
-using Nito.AsyncEx;
+﻿using Nito.AsyncEx;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -16,14 +15,13 @@ namespace SerialMonitor
 {
     public sealed class MonitorTask : IBackgroundTask
     {
-        private AppServiceConnection appConn;
         private LogWriter writer;
         private TweLiteWatcher twatcher;
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var deferral = taskInstance.GetDeferral();
-            await initSettingsAsync();
+            SettingsEditor.InitSettings();
             taskInstance.Canceled += this.OnCanceled;
 
             writer = new LogWriter();
@@ -38,52 +36,6 @@ namespace SerialMonitor
             deferral.Complete();
         }
 
-        private async Task initSettingsAsync()
-        {
-            var settings = ApplicationData.Current.LocalSettings;
-            if (!settings.Values.ContainsKey(AppMessage.KEY_MACLIST))
-            {
-                var macList = new HashSet<string>();
-                SaveSetting(settings, AppMessage.KEY_MACLIST, macList);
-            }
-            var conn = new AppServiceConnection();
-            conn.AppServiceName = "TweLiteMonitor";
-            conn.PackageFamilyName = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
-            var mre = new AsyncManualResetEvent(false);
-            var op = conn.OpenAsync();
-            op.Completed += (sender, args) => { mre.Set(); };
-            await mre.WaitAsync();
-            var status = op.GetResults();
-            if (status == AppServiceConnectionStatus.Success)
-            {
-                conn.RequestReceived += OnRequestReceived;
-                appConn = conn;
-            }
-        }
-
-        private static void SaveSetting(ApplicationDataContainer settings, string key, object value)
-        {
-            using (var stream = new MemoryStream())
-            {
-                var serializer = new DataContractSerializer(value.GetType());
-                serializer.WriteObject(stream, value);
-                stream.Position = 0;
-                using (var reader = new StreamReader(stream))
-                {
-                    settings.Values.Add(key, reader.ReadToEnd());
-                }
-            }
-        }
-
-        private static void ReadSetting(ApplicationDataContainer settings, string key, object value)
-        {
-            var serializer = new DataContractSerializer(value.GetType());
-            var str = (string)settings.Values[key];
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(str)))
-            {
-                value = serializer.ReadObject(stream);
-            }
-        }
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
@@ -95,29 +47,29 @@ namespace SerialMonitor
 
         private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[AppMessage.KEY_MACLIST] as string[]);
+            var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[nameof(Keys.MacList)] as string[]);
 
             var values = new ValueSet();
             var message = args.Request.Message;
             object command;
-            if (message.TryGetValue(AppMessage.KEY_COMMAND, out command))
+            if (message.TryGetValue(nameof(Keys.Command), out command))
             {
                 object macaddr;
                 switch(command)
                 {
-                    case AppMessage.CMD_ADD:
-                        if (message.TryGetValue(AppMessage.KEY_MAC_ADDRESS, out macaddr))
+                    case nameof(AppCommands.Add):
+                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
                         {
-                            values[AppMessage.KEY_RESULT] = macList.Add(macaddr as string);
+                            values[nameof(Keys.Result)] = macList.Add(macaddr as string);
                         }
                         break;
-                    case AppMessage.CMD_REMOVE:
-                        if (message.TryGetValue(AppMessage.KEY_MAC_ADDRESS, out macaddr))
+                    case nameof(AppCommands.Remove):
+                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
                         {
-                            values[AppMessage.KEY_RESULT] = macList.Remove(macaddr as string);
+                            values[nameof(Keys.Result)] = macList.Remove(macaddr as string);
                         }
                         break;
-                    case AppMessage.CMD_GET:
+                    case nameof(AppCommands.Get):
                         break;
                     default:
                         break;
@@ -125,13 +77,8 @@ namespace SerialMonitor
             }
             var list = new string[macList.Count];
             macList.CopyTo(list);
-            values[AppMessage.KEY_MACLIST] = list;
+            values[nameof(Keys.MacList)] = list;
             var result = args.Request.SendResponseAsync(values);
         }
-    }
-
-    internal class Settings
-    {
-        public string[] maclist { get; set; }
     }
 }

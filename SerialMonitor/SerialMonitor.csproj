@@ -107,13 +107,16 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AppMessage.cs" />
     <Compile Include="ICommService.cs" />
     <Compile Include="ISerialCommService.cs" />
     <Compile Include="LogWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerialCommService.cs" />
     <Compile Include="MonitorTask.cs" />
+    <Compile Include="SettingsEditor.cs" />
     <Compile Include="TweLiteWatcher.cs" />
+    <Compile Include="WebService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
@@ -122,12 +125,6 @@
     <PackageReference Include="Nito.AsyncEx">
       <Version>4.0.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AppServiceMessage\AppServiceMessage.csproj">
-      <Project>{7d9550a2-7e2c-475e-ae9c-afaeb1b0db6c}</Project>
-      <Name>AppServiceMessage</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
