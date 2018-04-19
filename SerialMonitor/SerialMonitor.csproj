@@ -116,7 +116,6 @@
     <Compile Include="MonitorTask.cs" />
     <Compile Include="SettingsEditor.cs" />
     <Compile Include="TweLiteWatcher.cs" />
-    <Compile Include="WebService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
