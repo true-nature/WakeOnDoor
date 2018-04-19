@@ -26,15 +26,13 @@
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
-      <!--
       <Extensions>
         <Extension Category="windows.backgroundTasks" EntryPoint="SerialMonitor.MonitorTask">
           <BackgroundTasks>
-            <iot:Task Type="startup" />
+            <Task Type="systemEvent" />
           </BackgroundTasks>
         </Extension>
       </Extensions>
-      -->
     </Application>
   </Applications>
   <Capabilities>

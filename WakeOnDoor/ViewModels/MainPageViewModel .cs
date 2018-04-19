@@ -39,6 +39,7 @@ namespace WakeOnDoor.ViewModels
                 TextLog = "";
             });
             this.AddMacCommand = new DelegateCommand(async () => {
+                if (appConnection == null) { return; }
                 var values = new ValueSet
                 {
                     [nameof(Keys.Command)] = nameof(AppCommands.Add),
