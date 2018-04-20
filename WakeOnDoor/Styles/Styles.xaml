@@ -4,4 +4,13 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:local="using:WakeOnDoor.Styles">
+    <Style TargetType="TextBox">
+        <Setter Property="Margin" Value="5"/>
+    </Style>
+    <Style TargetType="TextBlock">
+        <Setter Property="Margin" Value="3"/>
+    </Style>
+    <Style TargetType="ListViewItem">
+        <Setter Property="Background" Value="PaleTurquoise"/>
+    </Style>
 </ResourceDictionary>

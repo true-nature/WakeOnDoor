@@ -42,7 +42,7 @@ namespace SerialMonitor
 
         private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
-            var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[nameof(Keys.MacList)] as string[]);
+            var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[nameof(Keys.TargetList)] as string[]);
 
             var values = new ValueSet();
             var message = args.Request.Message;
@@ -71,7 +71,7 @@ namespace SerialMonitor
             }
             var list = new string[macList.Count];
             macList.CopyTo(list);
-            values[nameof(Keys.MacList)] = list;
+            values[nameof(Keys.TargetList)] = list;
             var result = args.Request.SendResponseAsync(values);
         }
     }

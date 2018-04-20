@@ -4,12 +4,14 @@ using SerialMonitor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
 using Windows.UI.Core;
@@ -19,13 +21,13 @@ namespace WakeOnDoor.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
-
+        private const int LOG_CAPACITY = 50;
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
-            MacList = new ObservableCollection<string>();
+            WOLTargets = new ObservableCollection<WOLTarget>();
             IsConnected = false;
-            textLog = "";
+            textLog = new List<string>();
             this.StatusViewCommand = new DelegateCommand(() =>
             {
                 IsMacVisible = false;
@@ -38,7 +40,8 @@ namespace WakeOnDoor.ViewModels
             });
             this.ClearLogCommand = new DelegateCommand(() =>
             {
-                TextLog = "";
+                textLog.Clear();
+                RaisePropertyChanged(nameof(TextLog));
             });
             this.AddMacCommand = new DelegateCommand(async () => {
                 using (var conn = await OpenAppServiceAsync())
@@ -47,13 +50,14 @@ namespace WakeOnDoor.ViewModels
                     var values = new ValueSet
                     {
                         [nameof(Keys.Command)] = nameof(AppCommands.Add),
-                        [nameof(Keys.MacAddress)] = MacToAdd
+                        [nameof(Keys.MacAddress)] = PhysicalToEdit,
+                        [nameof(Keys.Comment)] = CommentToEdit
                     };
                     var response = await conn.SendMessageAsync(values);
                     if (response.Status == AppServiceResponseStatus.Success)
                     {
-                        var macListStr = response.Message[nameof(Keys.MacList)] as string;
-                        RefreshMacList(macListStr);
+                        var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
+                        RefreshTargetList(targetListStr);
                     }
                 }
             });
@@ -64,13 +68,14 @@ namespace WakeOnDoor.ViewModels
                     var values = new ValueSet
                     {
                         [nameof(Keys.Command)] = nameof(AppCommands.Remove),
-                        [nameof(Keys.MacAddress)] = MacToAdd
+                        [nameof(Keys.MacAddress)] = PhysicalToEdit,
+                        [nameof(Keys.Comment)] = CommentToEdit
                     };
                     var response = await conn.SendMessageAsync(values);
                     if (response.Status == AppServiceResponseStatus.Success)
                     {
-                        var macListStr = response.Message[nameof(Keys.MacList)] as string;
-                        RefreshMacList(macListStr);
+                        var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
+                        RefreshTargetList(targetListStr);
                     }
                 }
             });
@@ -86,7 +91,7 @@ namespace WakeOnDoor.ViewModels
             commService.Received += this.OnReceived;
 
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            InitMacListAsync();
+            InitTargetListAsync();
             ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
@@ -120,13 +125,20 @@ namespace WakeOnDoor.ViewModels
         public ICommand ClearLogCommand { get; }
         public ICommand ExitCommand { get; }
 
-        private string macToAdd;
-        public string MacToAdd
+        private string physicalToEdit;
+        public string PhysicalToEdit
         {
-            get { return macToAdd; }
-            set { SetProperty(ref macToAdd, value, nameof(MacToAdd)); }
+            get { return physicalToEdit; }
+            set { SetProperty(ref physicalToEdit, value, nameof(PhysicalToEdit)); }
         }
-        public ObservableCollection<string> MacList { get; }
+        private string commentToEdit;
+        public string CommentToEdit
+        {
+            get { return commentToEdit; }
+            set { SetProperty(ref commentToEdit, value, nameof(CommentToEdit)); }
+        }
+
+        public ObservableCollection<WOLTarget> WOLTargets { get; }
 
         private CoreDispatcher dispatcher;
         public CoreDispatcher Dispatcher
@@ -149,30 +161,28 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        private string textLog;
+        private List<string> textLog;
         public string TextLog
         {
-            get { return this.textLog; }
-            set
-            {
-                this.SetProperty(ref this.textLog, value);
-                RaisePropertyChanged(nameof(TextLog));
-            }
+            get { return string.Join("\n", textLog); }
         }
 
-        private void RefreshMacList(string macListStr)
+        private void RefreshTargetList(string targetJsonStr)
         {
-            char[] delimiters = { ',', ';', ' ' };
-            var list = macListStr.Split(delimiters);
-            MacList.Clear();
-            foreach (var m in list)
+            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(targetJsonStr)))
             {
-                MacList.Add(m);
+                var serializer = new DataContractJsonSerializer(typeof(HashSet<WOLTarget>));
+                var targets = serializer.ReadObject(memStream) as HashSet<WOLTarget>;
+                WOLTargets.Clear();
+                foreach (var m in targets)
+                {
+                    WOLTargets.Add(m);
+                }
+                RaisePropertyChanged(nameof(WOLTargets));
             }
-            RaisePropertyChanged(nameof(MacList));
         }
 
-        private async Task InitMacListAsync()
+        private async Task InitTargetListAsync()
         {
             using (var conn = await OpenAppServiceAsync())
             {
@@ -181,8 +191,8 @@ namespace WakeOnDoor.ViewModels
                 var response = await conn.SendMessageAsync(request);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
-                    var macListStr = response.Message[nameof(Keys.MacList)] as string;
-                    RefreshMacList(macListStr);
+                    var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
+                    RefreshTargetList(targetListStr);
                 }
             }
         }
@@ -230,7 +240,12 @@ namespace WakeOnDoor.ViewModels
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal,() =>
             {
-                TextLog += args.Message + "\n";
+                while (textLog.Count > LOG_CAPACITY)
+                {
+                    textLog.RemoveAt(0);
+                }
+                textLog.Add(args.Message);
+                RaisePropertyChanged(nameof(TextLog));
             });
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
