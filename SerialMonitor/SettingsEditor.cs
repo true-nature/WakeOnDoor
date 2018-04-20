@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
@@ -10,7 +13,6 @@ namespace SerialMonitor
     {
         private BackgroundTaskDeferral taskDeferral;
         private AppServiceConnection connection;
-        private static char[] separators = { ',', ';' };
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -40,20 +42,29 @@ namespace SerialMonitor
             var message = args.Request.Message;
             if (message.TryGetValue(nameof(Keys.Command), out object command))
             {
-                object macaddr;
+                object physical;
+                object comment;
                 switch (command)
                 {
                     case nameof(AppCommands.Add):
-                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
+                        if (message.TryGetValue(nameof(Keys.MacAddress), out physical)
+                            && message.TryGetValue(nameof(Keys.Comment), out comment))
                         {
-                            values[nameof(Keys.Result)] = macList.Add(macaddr as string).ToString();
+                            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string };
+                            var exist = macList.ContainsKey(target.Physical);
+                            macList[target.Physical] = target;  // replace if exist
+                            values[nameof(Keys.Result)] = (!exist).ToString();
                             SaveMacList(settings, macList);
                         }
                         break;
                     case nameof(AppCommands.Remove):
-                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
+                        if (message.TryGetValue(nameof(Keys.MacAddress), out physical)
+                            && message.TryGetValue(nameof(Keys.Comment), out comment))
                         {
-                            values[nameof(Keys.Result)] = macList.Remove(macaddr as string).ToString();
+                            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string };
+                            var exist = macList.ContainsKey(target.Physical);
+                            if (exist) { macList.Remove(target.Physical); }
+                            values[nameof(Keys.Result)] = exist.ToString();
                             SaveMacList(settings, macList);
                         }
                         break;
@@ -64,32 +75,53 @@ namespace SerialMonitor
                         break;
                 }
             }
-            values[nameof(Keys.MacList)] = settings.Values[nameof(Keys.MacList)];
+            values[nameof(Keys.TargetList)] = settings.Values[nameof(Keys.TargetList)];
             var result = args.Request.SendResponseAsync(values);
         }
 
         internal static void InitSettings()
         {
             var settings = ApplicationData.Current.LocalSettings;
-            if (!settings.Values.ContainsKey(nameof(Keys.MacList)))
+            if (!settings.Values.ContainsKey(nameof(Keys.TargetList)))
             {
-                settings.Values[nameof(Keys.MacList)] = "";
+                using (var stream = new MemoryStream())
+                {
+                    var targetSet = new HashSet<WOLTarget>();
+                    var serializer = new DataContractJsonSerializer(typeof(HashSet<WOLTarget>));
+                    serializer.WriteObject(stream, targetSet);
+                    var strToSave = Encoding.UTF8.GetString(stream.ToArray());
+                    settings.Values[nameof(Keys.TargetList)] = strToSave;
+                }
             }
         }
 
-        private static HashSet<string> ReadMacList(ApplicationDataContainer settings)
+        private static Dictionary<string, WOLTarget> ReadMacList(ApplicationDataContainer settings)
         {
-            var macArray = (settings.Values[nameof(Keys.MacList)] as string)?.Trim().Split(separators);
-            var macList = new HashSet<string>();
-            foreach (var m in macArray) { macList.Add(m); }
-            return macList;
+            Dictionary<string, WOLTarget> result = new Dictionary<string, WOLTarget>();
+            var targetListStr = (settings.Values[nameof(Keys.TargetList)] as string);
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(targetListStr)))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(HashSet<WOLTarget>));
+                var targets = serializer.ReadObject(stream) as HashSet<WOLTarget>;
+                foreach (var t in targets)
+                {
+                    result.Add(t.Physical, t);
+                }
+            }
+            return result;
         }
 
-        private static string SaveMacList(ApplicationDataContainer settings, HashSet<string> macList)
+        private static string SaveMacList(ApplicationDataContainer settings, Dictionary<string,WOLTarget> targetList)
         {
-            var joinedStr = string.Join(",", macList);
-            settings.Values[nameof(Keys.MacList)] = string.Join(",", macList);
-            return joinedStr;
+            using (var stream = new MemoryStream())
+            {
+                var targetSet = new HashSet<WOLTarget>(targetList.Values);
+                var serializer = new DataContractJsonSerializer(typeof(HashSet<WOLTarget>));
+                serializer.WriteObject(stream, targetSet);
+                var strToSave = Encoding.UTF8.GetString(stream.ToArray());
+                settings.Values[nameof(Keys.TargetList)] = strToSave;
+                return strToSave;
+            }
         }
 
     }

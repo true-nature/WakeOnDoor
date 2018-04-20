@@ -68,6 +68,12 @@ namespace TweLiteMonitorOnPC
             builder.SetTrigger(trigger);
             await BackgroundExecutionManager.RequestAccessAsync();
             taskRegistration = builder.Register();
+            taskRegistration.Completed += async (sender, args) =>
+            {
+                if (IsSuspending) return;
+                // restart when ExecutionTimeExceeded
+                await trigger.RequestAsync();
+            };
             var result = await trigger.RequestAsync();
             return result;
         }

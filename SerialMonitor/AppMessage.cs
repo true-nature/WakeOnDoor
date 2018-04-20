@@ -12,7 +12,8 @@
     {
         Command,
         MacAddress,
-        MacList,
+        Comment,
+        TargetList,
         Result,
     }
 
