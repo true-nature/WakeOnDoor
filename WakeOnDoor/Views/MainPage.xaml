@@ -72,12 +72,13 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Mac Address" FontSize="32"/>
+            <TextBlock Grid.Row="0" Text="MAC Address" FontSize="32"/>
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <TextBox Text="{x:Bind ViewModel.MacToAdd,Mode=TwoWay}" MinWidth="200"/>
                 <Button Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}"/>
+                <Button Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}"/>
             </StackPanel>
-            <ListView Grid.Row="2" ItemsSource="{x:Bind ViewModel.MacList}"/>
+            <ListView Grid.Row="2" ItemsSource="{Binding MacList,Mode=OneWay}"/>
             <TextBlock Grid.Row="3" Text="Message"/>
         </Grid>
     </Grid>

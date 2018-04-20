@@ -22,6 +22,7 @@ namespace WakeOnDoor.ViewModels
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
+            MacList = new SortedSet<string>();
             IsConnected = false;
             textLog = "";
             this.StatusViewCommand = new DelegateCommand(() =>
@@ -39,17 +40,37 @@ namespace WakeOnDoor.ViewModels
                 TextLog = "";
             });
             this.AddMacCommand = new DelegateCommand(async () => {
-                if (appConnection == null) { return; }
-                var values = new ValueSet
+                using (var conn = await OpenAppServiceAsync())
                 {
-                    [nameof(Keys.Command)] = nameof(AppCommands.Add),
-                    [nameof(Keys.MacAddress)] = MacToAdd
-                };
-                var response = await appConnection.SendMessageAsync(values);
-                if (response.Status == AppServiceResponseStatus.Success)
+                    if (conn == null) { return; }
+                    var values = new ValueSet
+                    {
+                        [nameof(Keys.Command)] = nameof(AppCommands.Add),
+                        [nameof(Keys.MacAddress)] = MacToAdd
+                    };
+                    var response = await conn.SendMessageAsync(values);
+                    if (response.Status == AppServiceResponseStatus.Success)
+                    {
+                        var macListStr = response.Message[nameof(Keys.MacList)] as string;
+                        RefreshMacList(macListStr);
+                    }
+                }
+            });
+            this.RemoveMacCommand = new DelegateCommand(async () => {
+                using (var conn = await OpenAppServiceAsync())
                 {
-                    var list = response.Message[nameof(Keys.MacList)] as string[];
-                    RefreshMacList(list);
+                    if (conn == null) { return; }
+                    var values = new ValueSet
+                    {
+                        [nameof(Keys.Command)] = nameof(AppCommands.Remove),
+                        [nameof(Keys.MacAddress)] = MacToAdd
+                    };
+                    var response = await conn.SendMessageAsync(values);
+                    if (response.Status == AppServiceResponseStatus.Success)
+                    {
+                        var macListStr = response.Message[nameof(Keys.MacList)] as string;
+                        RefreshMacList(macListStr);
+                    }
                 }
             });
             this.ExitCommand = new DelegateCommand(async () =>
@@ -69,7 +90,6 @@ namespace WakeOnDoor.ViewModels
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
 
-        private AppServiceConnection appConnection;
         public bool IsIoTDeviceFamily { get; }
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
@@ -95,6 +115,7 @@ namespace WakeOnDoor.ViewModels
             }
         }
         public ICommand AddMacCommand { get; }
+        public ICommand RemoveMacCommand { get; }
         public ICommand ClearLogCommand { get; }
         public ICommand ExitCommand { get; }
 
@@ -138,16 +159,34 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        private void RefreshMacList(string[] list)
+        private void RefreshMacList(string macListStr)
         {
+            char[] delimiters = { ',', ';', ' ' };
+            var list = macListStr.Split(delimiters);
             MacList.Clear();
             foreach (var m in list)
             {
                 MacList.Add(m);
             }
+            RaisePropertyChanged(nameof(MacList));
         }
 
         private async Task InitMacListAsync()
+        {
+            using (var conn = await OpenAppServiceAsync())
+            {
+                if (conn == null) { return; }
+                ValueSet request = new ValueSet();
+                var response = await conn.SendMessageAsync(request);
+                if (response.Status == AppServiceResponseStatus.Success)
+                {
+                    var macListStr = response.Message[nameof(Keys.MacList)] as string;
+                    RefreshMacList(macListStr);
+                }
+            }
+        }
+
+        private async Task<AppServiceConnection> OpenAppServiceAsync()
         {
             var conn = new AppServiceConnection
             {
@@ -157,15 +196,9 @@ namespace WakeOnDoor.ViewModels
             var status = await conn.OpenAsync();
             if (status == AppServiceConnectionStatus.Success)
             {
-                appConnection = conn;
-                ValueSet request = new ValueSet();
-                var response = await appConnection.SendMessageAsync(request);
-                if (response.Status == AppServiceResponseStatus.Success)
-                {
-                    var list = response.Message[nameof(Keys.MacList)] as string[];
-                    RefreshMacList(list);
-                }
+                return conn;
             }
+            return null;
         }
 
         private async Task ConnectAsync()

@@ -81,7 +81,7 @@ namespace SerialMonitor
         {
             var macArray = (settings.Values[nameof(Keys.MacList)] as string)?.Trim().Split(separators);
             var macList = new HashSet<string>();
-            foreach (var m in macList) { macList.Add(m); }
+            foreach (var m in macArray) { macList.Add(m); }
             return macList;
         }
 

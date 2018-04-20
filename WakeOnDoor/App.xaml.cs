@@ -22,45 +22,10 @@ namespace WakeOnDoor
             this.InitializeComponent();
         }
 
-        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
-            {
-                await StarTaskAsync();
-            }
             this.NavigationService.Navigate("Main", null);
-            //return Task.CompletedTask;
-        }
-
-        private BackgroundTaskRegistration taskRegistration;
-        private async Task<ApplicationTriggerResult> StarTaskAsync()
-        {
-            const string TaskName = "TweLiteMonitor-uwp";
-            foreach (var t in BackgroundTaskRegistration.AllTasks)
-            {
-                if (t.Value.Name == TaskName)
-                {
-                    return ApplicationTriggerResult.CurrentlyRunning;
-                }
-            }
-            var builder = new BackgroundTaskBuilder
-            {
-                Name = TaskName,
-                TaskEntryPoint = typeof(MonitorTask).FullName
-            };
-            var trigger = new ApplicationTrigger();
-            builder.SetTrigger(trigger);
-            await BackgroundExecutionManager.RequestAccessAsync();
-            taskRegistration = builder.Register();
-            var result = await trigger.RequestAsync();
-            return result;
-        }
-        
-        protected override async Task OnSuspendingApplicationAsync()
-        {
-            taskRegistration?.Unregister(true);
-            taskRegistration = null;
-            await base.OnSuspendingApplicationAsync();
+            return Task.CompletedTask;
         }
     }
 }
