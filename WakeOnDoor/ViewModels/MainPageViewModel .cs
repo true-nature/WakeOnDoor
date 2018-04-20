@@ -3,6 +3,7 @@ using Prism.Windows.Mvvm;
 using SerialMonitor;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -22,7 +23,7 @@ namespace WakeOnDoor.ViewModels
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
-            MacList = new SortedSet<string>();
+            MacList = new ObservableCollection<string>();
             IsConnected = false;
             textLog = "";
             this.StatusViewCommand = new DelegateCommand(() =>
@@ -125,7 +126,7 @@ namespace WakeOnDoor.ViewModels
             get { return macToAdd; }
             set { SetProperty(ref macToAdd, value, nameof(MacToAdd)); }
         }
-        public ICollection<string> MacList { get; }
+        public ObservableCollection<string> MacList { get; }
 
         private CoreDispatcher dispatcher;
         public CoreDispatcher Dispatcher
