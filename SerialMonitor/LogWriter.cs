@@ -10,7 +10,7 @@ using Windows.Networking.Sockets;
 
 namespace SerialMonitor
 {
-    internal class LogWriter
+    internal class LogWriter: IDisposable
     {
         private const string PORT = "9514";
         //private const string SERVERHOST = "127.0.0.1";
@@ -43,7 +43,7 @@ namespace SerialMonitor
             await writer?.FlushAsync();
         }
 
-        public void Close()
+        public void Dispose()
         {
             writer?.Dispose();
             stream?.Dispose();

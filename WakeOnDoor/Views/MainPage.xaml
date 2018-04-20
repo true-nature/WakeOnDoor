@@ -50,7 +50,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="Title" Grid.Column="0" Text="Wake On LAN on Door" FontSize="24"/>
         </Grid>
-        <Grid x:Name="StatusView" Grid.Row="1"  Visibility="{Binding IsStatusVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid x:Name="StatusView" Grid.Row="1" Padding="10" Visibility="{Binding IsStatusVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="1*"/>
@@ -65,13 +65,21 @@
                 </ScrollViewer>
             </Border>
         </Grid>
-        <Grid x:Name="MacAddrView" Grid.Row="1" Visibility="{Binding IsMacVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid x:Name="MacAddrView" Grid.Row="1" Padding="10" Visibility="{Binding IsMacVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Mac Address" FontSize="32"/>
-            <TextBlock Grid.Row="1" Text="2"/>
+            <TextBlock Grid.Row="0" Text="MAC Address" FontSize="32"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <TextBox Text="{x:Bind ViewModel.MacToAdd,Mode=TwoWay}" MinWidth="200"/>
+                <Button Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}"/>
+                <Button Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}"/>
+            </StackPanel>
+            <ListView Grid.Row="2" ItemsSource="{Binding MacList,Mode=OneWay}"/>
+            <TextBlock Grid.Row="3" Text="Message"/>
         </Grid>
     </Grid>
 </Page>
