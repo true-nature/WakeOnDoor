@@ -14,6 +14,7 @@ namespace TweLiteMonitorOnPC.Views
         public MainPage()
         {
             this.InitializeComponent();
+            ViewModel.Dispatcher = this.Dispatcher;
         }
     }
 }

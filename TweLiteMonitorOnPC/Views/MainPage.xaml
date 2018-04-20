@@ -9,10 +9,20 @@
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="TweLiteMonitor on PC" FontSize="32"/>
+        <TextBlock Grid.Row="0" Text="TweLiteMonitor on PC" FontSize="32"/>
+        <Border Grid.Row="1" BorderBrush="AliceBlue">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFCD2323"/>
+                    <GradientStop Color="#FFFAFBFA" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" />
+        </Border>
     </Grid>
 </Page>

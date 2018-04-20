@@ -24,13 +24,10 @@ namespace TweLiteMonitorOnPC
             this.Suspending += OnSuspending;
         }
 
-        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
-            {
-                await StarTaskAsync();
-            }
             this.NavigationService.Navigate("Main", null);
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -44,38 +41,7 @@ namespace TweLiteMonitorOnPC
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: アプリケーションの状態を保存してバックグラウンドの動作があれば停止します
-            taskRegistration?.Unregister(true);
-            taskRegistration = null;
             deferral.Complete();
-        }
-        private BackgroundTaskRegistration taskRegistration;
-        private async Task<ApplicationTriggerResult> StarTaskAsync()
-        {
-            const string TaskName = "TweLiteMonitor-uwp";
-            foreach (var t in BackgroundTaskRegistration.AllTasks)
-            {
-                if (t.Value.Name == TaskName)
-                {
-                    return ApplicationTriggerResult.CurrentlyRunning;
-                }
-            }
-            var builder = new BackgroundTaskBuilder
-            {
-                Name = TaskName,
-                TaskEntryPoint = typeof(MonitorTask).FullName
-            };
-            var trigger = new ApplicationTrigger();
-            builder.SetTrigger(trigger);
-            await BackgroundExecutionManager.RequestAccessAsync();
-            taskRegistration = builder.Register();
-            taskRegistration.Completed += async (sender, args) =>
-            {
-                if (IsSuspending) return;
-                // restart when ExecutionTimeExceeded
-                await trigger.RequestAsync();
-            };
-            var result = await trigger.RequestAsync();
-            return result;
         }
     }
 }
