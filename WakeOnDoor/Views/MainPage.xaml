@@ -59,7 +59,7 @@
                 <TextBlock Text="Status" FontSize="32"/>
             </StackPanel>
             <Border Grid.Row="1" BorderBrush="Red" BorderThickness="2">
-                <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto"
+                <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom"
                           MinHeight="250">
                     <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
                 </ScrollViewer>

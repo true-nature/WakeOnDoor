@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
 using Windows.UI.Core;
@@ -19,13 +18,13 @@ namespace WakeOnDoor.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
-
+        private const int LOG_CAPACITY = 50;
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
             MacList = new ObservableCollection<string>();
             IsConnected = false;
-            textLog = "";
+            textLog = new List<string>();
             this.StatusViewCommand = new DelegateCommand(() =>
             {
                 IsMacVisible = false;
@@ -38,7 +37,8 @@ namespace WakeOnDoor.ViewModels
             });
             this.ClearLogCommand = new DelegateCommand(() =>
             {
-                TextLog = "";
+                textLog.Clear();
+                RaisePropertyChanged(nameof(TextLog));
             });
             this.AddMacCommand = new DelegateCommand(async () => {
                 using (var conn = await OpenAppServiceAsync())
@@ -149,15 +149,10 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        private string textLog;
+        private List<string> textLog;
         public string TextLog
         {
-            get { return this.textLog; }
-            set
-            {
-                this.SetProperty(ref this.textLog, value);
-                RaisePropertyChanged(nameof(TextLog));
-            }
+            get { return string.Join("\n", textLog); }
         }
 
         private void RefreshMacList(string macListStr)
@@ -230,7 +225,12 @@ namespace WakeOnDoor.ViewModels
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal,() =>
             {
-                TextLog += args.Message + "\n";
+                while (textLog.Count > LOG_CAPACITY)
+                {
+                    textLog.RemoveAt(0);
+                }
+                textLog.Add(args.Message);
+                RaisePropertyChanged(nameof(TextLog));
             });
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
