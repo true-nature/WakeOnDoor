@@ -49,7 +49,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="Title" Grid.Column="0" Text="Wake On LAN on Door" FontSize="24"/>
+            <TextBlock x:Name="Title" Grid.Column="0" Text="Wake On LAN on Door" FontSize="32" Margin="5"/>
         </Grid>
         <Grid x:Name="StatusView" Grid.Row="1" Padding="10" Visibility="{Binding IsStatusVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
@@ -57,23 +57,23 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <TextBlock Text="Status" FontSize="32"/>
+                <TextBlock Text="Serial Log" FontSize="24"/>
             </StackPanel>
-            <Border Grid.Row="1" BorderBrush="Red" BorderThickness="2">
+            <Border Grid.Row="1" BorderBrush="DimGray" BorderThickness="2">
                 <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom"
                           MinHeight="250">
                     <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
                 </ScrollViewer>
             </Border>
         </Grid>
-        <Grid x:Name="MacAddrView" Grid.Row="1" Padding="10" Visibility="{Binding IsMacVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+        <Grid x:Name="MacAddrView" Grid.Row="1" Padding="10" Visibility="{Binding IsMacVisible,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Target Editor" FontSize="32"/>
+            <TextBlock Grid.Row="0" Text="Target Editor" FontSize="24"/>
             <Grid Grid.Row="1" Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -92,17 +92,24 @@
                 <Button Grid.Row="2" Grid.Column="0" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
                 <Button Grid.Row="2" Grid.Column="1" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
             </Grid>
-            <ListView Grid.Row="2" ItemsSource="{x:Bind ViewModel.WOLTargets,Mode=OneWay}">
+            <ListView x:Name="TargetListView" Grid.Row="2" ItemsSource="{x:Bind ViewModel.WOLTargets,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
+                <ListView.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="18"/>
+                    </Style>
+                </ListView.Resources>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="sm:WOLTarget">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{x:Bind Physical}"/>
-                            <TextBlock Text="{x:Bind Comment}"/>
+                            <TextBlock Text=" ("/>
+                            <TextBlock Text="{x:Bind Comment}" HorizontalAlignment="Stretch"/>
+                            <TextBlock Text=")"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <TextBlock Grid.Row="3" Text="Message"/>
+            <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.StatusMessage}"/>
         </Grid>
     </Grid>
 </Page>

@@ -12,5 +12,6 @@
     </Style>
     <Style TargetType="ListViewItem">
         <Setter Property="Background" Value="PaleTurquoise"/>
+        <Setter Property="Margin" Value="1"/>
     </Style>
 </ResourceDictionary>

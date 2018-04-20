@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
+using Prism.Windows.Validation;
 using SerialMonitor;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ using Windows.UI.Xaml;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : ValidatableBindableBase
     {
         private const int LOG_CAPACITY = 50;
         public MainPageViewModel()
@@ -97,6 +98,8 @@ namespace WakeOnDoor.ViewModels
         }
 
         public bool IsIoTDeviceFamily { get; }
+        public string StatusMessage { get; private set; }
+
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
         private bool MacViewVisibility;
@@ -139,6 +142,18 @@ namespace WakeOnDoor.ViewModels
         }
 
         public ObservableCollection<WOLTarget> WOLTargets { get; }
+
+        public WOLTarget SelectedTarget
+        {
+            set
+            {
+                if (!string.IsNullOrEmpty(value?.Physical))
+                {
+                    PhysicalToEdit = value?.Physical;
+                    CommentToEdit = value?.Comment;
+                }
+            }
+        }
 
         private CoreDispatcher dispatcher;
         public CoreDispatcher Dispatcher
