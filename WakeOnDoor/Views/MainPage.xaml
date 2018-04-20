@@ -78,7 +78,7 @@
                 <Button Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}"/>
                 <Button Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}"/>
             </StackPanel>
-            <ListView Grid.Row="2" ItemsSource="{Binding MacList,Mode=OneWay}"/>
+            <ListView Grid.Row="2" ItemsSource="{x:Bind ViewModel.MacList,Mode=OneWay}"/>
             <TextBlock Grid.Row="3" Text="Message"/>
         </Grid>
     </Grid>
