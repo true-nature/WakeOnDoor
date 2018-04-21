@@ -5,6 +5,7 @@ using SerialMonitor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -23,6 +24,8 @@ namespace WakeOnDoor.ViewModels
     public class MainPageViewModel : ValidatableBindableBase
     {
         private const int LOG_CAPACITY = 50;
+        private const string PKGFAMILY_IOT = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+        private const string PKGFAMILY_DESKTOP = "TweLiteMonitor-uwp_13vwvk7mqd5qw";
         public MainPageViewModel()
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
@@ -110,7 +113,7 @@ namespace WakeOnDoor.ViewModels
             }
             private set
             {
-                SetProperty(ref MacViewVisibility, value, nameof(IsMacVisible));
+                SetProperty(ref MacViewVisibility, value);
             }
         }
         public ICommand StatusViewCommand { get; }
@@ -120,7 +123,7 @@ namespace WakeOnDoor.ViewModels
             get { return StatusViewVisibility; }
             private set
             {
-                SetProperty(ref StatusViewVisibility, value, nameof(IsStatusVisible));
+                SetProperty(ref StatusViewVisibility, value);
             }
         }
         public ICommand AddMacCommand { get; }
@@ -129,16 +132,18 @@ namespace WakeOnDoor.ViewModels
         public ICommand ExitCommand { get; }
 
         private string physicalToEdit;
+        [Required(ErrorMessage="Please input a Physical Address")]
+        [RegularExpression(pattern:@"^[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}$", ErrorMessage="Illegal format")]
         public string PhysicalToEdit
         {
             get { return physicalToEdit; }
-            set { SetProperty(ref physicalToEdit, value, nameof(PhysicalToEdit)); }
+            set { SetProperty(ref physicalToEdit, value); }
         }
         private string commentToEdit;
         public string CommentToEdit
         {
             get { return commentToEdit; }
-            set { SetProperty(ref commentToEdit, value, nameof(CommentToEdit)); }
+            set { SetProperty(ref commentToEdit, value); }
         }
 
         public ObservableCollection<WOLTarget> WOLTargets { get; }
@@ -172,7 +177,7 @@ namespace WakeOnDoor.ViewModels
             get { return this.isConnected; }
             set
             {
-                this.SetProperty(ref this.isConnected, value, nameof(IsConnected));
+                SetProperty(ref isConnected, value);
             }
         }
 
@@ -217,7 +222,7 @@ namespace WakeOnDoor.ViewModels
             var conn = new AppServiceConnection
             {
                 AppServiceName = "SettingsEditor",
-                PackageFamilyName = "TweLiteMonitor-uwp_13vwvk7mqd5qw"
+                PackageFamilyName = (IsIoTDeviceFamily ? PKGFAMILY_IOT : PKGFAMILY_DESKTOP)
             };
             var status = await conn.OpenAsync();
             if (status == AppServiceConnectionStatus.Success)
