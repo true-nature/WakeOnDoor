@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.AppService;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
 using Windows.System.Profile;
 using Windows.UI.Core;
@@ -54,7 +55,28 @@ namespace WakeOnDoor.ViewModels
                     var values = new ValueSet
                     {
                         [nameof(Keys.Command)] = nameof(AppCommands.Add),
-                        [nameof(Keys.MacAddress)] = PhysicalToEdit,
+                        [nameof(Keys.PhysicalAddress)] = PhysicalToEdit,
+                        [nameof(Keys.Comment)] = CommentToEdit
+                    };
+                    var response = await conn.SendMessageAsync(values);
+                    if (response.Status == AppServiceResponseStatus.Success)
+                    {
+                        var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
+                        RefreshTargetList(targetListStr);
+                        var resourceLoader = ResourceLoader.GetForCurrentView();
+                        var status = response.Message[nameof(Keys.StatusMessage)] as string;
+                        if (!string.IsNullOrEmpty(status)) StatusMessage = resourceLoader.GetString(status);
+                    }
+                }
+            });
+            RemoveMacCommand = new DelegateCommand(async () => {
+                using (var conn = await OpenAppServiceAsync())
+                {
+                    if (conn == null) { return; }
+                    var values = new ValueSet
+                    {
+                        [nameof(Keys.Command)] = nameof(AppCommands.Remove),
+                        [nameof(Keys.PhysicalAddress)] = PhysicalToEdit,
                         [nameof(Keys.Comment)] = CommentToEdit
                     };
                     var response = await conn.SendMessageAsync(values);
@@ -65,15 +87,13 @@ namespace WakeOnDoor.ViewModels
                     }
                 }
             });
-            this.RemoveMacCommand = new DelegateCommand(async () => {
+            ClearTargetCommand = new DelegateCommand(async () => {
                 using (var conn = await OpenAppServiceAsync())
                 {
                     if (conn == null) { return; }
                     var values = new ValueSet
                     {
-                        [nameof(Keys.Command)] = nameof(AppCommands.Remove),
-                        [nameof(Keys.MacAddress)] = PhysicalToEdit,
-                        [nameof(Keys.Comment)] = CommentToEdit
+                        [nameof(Keys.Command)] = nameof(AppCommands.Clear),
                     };
                     var response = await conn.SendMessageAsync(values);
                     if (response.Status == AppServiceResponseStatus.Success)
@@ -101,7 +121,18 @@ namespace WakeOnDoor.ViewModels
         }
 
         public bool IsIoTDeviceFamily { get; }
-        public string StatusMessage { get; private set; }
+        private string statusMessage;
+        public string StatusMessage
+        {
+            get
+            {
+                return statusMessage;
+            }
+            private set
+            {
+                SetProperty(ref statusMessage, value);
+            }
+        }
 
         private SemaphoreSlim semaphore;
         public ICommand MacViewCommand { get; }
@@ -128,6 +159,7 @@ namespace WakeOnDoor.ViewModels
         }
         public ICommand AddMacCommand { get; }
         public ICommand RemoveMacCommand { get; }
+        public ICommand ClearTargetCommand { get; }
         public ICommand ClearLogCommand { get; }
         public ICommand ExitCommand { get; }
 

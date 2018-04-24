@@ -3,18 +3,30 @@
 
     public enum AppCommands
     {
+        Get,
         Add,
         Remove,
-        Get,
+        Clear,
     }
 
     public enum Keys
     {
         Command,
-        MacAddress,
+        PhysicalAddress,
         Comment,
         TargetList,
         Result,
+        StatusMessage,
+    }
+
+    public enum CommandStatus
+    {
+        Success,
+        UnknownCommand,
+        IncompleteParameters,
+        NoPhysicalAddress,
+        EntryNotFound,
+        InvalidPhysicalFormat
     }
 
 }

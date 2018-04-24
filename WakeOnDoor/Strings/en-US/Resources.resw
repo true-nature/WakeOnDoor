@@ -117,4 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EntryNotFound" xml:space="preserve">
+    <value>Target entry not found</value>
+  </data>
+  <data name="IncompleteParameters" xml:space="preserve">
+    <value>Internal command error: Incomplete parameters</value>
+  </data>
+  <data name="InvalidPhysicalFormat" xml:space="preserve">
+    <value>Invalid physical (MAC) address format.</value>
+  </data>
+  <data name="NoPhysicakAddress" xml:space="preserve">
+    <value>Physical (MAC) addres must be specified.</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Internal command error: Unknown ommand</value>
+  </data>
 </root>

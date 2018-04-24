@@ -5,7 +5,32 @@
       <tool tool-id="MultilingualAppToolkit" tool-name="Multilingual App Toolkit" tool-version="4.0.6900.0" tool-company="Microsoft" />
     </header>
     <body>
-      <group id="WAKEONDOOR/STRINGS/EN-US/RESOURCES.RESW" datatype="resx" />
+      <group id="WAKEONDOOR/STRINGS/EN-US/RESOURCES.RESW" datatype="resx">
+        <trans-unit id="EntryNotFound" translate="yes" xml:space="preserve">
+          <source>Target entry not found</source>
+          <target state="translated">ターゲットのエントリが存在しません。</target>
+        </trans-unit>
+        <trans-unit id="IncompleteParameters" translate="yes" xml:space="preserve">
+          <source>Internal command error: Incomplete parameters</source>
+          <target state="translated">内部コマンドエラー: Incomplete parameters</target>
+        </trans-unit>
+        <trans-unit id="NoPhysicakAddress" translate="yes" xml:space="preserve">
+          <source>Physical (MAC) addres must be specified.</source>
+          <target state="translated">物理(MAC)アドレスを指定してください。</target>
+        </trans-unit>
+        <trans-unit id="Success" translate="yes" xml:space="preserve">
+          <source>Success</source>
+          <target state="translated">成功</target>
+        </trans-unit>
+        <trans-unit id="UnknownCommand" translate="yes" xml:space="preserve">
+          <source>Internal command error: Unknown ommand</source>
+          <target state="translated">内部コマンドエラー: Unknown ommand</target>
+        </trans-unit>
+        <trans-unit id="InvalidPhysicalFormat" translate="yes" xml:space="preserve">
+          <source>Invalid physical (MAC) address format.</source>
+          <target state="new">Invalid physical (MAC) address format.</target>
+        </trans-unit>
+      </group>
     </body>
   </file>
 </xliff>

@@ -55,7 +55,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="Target Editor" FontSize="24"/>
@@ -78,6 +78,7 @@
                 <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
                 <Button Grid.Row="2" Grid.Column="0" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
                 <Button Grid.Row="2" Grid.Column="1" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="Clear" Margin="3" Command="{x:Bind ViewModel.ClearTargetCommand}" Width="80" HorizontalAlignment="Left"/>
             </Grid>
             <ListView x:Name="TargetListView" Grid.Row="2" ItemsSource="{x:Bind ViewModel.WOLTargets,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
                 <ListView.Resources>
@@ -96,7 +97,9 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <TextBlock Grid.Row="3" Text="{x:Bind ViewModel.StatusMessage}"/>
+            <Border Grid.Row="3" BorderBrush="DimGray" BorderThickness="2" Background="DimGray">
+            <TextBlock Text="{x:Bind ViewModel.StatusMessage,Mode=OneWay}"/>
+            </Border>
         </Grid>
         <Grid x:Name="StatusView" Grid.Row="1" Padding="10" Visibility="{Binding IsStatusVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <Grid.RowDefinitions>

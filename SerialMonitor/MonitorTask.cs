@@ -52,13 +52,13 @@ namespace SerialMonitor
                 switch (command)
                 {
                     case nameof(AppCommands.Add):
-                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
+                        if (message.TryGetValue(nameof(Keys.PhysicalAddress), out macaddr))
                         {
                             values[nameof(Keys.Result)] = macList.Add(macaddr as string);
                         }
                         break;
                     case nameof(AppCommands.Remove):
-                        if (message.TryGetValue(nameof(Keys.MacAddress), out macaddr))
+                        if (message.TryGetValue(nameof(Keys.PhysicalAddress), out macaddr))
                         {
                             values[nameof(Keys.Result)] = macList.Remove(macaddr as string);
                         }

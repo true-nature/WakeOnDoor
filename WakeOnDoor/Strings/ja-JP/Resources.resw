@@ -12,4 +12,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="EntryNotFound" xml:space="preserve">
+    <value>ターゲットのエントリが存在しません。</value>
+  </data>
+  <data name="IncompleteParameters" xml:space="preserve">
+    <value>内部コマンドエラー: Incomplete parameters</value>
+  </data>
+  <data name="NoPhysicakAddress" xml:space="preserve">
+    <value>物理(MAC)アドレスを指定してください。</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>内部コマンドエラー: Unknown ommand</value>
+  </data>
 </root>
