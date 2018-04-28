@@ -177,11 +177,26 @@ namespace SerialMonitor
             return true;
         }
 
+        /// <summary>
+        /// Normalize physical address if matched.
+        /// </summary>
+        /// <param name="physical"></param>
+        /// <returns></returns>
         private static bool NormalizePhysical(ref string physical)
         {
-            Regex regex = new Regex(@"^[\dA-Fa-f]{2}-[\dA-Fa-f]{2}-[\dA-Fa-f]{2}-[\dA-Fa-f]{2}-[\dA-Fa-f]{2}-[\dA-Fa-f]{2}$");
+            Regex regex = new Regex(@"^([\dA-F]{2})-?([\dA-F]{2})-?([\dA-F]{2})-?([\dA-F]{2})-?([\dA-F]{2})-?([\dA-F]{2})$");
             physical = physical.Trim().ToUpper().Replace(':', '-');
-            return regex.IsMatch(physical);
+            var m = regex.Match(physical);
+            if (m.Success)
+            {
+                var builder = new StringBuilder(m.Groups[1].Value);
+                for (int i = 2; i < m.Groups.Count; i++)
+                {
+                    builder.Append('-').Append(m.Groups[i].Value);
+                }
+                physical = builder.ToString();
+            }
+            return m.Success;
         }
 
         private static Dictionary<string, WOLTarget> ReadMacList(ApplicationDataContainer settings)
