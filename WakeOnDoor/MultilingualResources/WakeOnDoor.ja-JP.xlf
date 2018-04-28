@@ -20,7 +20,7 @@
         </trans-unit>
         <trans-unit id="Success" translate="yes" xml:space="preserve">
           <source>Success</source>
-          <target state="translated">成功</target>
+          <target state="translated">成功しました。</target>
         </trans-unit>
         <trans-unit id="UnknownCommand" translate="yes" xml:space="preserve">
           <source>Internal command error: Unknown ommand</source>
@@ -28,7 +28,7 @@
         </trans-unit>
         <trans-unit id="InvalidPhysicalFormat" translate="yes" xml:space="preserve">
           <source>Invalid physical (MAC) address format.</source>
-          <target state="new">Invalid physical (MAC) address format.</target>
+          <target state="translated">MACアドレスの書式に誤りがあります。</target>
         </trans-unit>
       </group>
     </body>

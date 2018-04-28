@@ -108,6 +108,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AppMessage.cs" />
+    <Compile Include="WOLHelper.cs" />
     <Compile Include="WOLTarget.cs" />
     <Compile Include="ICommService.cs" />
     <Compile Include="ISerialCommService.cs" />

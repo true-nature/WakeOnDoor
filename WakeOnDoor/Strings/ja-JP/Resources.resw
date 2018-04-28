@@ -22,9 +22,12 @@
     <value>物理(MAC)アドレスを指定してください。</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>成功</value>
+    <value>成功しました。</value>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>内部コマンドエラー: Unknown ommand</value>
+  </data>
+  <data name="InvalidPhysicalFormat" xml:space="preserve">
+    <value>MACアドレスの書式に誤りがあります。</value>
   </data>
 </root>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,6 +30,14 @@ namespace SerialMonitor
             }
         }
 
+        internal static IEnumerable<ulong> GetPhysicals()
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            var targetDic = ReadMacList(settings);
+            var physicals = from p in targetDic.Values select ulong.Parse(p.Physical.Replace("-",""));
+            return physicals;
+        }
+
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
             taskDeferral?.Complete();
@@ -38,7 +47,7 @@ namespace SerialMonitor
         private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             var settings = ApplicationData.Current.LocalSettings;
-            var macList = ReadMacList(settings);
+            var targetDic = ReadMacList(settings);
 
             var message = args.Request.Message;
             var resValues = new ValueSet
@@ -50,10 +59,10 @@ namespace SerialMonitor
                 switch (command)
                 {
                     case nameof(AppCommands.Add):
-                        AddTarget(settings, macList, message, resValues);
+                        AddTarget(settings, targetDic, message, resValues);
                         break;
                     case nameof(AppCommands.Remove):
-                        RemoveTarget(settings, macList, resValues, message);
+                        RemoveTarget(settings, targetDic, resValues, message);
                         break;
                     case nameof(AppCommands.Clear):
                         ClearTarget(settings, resValues);
@@ -199,7 +208,7 @@ namespace SerialMonitor
             return m.Success;
         }
 
-        private static Dictionary<string, WOLTarget> ReadMacList(ApplicationDataContainer settings)
+        internal static Dictionary<string, WOLTarget> ReadMacList(ApplicationDataContainer settings)
         {
             Dictionary<string, WOLTarget> result = new Dictionary<string, WOLTarget>();
             var targetListStr = (settings.Values[nameof(Keys.TargetList)] as string);

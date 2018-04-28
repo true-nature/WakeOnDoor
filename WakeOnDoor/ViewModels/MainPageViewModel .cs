@@ -108,8 +108,8 @@ namespace WakeOnDoor.ViewModels
                 await DisconnectAsync();
                 Application.Current.Exit();
             });
-            IsMacVisible = false;
-            IsStatusVisible = true;
+            IsStatusVisible = false;
+            IsMacVisible = true;
             semaphore = new SemaphoreSlim(1, 1);
             commService = new LogReceiveServer();
             commService.Received += this.OnReceived;
