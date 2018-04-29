@@ -37,6 +37,11 @@
                     <FontIcon Glyph="&#xE805;"/>
                 </AppBarButton.Icon>
             </AppBarButton>
+            <AppBarButton Label="Shutdown" Command="{x:Bind ViewModel.ShutdownCommand}" Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToVisibilityConverter}}">
+                <AppBarButton.Icon>
+                    <FontIcon Glyph="&#xE7E8;"/>
+                </AppBarButton.Icon>
+            </AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

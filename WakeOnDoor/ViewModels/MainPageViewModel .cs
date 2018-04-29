@@ -16,6 +16,7 @@ using WakeOnDoor.Services;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -108,6 +109,11 @@ namespace WakeOnDoor.ViewModels
                 await DisconnectAsync();
                 Application.Current.Exit();
             });
+            ShutdownCommand=new DelegateCommand(async ()=>
+            {
+                await DisconnectAsync();
+                ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
+            });
             IsStatusVisible = false;
             IsMacVisible = true;
             semaphore = new SemaphoreSlim(1, 1);
@@ -162,6 +168,7 @@ namespace WakeOnDoor.ViewModels
         public ICommand ClearTargetCommand { get; }
         public ICommand ClearLogCommand { get; }
         public ICommand ExitCommand { get; }
+        public ICommand ShutdownCommand { get; }
 
         private string physicalToEdit;
         [Required(ErrorMessage="Please input a Physical Address")]
