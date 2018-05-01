@@ -24,7 +24,7 @@ namespace WakeOnDoor
 
         protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
-            this.NavigationService.Navigate("Main", null);
+            this.NavigationService.Navigate("Navigation", null);
             return Task.CompletedTask;
         }
     }
