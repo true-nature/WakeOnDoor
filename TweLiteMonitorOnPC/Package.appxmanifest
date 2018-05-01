@@ -1,9 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
-         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
-         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-         IgnorableNamespaces="uap mp rescap">
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap">
   <Identity Name="TweLiteMonitor-uwp" Publisher="CN=y-magara" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="555c074a-44ba-4b41-aa4d-fb70e9a6d0db" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
@@ -20,19 +16,24 @@
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="TweLiteMonitorOnPC.App">
       <uap:VisualElements DisplayName="TweLiteMonitorOnPC" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="TweLiteMonitorOnPC" BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png">
+        <uap:LockScreen Notification="badgeAndTileText" BadgeLogo="Assets\BadgeLogo.png" />
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png" Square310x310Logo="Assets\Square310x310Logo.png" ShortName="TweLiteMonitor">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
+        <uap:Extension Category="windows.appService" EntryPoint="SerialMonitor.SettingsEditor">
+          <uap:AppService Name="SettingsEditor" />
+        </uap:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="SerialMonitor.MonitorTask">
           <BackgroundTasks>
             <Task Type="general" />
           </BackgroundTasks>
         </Extension>
-        <uap:Extension Category="windows.appService" EntryPoint="SerialMonitor.SettingsEditor">
-          <uap:AppService Name="SettingsEditor" />
-        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>
