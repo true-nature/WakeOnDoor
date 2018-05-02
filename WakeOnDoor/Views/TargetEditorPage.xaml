@@ -13,6 +13,6 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <TextBlock Text="Target Editor"/>
     </Grid>
 </Page>
