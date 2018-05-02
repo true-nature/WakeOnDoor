@@ -105,12 +105,8 @@
     </Compile>
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />
-    <Compile Include="ViewModels\MainPageViewModel .cs" />
     <Compile Include="ViewModels\PacketLogPageViewModel.cs" />
     <Compile Include="ViewModels\TargetEditorPageViewModel.cs" />
-    <Compile Include="Views\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\NavigationPage.xaml.cs">
       <DependentUpon>NavigationPage.xaml</DependentUpon>
@@ -193,10 +189,6 @@
     <Page Include="Styles\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\NavigationPage.xaml">
       <SubType>Designer</SubType>

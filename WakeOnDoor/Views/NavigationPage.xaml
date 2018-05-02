@@ -16,7 +16,7 @@
         <NavigationView x:Name="NavView" IsSettingsVisible="False" ItemInvoked="NavView_ItemInvoked">
             <NavigationView.MenuItems>
                 <NavigationViewItem Icon="Manage" Content="Target Editor" Tag="TargetEditor" />
-                <NavigationViewItem Icon="Message" Content="Log Message" Tag="StatusLog"/>
+                <NavigationViewItem Icon="Message" Content="Packet Log" Tag="PacketLog"/>
                 <NavigationViewItem Content="Shutdown" Tag="Shutdown">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7E8;"/>
