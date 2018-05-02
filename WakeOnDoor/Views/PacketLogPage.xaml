@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="WakeOnDoor.Views.StatusLogPage"
+    x:Class="WakeOnDoor.Views.PacketLogPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WakeOnDoor.Views"
@@ -18,7 +18,8 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="Status Log" FontSize="24"/>
+            <TextBlock Text="Packet Log" FontSize="24"/>
+            <Button Content="Clear" Margin="3" Command="{x:Bind ViewModel.ClearLogCommand}" Width="80" HorizontalAlignment="Left"/>
         </StackPanel>
         <Border Grid.Row="1" BorderBrush="DimGray" BorderThickness="2">
             <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom"

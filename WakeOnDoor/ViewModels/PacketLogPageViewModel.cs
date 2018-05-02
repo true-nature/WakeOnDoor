@@ -9,7 +9,7 @@ using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class StatusLogPageViewModel : ViewModelBase
+    public class PacketLogPageViewModel : ViewModelBase
     {
         private const int LOG_CAPACITY = 50;
         private SemaphoreSlim semaphore;
@@ -43,13 +43,13 @@ namespace WakeOnDoor.ViewModels
             get { return string.Join("\n", textLog); }
         }
 
-        public StatusLogPageViewModel()
+        public PacketLogPageViewModel()
         {
             IsConnected = false;
             textLog = new List<string>();
 
             semaphore = new SemaphoreSlim(1, 1);
-            commService = new LogReceiveServer();
+            commService = LogReceiveServer.GetInstance();
             commService.Received += this.OnReceived;
 
             this.ClearLogCommand = new DelegateCommand(() =>
@@ -59,30 +59,8 @@ namespace WakeOnDoor.ViewModels
             });
 
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            ConnectAsync();
+            commService.ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-        }
-        private async Task ConnectAsync()
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (!IsConnected)
-                {
-                    var result = await commService.OpenAsync();
-                    IsConnected = result;
-                    if (result)
-                    {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        commService.StartAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                    }
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
         }
 
         private void OnReceived(ICommService sender, MessageEventArgs args)
@@ -98,24 +76,6 @@ namespace WakeOnDoor.ViewModels
                 RaisePropertyChanged(nameof(TextLog));
             });
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-        }
-
-        private async Task DisconnectAsync()
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (IsConnected)
-                {
-                    commService.Stop();
-                    commService.Close();
-                    IsConnected = false;
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
         }
     }
 }

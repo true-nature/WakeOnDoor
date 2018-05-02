@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SerialMonitor;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace WakeOnDoor.Views
         public TargetEditorPage()
         {
             this.InitializeComponent();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewModel.SelectedTarget = TargetListView.SelectedItem as WOLTarget;
         }
     }
 }

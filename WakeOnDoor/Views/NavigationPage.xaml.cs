@@ -19,12 +19,14 @@ namespace WakeOnDoor.Views
         public NavigationPage()
         {
             this.InitializeComponent();
+            ViewModel.PowerDialog = PowerContentDialog;
             DataContextChanged += (sender, args) =>
             {
                 ViewModel.NavigationService = new FrameNavigationService(
                     new FrameFacadeAdapter(ContentFrame),
                     s => Type.GetType(this.GetType().Namespace + $".{s}Page"),
                     new SessionStateService());
+                ViewModel.CurrentPage = "TargetEditor";
             };
         }
 
@@ -34,11 +36,12 @@ namespace WakeOnDoor.Views
             {
                 ContentFrame.Navigate(typeof(TargetEditorPage));
             }
-            else if (ViewModel != null)
+            else
             {
                 // find NavigationViewItem with Content that equals InvokedItem
                 var item = sender.MenuItems.OfType<NavigationViewItem>().First(x => (string)x.Content == (string)args.InvokedItem);
-                ViewModel.CurrentPage = item.Tag.ToString();
+                var tag = item.Tag as string;
+                ViewModel.CurrentPage = tag;
             }
         }
     }

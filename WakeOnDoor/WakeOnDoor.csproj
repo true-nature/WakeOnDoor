@@ -106,7 +106,7 @@
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="ViewModels\MainPageViewModel .cs" />
-    <Compile Include="ViewModels\StatusLogPageViewModel.cs" />
+    <Compile Include="ViewModels\PacketLogPageViewModel.cs" />
     <Compile Include="ViewModels\TargetEditorPageViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -116,8 +116,8 @@
       <DependentUpon>NavigationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\NavigationPageViewModel.cs" />
-    <Compile Include="Views\StatusLogPage.xaml.cs">
-      <DependentUpon>StatusLogPage.xaml</DependentUpon>
+    <Compile Include="Views\PacketLogPage.xaml.cs">
+      <DependentUpon>PacketLogPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TargetEditorPage.xaml.cs">
       <DependentUpon>TargetEditorPage.xaml</DependentUpon>
@@ -202,7 +202,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\StatusLogPage.xaml">
+    <Page Include="Views\PacketLogPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

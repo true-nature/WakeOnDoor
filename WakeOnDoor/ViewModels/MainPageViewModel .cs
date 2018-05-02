@@ -104,25 +104,19 @@ namespace WakeOnDoor.ViewModels
                     }
                 }
             });
-            this.ExitCommand = new DelegateCommand(async () =>
+            ShutdownCommand=new DelegateCommand(()=>
             {
-                await DisconnectAsync();
-                Application.Current.Exit();
-            });
-            ShutdownCommand=new DelegateCommand(async ()=>
-            {
-                await DisconnectAsync();
                 ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
             });
             IsStatusVisible = false;
             IsMacVisible = true;
             semaphore = new SemaphoreSlim(1, 1);
-            commService = new LogReceiveServer();
+            commService = LogReceiveServer.GetInstance();
             commService.Received += this.OnReceived;
 
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             InitTargetListAsync();
-            ConnectAsync();
+            commService.ConnectAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
 
@@ -167,7 +161,6 @@ namespace WakeOnDoor.ViewModels
         public ICommand RemoveMacCommand { get; }
         public ICommand ClearTargetCommand { get; }
         public ICommand ClearLogCommand { get; }
-        public ICommand ExitCommand { get; }
         public ICommand ShutdownCommand { get; }
 
         private string physicalToEdit;
@@ -271,29 +264,6 @@ namespace WakeOnDoor.ViewModels
             return null;
         }
 
-        private async Task ConnectAsync()
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (!IsConnected)
-                {
-                    var result = await commService.OpenAsync();
-                    IsConnected = result;
-                    if (result)
-                    {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        commService.StartAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                    }
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        }
-
         private void OnReceived(ICommService sender, MessageEventArgs args)
         {
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
@@ -309,22 +279,5 @@ namespace WakeOnDoor.ViewModels
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
 
-        private async Task DisconnectAsync()
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (IsConnected)
-                {
-                    commService.Stop();
-                    commService.Close();
-                    IsConnected = false;
-                }
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        }
     }
 }

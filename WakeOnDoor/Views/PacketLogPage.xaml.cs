@@ -8,12 +8,13 @@ namespace WakeOnDoor.Views
     /// <summary>
     /// それ自体で使用できる空白ページまたはフレーム内に移動できる空白ページ。
     /// </summary>
-    public sealed partial class StatusLogPage : Page
+    public sealed partial class PacketLogPage : Page
     {
-        public StatusLogPageViewModel ViewModel => this.DataContext as StatusLogPageViewModel;
-        public StatusLogPage()
+        public PacketLogPageViewModel ViewModel => this.DataContext as PacketLogPageViewModel;
+        public PacketLogPage()
         {
             this.InitializeComponent();
+            ViewModel.Dispatcher = this.Dispatcher;
         }
     }
 }

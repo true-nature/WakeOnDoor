@@ -32,11 +32,6 @@
                     <FontIcon Glyph="&#xE713;"/>
                 </AppBarButton.Icon>
             </AppBarButton>
-            <AppBarButton Label="Exit" Command="{x:Bind ViewModel.ExitCommand}" Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToVisibilityConverter}}">
-                <AppBarButton.Icon>
-                    <FontIcon Glyph="&#xE805;"/>
-                </AppBarButton.Icon>
-            </AppBarButton>
             <AppBarButton Label="Shutdown" Command="{x:Bind ViewModel.ShutdownCommand}" Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToVisibilityConverter}}">
                 <AppBarButton.Icon>
                     <FontIcon Glyph="&#xE7E8;"/>

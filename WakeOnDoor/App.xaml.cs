@@ -2,6 +2,7 @@
 using SerialMonitor;
 using System;
 using System.Threading.Tasks;
+using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.System.Profile;
@@ -22,10 +23,11 @@ namespace WakeOnDoor
             this.InitializeComponent();
         }
 
-        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
+            var commService = LogReceiveServer.GetInstance();
+            await commService.ConnectAsync();
             this.NavigationService.Navigate("Navigation", null);
-            return Task.CompletedTask;
         }
     }
 }

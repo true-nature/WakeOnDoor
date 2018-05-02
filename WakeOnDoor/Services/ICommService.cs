@@ -23,27 +23,8 @@ namespace WakeOnDoor.Services
 
         string Description { get; }
 
-        /// <summary>
-        /// Open communication channel.
-        /// </summary>
-        /// <returns>true if success</returns>
-        Task<bool> OpenAsync();
+        Task ConnectAsync();
 
-        /// <summary>
-        /// Infinite read.
-        /// </summary>
-        /// <returns></returns>
-        Task StartAsync();
-
-        /// <summary>
-        /// Stop read loop.
-        /// </summary>
-        void Stop();
-
-        /// <summary>
-        /// Close communication channel.
-        /// </summary>
-        void Close();
-
+        Task DisconnectAsync();
     }
 }
