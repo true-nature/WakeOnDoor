@@ -19,7 +19,7 @@ namespace SerialMonitor
         private LogWriter writer;
 
         private IEnumerable<IMessageScanner> Scanners;
-        private ManualResetEvent mre;
+        private TaskCompletionSource<bool> tcs;
 
         public TweLiteWatcher(LogWriter logWriter)
         {
@@ -27,32 +27,30 @@ namespace SerialMonitor
             IsConnected = false;
             semaphore = new SemaphoreSlim(1, 1);
             commService = new SerialCommService();
-            mre = new ManualResetEvent(false);
+            tcs = new TaskCompletionSource<bool>();
             writer = logWriter;
         }
 
         public void Dispose()
         {
-            mre.Set();
+            tcs.TrySetCanceled();
             commService.Dispose();
             semaphore.Dispose();
+            writer = null;
         }
 
         public async Task WatchAsync()
         {
             commService.Received += this.OnReceivedAsync;
             SetWatcher();
-            await Task.Run(() =>
-            {
-                mre.WaitOne();
-            });
+            await tcs.Task;
             commService.Stop();
             commService.Received -= this.OnReceivedAsync;
         }
 
         public void Stop()
         {
-            mre.Set();
+            tcs.TrySetCanceled();
         }
 
         void SetWatcher()
@@ -87,7 +85,7 @@ namespace SerialMonitor
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
                         commService.StartAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        await writer.WriteAsync(string.Format("Connected: {0}", commService.Description));
+                        await writer.Debug(string.Format("Connected: {0}", commService.Description));
                     }
                 }
             }
@@ -100,15 +98,15 @@ namespace SerialMonitor
         private async void OnReceivedAsync(ICommService sender, MessageEventArgs args)
         {
             var msg = args.Message;
-            await writer.WriteAsync(msg);
+            await writer.Notice(msg);
             foreach (var s in Scanners)
             {
                 var info = await s.ScanAsync(msg);
                 if (info.valid) {
-                    await writer.WriteAsync(info.ToString());
+                    await writer.Info(info.ToString());
                     if (info.wolsent)
                     {
-                        await writer.WriteAsync("WOL!");
+                        await writer.Debug("WOL!");
                     }
                     break;
                 }
@@ -124,7 +122,7 @@ namespace SerialMonitor
                 {
                     commService.Stop();
                     IsConnected = false;
-                    await writer.WriteAsync(string.Format("Disconnected {0}", commService.Description));
+                    await writer.Debug(string.Format("Disconnected {0}", commService.Description));
                 }
             }
             finally

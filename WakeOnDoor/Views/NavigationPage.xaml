@@ -23,6 +23,13 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
+            <NavigationView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid Margin="24,10,0,0">
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Wake On Door" FontSize="28" VerticalAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
             <Frame x:Name="ContentFrame" Margin="12">
                 <Frame.ContentTransitions>
                     <TransitionCollection>

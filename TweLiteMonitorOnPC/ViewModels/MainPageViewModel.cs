@@ -64,7 +64,8 @@ namespace TweLiteMonitorOnPC.ViewModels
             {
                 if (t.Value.Name == TaskName)
                 {
-                    return ApplicationTriggerResult.CurrentlyRunning;
+                    t.Value.Unregister(false);
+                    //return ApplicationTriggerResult.CurrentlyRunning;
                 }
             }
             var builder = new BackgroundTaskBuilder

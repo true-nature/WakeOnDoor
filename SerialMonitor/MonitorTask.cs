@@ -19,7 +19,7 @@ namespace SerialMonitor
             SettingsEditor.InitSettings();
             taskInstance.Canceled += this.OnCanceled;
 
-            writer = new LogWriter();
+            writer = new LogWriter(Facility.local0, "WakeOnDoor");
             var opened = await writer.OpenAsync();
             if (opened)
             {
@@ -35,7 +35,7 @@ namespace SerialMonitor
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            writer.WriteAsync(reason.ToString());
+            writer.Warning(reason.ToString());
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
             twatcher?.Stop();
         }

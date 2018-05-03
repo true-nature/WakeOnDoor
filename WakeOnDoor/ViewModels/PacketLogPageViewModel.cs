@@ -72,7 +72,7 @@ namespace WakeOnDoor.ViewModels
                 {
                     textLog.RemoveAt(0);
                 }
-                textLog.Add(args.Message);
+                textLog.Add(string.Format("{0} {1} {2} {3}", args.Timestamp, args.Priority, args.Tag, args.Message));
                 RaisePropertyChanged(nameof(TextLog));
             });
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します

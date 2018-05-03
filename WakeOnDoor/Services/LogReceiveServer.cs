@@ -1,20 +1,19 @@
-﻿using System;
-using System.Linq;
+﻿using SerialMonitor;
+using System;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Networking;
-using Windows.Networking.Connectivity;
 using Windows.Networking.Sockets;
 
 namespace WakeOnDoor.Services
 {
     internal class LogReceiveServer : ICommService
     {
-        private const string PORT = "9514";
-        //private const string SERVERHOST = "127.0.0.1";
         private const string SERVERHOST = "::1";
+        private static readonly Regex SyslogRegex = new Regex(@"^<(?<pri>\d{1,3})>(?<month>[^ ]{3}) (?<day>\d\d) (?<hour>\d\d):(?<min>\d\d):(?<sec>\d\d) (?<host>[^ ]+)( (?<tag>\[[^ ]+\]))? (?<msg>.*)$");
 
         private static LogReceiveServer singleton;
 
@@ -22,8 +21,6 @@ namespace WakeOnDoor.Services
         private bool IsConnected;
         private DatagramSocket socket;
         private StringBuilder builder;
-
-        public string Description { get { return SERVERHOST + ":" + PORT; } }
 
         private LogReceiveServer()
         {
@@ -66,7 +63,26 @@ namespace WakeOnDoor.Services
                     {
                         if (builder.Length > 0)
                         {
-                            Received?.Invoke(this, new MessageEventArgs(builder.ToString()));
+                            var logline = builder.ToString();
+                            var m = SyslogRegex.Match(logline);
+                            if (m.Success)
+                            {
+                                if (ushort.TryParse(m.Groups["pri"].Value, out ushort pr))
+                                {
+                                    var f = (Facility)(pr >> 3);
+                                    var p = (Priority)(pr & 7);
+                                    var tag = m.Groups["tag"].Value as string;
+                                    Received?.Invoke(this, new MessageEventArgs(f, p, DateTime.Now, tag, m.Groups["msg"].Value));
+                                }
+                                else
+                                {
+                                    Received?.Invoke(this, new MessageEventArgs(logline));
+                                }
+                            }
+                            else
+                            {
+                                Received?.Invoke(this, new MessageEventArgs(logline));
+                            }
                             builder.Clear();
                         }
                     }
@@ -99,9 +115,7 @@ namespace WakeOnDoor.Services
                     IsConnected = result;
                     if (result)
                     {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        StartAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                        Start();
                     }
                 }
             }
@@ -135,11 +149,11 @@ namespace WakeOnDoor.Services
             try
             {
                 var hostname = new HostName(SERVERHOST);
+                var port = ((ushort)Port.internal_syslog).ToString();
                 socket?.Dispose();
                 socket = new DatagramSocket();
                 socket.Control.InboundBufferSizeInBytes = 256;
-                //await socket.BindEndpointAsync(hostname, PORT);
-                await socket.BindServiceNameAsync(PORT);
+                await socket.BindServiceNameAsync(port);
                 result = true;
             } catch (Exception)
             {
@@ -148,13 +162,12 @@ namespace WakeOnDoor.Services
             return result;
         }
 
-        private Task StartAsync()
+        private void Start()
         {
             if (socket != null)
             {
                 socket.MessageReceived += OnDatagramMessageReceived;
             }
-            return Task.CompletedTask;
         }
 
         private void Stop()
