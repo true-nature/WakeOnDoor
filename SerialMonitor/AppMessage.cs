@@ -6,7 +6,6 @@
         Get,
         Add,
         Remove,
-        Clear,
     }
 
     public enum Keys

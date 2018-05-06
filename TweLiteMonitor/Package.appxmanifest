@@ -21,14 +21,14 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
+        <uap:Extension Category="windows.appService" EntryPoint="SerialMonitor.SettingsEditor">
+          <uap3:AppService Name="SettingsEditor" />
+        </uap:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="SerialMonitor.MonitorTask">
           <BackgroundTasks>
             <iot:Task Type="startup" />
           </BackgroundTasks>
         </Extension>
-        <uap:Extension Category="windows.appService" EntryPoint="SerialMonitor.SettingsEditor">
-          <uap3:AppService Name="SettingsEditor" />
-        </uap:Extension>
       </Extensions>
     </Application>
   </Applications>

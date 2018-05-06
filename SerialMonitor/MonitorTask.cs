@@ -10,8 +10,8 @@ namespace SerialMonitor
 {
     public sealed class MonitorTask : IBackgroundTask
     {
-        private LogWriter writer;
         private TweLiteWatcher twatcher;
+        private BackgroundTaskCancellationReason CancelReason;
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -19,27 +19,27 @@ namespace SerialMonitor
             SettingsEditor.InitSettings();
             taskInstance.Canceled += this.OnCanceled;
 
-            writer = new LogWriter(Facility.local0, "WakeOnDoor");
-            var opened = await writer.OpenAsync();
-            if (opened)
+            using (var writer = new LogWriter(Facility.local0, "WakeOnDoor"))
             {
-                twatcher = new TweLiteWatcher(writer);
-                await twatcher.WatchAsync();
-                twatcher.Dispose();
+                var opened = await writer.OpenAsync();
+                if (opened)
+                {
+                    twatcher = new TweLiteWatcher(writer);
+                    await twatcher.WatchAsync();
+                    await writer.Warning(CancelReason.ToString());
+                    twatcher.Dispose();
+                }
             }
-            writer.Dispose();
             deferral.Complete();
         }
 
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            writer.Warning(reason.ToString());
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            CancelReason = reason;
             twatcher?.Stop();
         }
-
+#if false
         private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[nameof(Keys.TargetList)] as string[]);
@@ -74,5 +74,6 @@ namespace SerialMonitor
             values[nameof(Keys.TargetList)] = list;
             var result = args.Request.SendResponseAsync(values);
         }
+#endif
     }
 }

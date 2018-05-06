@@ -64,9 +64,6 @@ namespace SerialMonitor
                     case nameof(AppCommands.Remove):
                         RemoveTarget(settings, targetDic, resValues, message);
                         break;
-                    case nameof(AppCommands.Clear):
-                        ClearTarget(settings, resValues);
-                        break;
                     case nameof(AppCommands.Get):
                         resValues[nameof(Keys.Result)] = true.ToString();
                         resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
@@ -176,14 +173,6 @@ namespace SerialMonitor
             }
 
             return result;
-        }
-
-        private static bool ClearTarget(ApplicationDataContainer settings, ValueSet resValues)
-        {
-            SaveMacList(settings, new HashSet<WOLTarget>());
-            resValues[nameof(Keys.Result)] = true.ToString();
-            resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
-            return true;
         }
 
         /// <summary>
