@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -66,7 +67,7 @@ namespace SerialMonitor
         private async Task WriteSyslog(Priority pri, string msg)
         {
             var now = DateTime.Now;
-            var logmsg = string.Format("<{0}>{1:MMM dd HH:mm:ss} {2} [{3}] {4}", ((int)pri + fac_code), now, MYHOST, Tag, msg);
+            var logmsg = string.Format(CultureInfo.InvariantCulture, "<{0}>{1:MMM dd HH:mm:ss} {2} [{3}] {4}", ((int)pri + fac_code), now, MYHOST, Tag, msg);
             await WriteAsync(logmsg);
         }
 

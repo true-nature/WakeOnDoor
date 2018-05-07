@@ -1,6 +1,7 @@
 ﻿using SerialMonitor.Scanner;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
@@ -85,7 +86,7 @@ namespace SerialMonitor
 #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
                         commService.StartAsync();
 #pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        await writer.Debug(string.Format("Connected: {0}", commService.Description));
+                        await writer.Debug(string.Format(CultureInfo.InvariantCulture, "Connected: {0}", commService.Description));
                     }
                 }
             }
@@ -122,7 +123,7 @@ namespace SerialMonitor
                 {
                     commService.Stop();
                     IsConnected = false;
-                    await writer.Debug(string.Format("Disconnected {0}", commService.Description));
+                    await writer.Debug(string.Format(CultureInfo.InvariantCulture, "Disconnected {0}", commService.Description));
                 }
             }
             finally
