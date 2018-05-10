@@ -13,7 +13,6 @@ namespace WakeOnDoor.ViewModels
     public class PacketLogPageViewModel : ViewModelBase
     {
         private const int LOG_CAPACITY = 50;
-        private SemaphoreSlim semaphore;
 
         public ICommand ClearLogCommand { get; }
 
@@ -49,7 +48,6 @@ namespace WakeOnDoor.ViewModels
             IsConnected = false;
             textLog = new List<string>();
 
-            semaphore = new SemaphoreSlim(1, 1);
             commService = LogReceiveServer.GetInstance();
             commService.Received += this.OnReceived;
 
