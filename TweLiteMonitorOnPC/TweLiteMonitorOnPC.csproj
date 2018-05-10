@@ -173,7 +173,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.2</Version>
+      <Version>6.1.4</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>2.0.3</Version>
     </PackageReference>
     <PackageReference Include="Prism.Unity">
       <Version>6.3.0</Version>
