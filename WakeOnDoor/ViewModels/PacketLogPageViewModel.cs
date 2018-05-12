@@ -2,8 +2,6 @@
 using Prism.Windows.Mvvm;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using Windows.UI.Core;

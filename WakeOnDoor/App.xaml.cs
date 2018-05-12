@@ -1,11 +1,8 @@
 ﻿using Prism.Unity.Windows;
-using SerialMonitor;
 using System;
 using System.Threading.Tasks;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.System.Profile;
 
 namespace WakeOnDoor
 {

@@ -14,7 +14,6 @@ using System.Windows.Input;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
-using Windows.System.Profile;
 
 namespace WakeOnDoor.ViewModels
 {

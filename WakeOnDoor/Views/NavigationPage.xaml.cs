@@ -1,5 +1,4 @@
 ﻿using Prism.Windows.AppModel;
-using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using System;
 using System.Linq;
