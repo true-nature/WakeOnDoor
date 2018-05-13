@@ -13,16 +13,16 @@ namespace WakeOnDoor.ViewModels
 
         public bool IsIoTDeviceFamily { get; }
 
-        private INavigationService navigationService;
+        private INavigationService _navigationService;
         public INavigationService NavigationService
         {
             get
             {
-                return navigationService;
+                return _navigationService;
             }
             set
             {
-                SetProperty(ref navigationService, value);
+                SetProperty(ref _navigationService, value);
             }
         }
         public ContentDialog PowerDialog { get; set; }
@@ -41,15 +41,16 @@ namespace WakeOnDoor.ViewModels
                         ShowPowerDialog();
                         break;
                     default:
-                        NavigationService.Navigate(value, null);
+                        _navigationService.Navigate(value, null);
                         break;
                 }
             }
         }
 
-        public NavigationPageViewModel()
+        public NavigationPageViewModel(INavigationService navigationService)
         {
             IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
+            _navigationService = navigationService;
         }
 
         public async void ShowPowerDialog()

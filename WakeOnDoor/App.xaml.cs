@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 
 namespace WakeOnDoor
 {
@@ -22,9 +23,22 @@ namespace WakeOnDoor
 
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
+            ClearTempSettings();
             var commService = LogReceiveServer.GetInstance();
             await commService.ConnectAsync();
             this.NavigationService.Navigate("Navigation", null);
+        }
+
+        private static void ClearTempSettings()
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            foreach (var key in settings.Values.Keys)
+            {
+                if (key.StartsWith("Temp."))
+                {
+                    settings.Values.Remove(key);
+                }
+            }
         }
     }
 }

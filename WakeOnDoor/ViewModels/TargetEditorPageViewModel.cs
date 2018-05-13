@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Windows.AppModel;
+using Prism.Windows.Navigation;
 using Prism.Windows.Validation;
 using SerialMonitor;
 using System;
@@ -14,12 +15,14 @@ using System.Windows.Input;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class TargetEditorPageViewModel : ValidatableBindableBase
+    public class TargetEditorPageViewModel : ValidatableBindableBase, INavigationAware
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+        private const string TEMP_PREFIX = "Temp.TargetEditor.";
 
         private string statusMessage;
         public string StatusMessage
@@ -160,6 +163,26 @@ namespace WakeOnDoor.ViewModels
                 return conn;
             }
             return null;
+        }
+
+        public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            object value;
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out value)) {
+                PhysicalToEdit = value as string;
+            }
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(CommentToEdit), out value))
+            {
+                CommentToEdit = value as string;
+            }
+        }
+
+        public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            settings.Values[TEMP_PREFIX + nameof(PhysicalToEdit)] = PhysicalToEdit;
+            settings.Values[TEMP_PREFIX + nameof(CommentToEdit)] = CommentToEdit;
         }
     }
 }

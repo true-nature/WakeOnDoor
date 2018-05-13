@@ -102,6 +102,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\TargetEditorModel.cs" />
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="ViewModels\PacketLogPageViewModel.cs" />
@@ -225,6 +226,7 @@
       <Name>Windows IoT Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
