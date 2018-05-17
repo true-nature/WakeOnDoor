@@ -34,10 +34,10 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" Text="MAC Address" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" MaxLength="18" Text="{x:Bind ViewModel.PhysicalToEdit,Mode=TwoWay}"/>
+            <TextBox x:Name="PhysicalTextBox" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" MaxLength="18" Text="{x:Bind ViewModel.PhysicalToEdit,Mode=TwoWay}"/>
             <ItemsControl Grid.Row="0" Grid.Column="3" Foreground="Red" ItemsSource="{Binding Errors[PhysicalToEdit],Mode=OneWay}" VerticalAlignment="Center" IsTabStop="False"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Comment" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
+            <TextBox x:Name="CommentTextBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
             <Button Grid.Row="2" Grid.Column="0" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
             <Button Grid.Row="2" Grid.Column="1" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
         </Grid>
