@@ -6,12 +6,14 @@ using SerialMonitor;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WakeOnDoor.Models;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
@@ -22,7 +24,10 @@ namespace WakeOnDoor.ViewModels
     public class TargetEditorPageViewModel : ValidatableBindableBase, INavigationAware
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
- 
+
+        private TargetEditorModel editorModel = new TargetEditorModel();
+        public ObservableCollection<WOLTarget> WOLTargets { get; }
+
         private string statusMessage;
         public string StatusMessage
         {
@@ -43,49 +48,18 @@ namespace WakeOnDoor.ViewModels
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
 
-            this.AddMacCommand = new DelegateCommand(async () => {
-                using (var conn = await OpenAppServiceAsync())
-                {
-                    if (conn == null) { return; }
-                    var values = new ValueSet
-                    {
-                        [nameof(Keys.Command)] = nameof(AppCommands.Add),
-                        [nameof(Keys.PhysicalAddress)] = PhysicalToEdit,
-                        [nameof(Keys.Comment)] = CommentToEdit
-                    };
-                    var response = await conn.SendMessageAsync(values);
-                    if (response.Status == AppServiceResponseStatus.Success)
-                    {
-                        var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
-                        RefreshTargetList(targetListStr);
-                        var resourceLoader = ResourceLoader.GetForCurrentView();
-                        var status = response.Message[nameof(Keys.StatusMessage)] as string;
-                        if (!string.IsNullOrEmpty(status)) StatusMessage = resourceLoader.GetString(status);
-                    }
-                }
+#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            editorModel.InitializeAsync();
+#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+
+            AddMacCommand = new DelegateCommand(async () => {
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                await editorModel.AddAsync(target);
             });
             RemoveMacCommand = new DelegateCommand(async () => {
-                using (var conn = await OpenAppServiceAsync())
-                {
-                    if (conn == null) { return; }
-                    var values = new ValueSet
-                    {
-                        [nameof(Keys.Command)] = nameof(AppCommands.Remove),
-                        [nameof(Keys.PhysicalAddress)] = PhysicalToEdit,
-                        [nameof(Keys.Comment)] = CommentToEdit
-                    };
-                    var response = await conn.SendMessageAsync(values);
-                    if (response.Status == AppServiceResponseStatus.Success)
-                    {
-                        var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
-                        RefreshTargetList(targetListStr);
-                    }
-                }
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                await editorModel.RemoveAsync(target);
             });
-
-            #pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            InitTargetListAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
         private string physicalToEdit;
         [RestorableState]
@@ -104,8 +78,6 @@ namespace WakeOnDoor.ViewModels
             set { SetProperty(ref commentToEdit, value); }
         }
 
-        public ObservableCollection<WOLTarget> WOLTargets { get; }
-
         public WOLTarget SelectedTarget
         {
             set
@@ -118,58 +90,31 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-
-        private void RefreshTargetList(string targetJsonStr)
+        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(targetJsonStr)))
+            switch (args.PropertyName)
             {
-                var serializer = new DataContractJsonSerializer(typeof(HashSet<WOLTarget>));
-                var targets = serializer.ReadObject(memStream) as HashSet<WOLTarget>;
-                WOLTargets.Clear();
-                foreach (var m in targets)
-                {
-                    WOLTargets.Add(m);
+                case nameof(StatusMessage):
+                    StatusMessage = editorModel.StatusMessage;
+                    break;
+                case nameof(WOLTargets):
+                    WOLTargets.Clear();
+                    foreach (var m in editorModel.WOLTargets)
+                    {
+                        WOLTargets.Add(m);
+                    }
+                    RaisePropertyChanged(nameof(WOLTargets));
+                    break;
+                default:
+                    break;
                 }
-                RaisePropertyChanged(nameof(WOLTargets));
-            }
-        }
-
-        private async Task InitTargetListAsync()
-        {
-            using (var conn = await OpenAppServiceAsync())
-            {
-                if (conn == null) { return; }
-                ValueSet request = new ValueSet();
-                var response = await conn.SendMessageAsync(request);
-                if (response.Status == AppServiceResponseStatus.Success)
-                {
-                    var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
-                    RefreshTargetList(targetListStr);
-                }
-            }
-        }
-
-        private async Task<AppServiceConnection> OpenAppServiceAsync()
-        {
-            var conn = new AppServiceConnection
-            {
-                AppServiceName = "SettingsEditor",
-                PackageFamilyName = PKGFAMILY
-        };
-            var status = await conn.OpenAsync();
-            if (status == AppServiceConnectionStatus.Success)
-            {
-                return conn;
-            }
-            return null;
         }
 
         public const string TEMP_PREFIX = "Temp.TargetEditor.";
         public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             var settings = ApplicationData.Current.LocalSettings;
-            object value;
-            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out value))
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out object value))
             {
                 PhysicalToEdit = value as string;
             }
@@ -177,11 +122,12 @@ namespace WakeOnDoor.ViewModels
             {
                 CommentToEdit = value as string;
             }
+            editorModel.PropertyChanged += OnModelPropertyChanged;
         }
 
         public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
-            // nothing
+            editorModel.PropertyChanged -= OnModelPropertyChanged;
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 
@@ -106,8 +105,7 @@ namespace SerialMonitor
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
                 return false;
             }
-            string physical = message[nameof(Keys.PhysicalAddress)] as string;
-            if (physical == null)
+            if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
                 return false;
@@ -144,8 +142,7 @@ namespace SerialMonitor
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
                 return false;
             }
-            string physical = message[nameof(Keys.PhysicalAddress)] as string;
-            if (physical == null)
+            if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
                 return false;
