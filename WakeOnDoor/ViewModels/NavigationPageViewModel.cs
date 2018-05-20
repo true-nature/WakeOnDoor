@@ -11,7 +11,7 @@ namespace WakeOnDoor.ViewModels
     {
         private const string SHUTDOWN = "Shutdown";
 
-        public bool IsIoTDeviceFamily { get; }
+        public bool IsIoTDeviceFamily { get { return App.IsIoTDeviceFamily; } }
 
        public INavigationService NavigationService { get; set; }
 
@@ -40,7 +40,6 @@ namespace WakeOnDoor.ViewModels
 
         public NavigationPageViewModel()
         {
-            IsIoTDeviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
         }
 
         public async void ShowPowerDialog()

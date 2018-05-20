@@ -17,19 +17,19 @@ namespace SerialMonitor
         private SerialCommService commService;
         private bool IsConnected { get; set; }
         private SemaphoreSlim semaphore;
-        private LogWriter writer;
+        private ISyslogWriter writer;
 
         private IEnumerable<IMessageScanner> Scanners;
         private TaskCompletionSource<bool> tcs;
 
-        public TweLiteWatcher(LogWriter logWriter)
+        public TweLiteWatcher()
         {
             Scanners = new List<IMessageScanner>() { new StandardScanner(), new SmplTag3Scanner(), new AsciiScanner()};
             IsConnected = false;
             semaphore = new SemaphoreSlim(1, 1);
             commService = new SerialCommService();
             tcs = new TaskCompletionSource<bool>();
-            writer = logWriter;
+            writer = new SyslogWriter(Facility.local0, "Serial");
         }
 
         public void Dispose()
@@ -42,6 +42,7 @@ namespace SerialMonitor
 
         public async Task WatchAsync()
         {
+            await writer.OpenAsync();
             commService.Received += this.OnReceivedAsync;
             SetWatcher();
             await tcs.Task;

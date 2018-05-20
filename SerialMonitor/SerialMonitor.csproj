@@ -108,12 +108,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AppMessage.cs" />
+    <Compile Include="ILogWriter.cs" />
     <Compile Include="ISyslog.cs" />
     <Compile Include="Scanner\AsciiScanner.cs" />
     <Compile Include="Scanner\IMessageScanner.cs" />
     <Compile Include="Scanner\SmplTag3Scanner.cs" />
     <Compile Include="Scanner\StandardScanner.cs" />
     <Compile Include="Scanner\TagInfo.cs" />
+    <Compile Include="SyslogWriter.cs" />
     <Compile Include="WOLHelper.cs" />
     <Compile Include="WOLTarget.cs" />
     <Compile Include="ICommService.cs" />

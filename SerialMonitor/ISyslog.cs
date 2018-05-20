@@ -57,4 +57,9 @@ namespace SerialMonitor
         local6,
         local7,
     }
+
+    interface ISyslogWriter : ISyslog
+    {
+        Task<bool> OpenAsync();
+    }
 }

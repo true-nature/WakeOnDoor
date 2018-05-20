@@ -19,12 +19,12 @@ namespace SerialMonitor
             SettingsEditor.InitSettings();
             taskInstance.Canceled += this.OnCanceled;
 
-            using (var writer = new LogWriter(Facility.local0, "WakeOnDoor"))
+            using (var writer = new SyslogWriter(Facility.local0, "WakeOnDoor"))
             {
                 var opened = await writer.OpenAsync();
                 if (opened)
                 {
-                    twatcher = new TweLiteWatcher(writer);
+                    twatcher = new TweLiteWatcher();
                     await twatcher.WatchAsync();
                     await writer.Warning(CancelReason.ToString());
                     twatcher.Dispose();
@@ -39,41 +39,5 @@ namespace SerialMonitor
             CancelReason = reason;
             twatcher?.Stop();
         }
-#if false
-        private void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
-        {
-            var macList = new HashSet<string>(ApplicationData.Current.LocalSettings.Values[nameof(Keys.TargetList)] as string[]);
-
-            var values = new ValueSet();
-            var message = args.Request.Message;
-            if (message.TryGetValue(nameof(Keys.Command), out object command))
-            {
-                object macaddr;
-                switch (command)
-                {
-                    case nameof(AppCommands.Add):
-                        if (message.TryGetValue(nameof(Keys.PhysicalAddress), out macaddr))
-                        {
-                            values[nameof(Keys.Result)] = macList.Add(macaddr as string);
-                        }
-                        break;
-                    case nameof(AppCommands.Remove):
-                        if (message.TryGetValue(nameof(Keys.PhysicalAddress), out macaddr))
-                        {
-                            values[nameof(Keys.Result)] = macList.Remove(macaddr as string);
-                        }
-                        break;
-                    case nameof(AppCommands.Get):
-                        break;
-                    default:
-                        break;
-                }
-            }
-            var list = new string[macList.Count];
-            macList.CopyTo(list);
-            values[nameof(Keys.TargetList)] = list;
-            var result = args.Request.SendResponseAsync(values);
-        }
-#endif
     }
 }

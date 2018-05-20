@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
+using Windows.System.Profile;
 
 namespace WakeOnDoor
 {
@@ -40,5 +41,8 @@ namespace WakeOnDoor
                 }
             }
         }
+
+        private static bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
+        public static bool IsIoTDeviceFamily { get { return deviceFamily; } }
     }
 }
