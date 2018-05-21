@@ -1,6 +1,7 @@
 ﻿using Prism.Unity.Windows;
 using System;
 using System.Threading.Tasks;
+using WakeOnDoor.Models;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
@@ -25,8 +26,8 @@ namespace WakeOnDoor
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             ClearTempSettings();
-            var commService = LogReceiveServer.GetInstance();
-            await commService.ConnectAsync();
+            LogModel = PacketLogModel.GetInstance();
+            await LogModel.InitializeAsync();
             this.NavigationService.Navigate("Navigation", null);
         }
 
@@ -42,6 +43,7 @@ namespace WakeOnDoor
             }
         }
 
+        private PacketLogModel LogModel;
         private static bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
         public static bool IsIoTDeviceFamily { get { return deviceFamily; } }
     }

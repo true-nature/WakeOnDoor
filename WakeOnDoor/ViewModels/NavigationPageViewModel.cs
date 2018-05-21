@@ -1,6 +1,7 @@
 ﻿using Prism.Windows.Mvvm;
 using Prism.Windows.Navigation;
 using System;
+using WakeOnDoor.Services;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Xaml.Controls;
@@ -47,6 +48,7 @@ namespace WakeOnDoor.ViewModels
             var result = await PowerDialog.ShowAsync();
             if (result == ContentDialogResult.Primary && IsIoTDeviceFamily)
             {
+                await LogReceiveServer.GetInstance().DisconnectAsync();
                 ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
             }
         }

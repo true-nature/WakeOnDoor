@@ -102,6 +102,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\PacketLogModel.cs" />
     <Compile Include="Models\TargetEditorModel.cs" />
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />

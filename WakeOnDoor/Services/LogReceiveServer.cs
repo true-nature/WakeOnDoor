@@ -38,16 +38,6 @@ namespace WakeOnDoor.Services
             return singleton;
         }
 
-        public static async Task ShutdownAsync()
-        {
-            var instance = singleton;
-            if (instance != null)
-            {
-                instance = null;
-                await instance.DisconnectAsync();
-            }
-        }
-
         public event TypedEventHandler<ICommService, MessageEventArgs> Received;
 
         public void OnDatagramMessageReceived(DatagramSocket socket, DatagramSocketMessageReceivedEventArgs args)
@@ -99,9 +89,12 @@ namespace WakeOnDoor.Services
 
         public void Close()
         {
-            socket.MessageReceived -= OnDatagramMessageReceived;
-            socket?.Dispose();
-            socket = null;
+            if (socket != null)
+            {
+                socket.MessageReceived -= OnDatagramMessageReceived;
+                socket.Dispose();
+                socket = null;
+            }
         }
 
         public async Task ConnectAsync()
