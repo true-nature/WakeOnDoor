@@ -1,15 +1,19 @@
 ﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
+using Prism.Windows.Navigation;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
 using System.Windows.Input;
-using WakeOnDoor.Services;
+using WakeOnDoor.Models;
 using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
     public class PacketLogPageViewModel : ViewModelBase
     {
+        private PacketLogModel LogModel;
+
         private const int LOG_CAPACITY = 50;
 
         public ICommand ClearLogCommand { get; }
@@ -23,17 +27,6 @@ namespace WakeOnDoor.ViewModels
                 dispatcher = value;
             }
         }
-        private ICommService commService;
-
-        private bool isConnected;
-        public bool IsConnected
-        {
-            get { return this.isConnected; }
-            set
-            {
-                SetProperty(ref isConnected, value);
-            }
-        }
 
         private List<string> textLog;
         public string TextLog
@@ -43,36 +36,41 @@ namespace WakeOnDoor.ViewModels
 
         public PacketLogPageViewModel()
         {
-            IsConnected = false;
+            LogModel = PacketLogModel.GetInstance();
             textLog = new List<string>();
-
-            commService = LogReceiveServer.GetInstance();
-            commService.Received += this.OnReceived;
 
             this.ClearLogCommand = new DelegateCommand(() =>
             {
                 textLog.Clear();
                 RaisePropertyChanged(nameof(TextLog));
             });
-
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            commService.ConnectAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
         }
 
-        private void OnReceived(ICommService sender, MessageEventArgs args)
+        private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+            switch (args.PropertyName)
             {
-                while (textLog.Count > LOG_CAPACITY)
-                {
-                    textLog.RemoveAt(0);
-                }
-                textLog.Add(string.Format(CultureInfo.InvariantCulture, "{0} {1} {2} {3}", args.Timestamp, args.Priority, args.Tag, args.Message));
-                RaisePropertyChanged(nameof(TextLog));
-            });
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                case nameof(LogModel.LogList):
+                    textLog = LogModel.LogList;
+                    await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+                      {
+                          RaisePropertyChanged(nameof(TextLog));
+                      });
+                    break;
+                default:
+                    break;
+            }
+        }
+        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        {
+            LogModel.PropertyChanged += OnModelPropertyChanged;
+            base.OnNavigatedTo(e, viewModelState);
+        }
+
+        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        {
+            LogModel.PropertyChanged -= OnModelPropertyChanged;
+            base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }
 }
