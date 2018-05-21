@@ -103,12 +103,13 @@ namespace SerialMonitor
             await writer.Notice(msg);
             foreach (var s in Scanners)
             {
-                var info = await s.ScanAsync(msg);
+                var info = s.Scan(msg);
                 if (info.valid) {
                     await writer.Info(info.ToString());
-                    if (info.wolsent)
+                    if (info.wolTrigger)
                     {
                         await writer.Debug("WOL!");
+                        await WOLHelper.WakeUpAllAsync();
                     }
                     break;
                 }

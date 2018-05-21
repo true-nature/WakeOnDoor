@@ -21,7 +21,7 @@ namespace SerialMonitor.Scanner
         {
         }
 
-        public async Task<TagInfo> ScanAsync(string msg)
+        public TagInfo Scan(string msg)
         {
             TagInfo info = new TagInfo() { valid = false };
             if (msg.StartsWith(";"))
@@ -35,8 +35,7 @@ namespace SerialMonitor.Scanner
                         info.pkt = Flag2Pkt(m.Groups["flg"].Value);
                         if (info.valid && !(info.pkt == 0xFE && ((info.din ^ info.mode) & 1) == 0))
                         {
-                            info.wolsent = true;
-                            await WOLHelper.WakeUpAllAsync();
+                            info.wolTrigger = true;
                             break;
                         }
                     }

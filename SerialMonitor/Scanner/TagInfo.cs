@@ -15,9 +15,9 @@ namespace SerialMonitor.Scanner
         /// </summary>
         public bool valid;
         /// <summary>
-        /// WOL packet was sent.
+        /// WOL packet should be sent.
         /// </summary>
-        public bool wolsent;
+        public bool wolTrigger;
 
         /// <summary>
         /// timestamp

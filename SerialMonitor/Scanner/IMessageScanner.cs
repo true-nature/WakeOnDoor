@@ -9,6 +9,6 @@ namespace SerialMonitor.Scanner
         /// </summary>
         /// <param name="msg"></param>
         /// <returns>true if message was handled.</returns>
-        Task<TagInfo> ScanAsync(string msg);
+        TagInfo Scan(string msg);
     }
 }
