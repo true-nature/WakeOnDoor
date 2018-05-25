@@ -12,8 +12,8 @@ namespace SerialMonitor.Scanner
     /// :80000000 42 9048 810118CA 02 FE B7 03C2 0239 01 01 01 48
     internal class AsciiScanner : IMessageScanner
     {
-        private static readonly Regex ADXL345Regex = new Regex(@"^:(?<rptr>[\dA-F]{8})(?<lqi>[\dA-F]{2})(?<ct>[\dA-F]{4})(?<sid>[\dA-F]{8})(?<id>[\dA-F]{2})(?<pkt>[\dA-F]{2})(?<bt>[\dA-F]{2})(?<adc1>[\dA-F]{4})(?<adc2>[\dA-F]{4})(?<mode>[\dA-F]{2})(?<x>[\dA-F]{4})(?<y>[\dA-F]{4})(?<z>[\dA-F]{4})(?<CHK>[\dA-F]{2})$");
-        private static readonly Regex ButtonRegex = new Regex(@"^:(?<rptr>[\dA-F]{8})(?<lqi>[\dA-F]{2})(?<ct>[\dA-F]{4})(?<sid>[\dA-F]{8})(?<id>[\dA-F]{2})(?<pkt>[\dA-F]{2})(?<bt>[\dA-F]{2})(?<adc1>[\dA-F]{4})(?<adc2>[\dA-F]{4})(?<mode>[\dA-F]{2})(?<din>[\dA-F]{2})(?<dout>[\dA-F]{2})?(?<CHK>[\dA-F]{2})$");
+        private static readonly Regex ADXL345Regex = new Regex(@"^:(?<Rptr>[\dA-F]{8})(?<Lqi>[\dA-F]{2})(?<Ct>[\dA-F]{4})(?<Sid>[\dA-F]{8})(?<Id>[\dA-F]{2})(?<Pkt>[\dA-F]{2})(?<Bt>[\dA-F]{2})(?<Adc1>[\dA-F]{4})(?<Adc2>[\dA-F]{4})(?<Mode>[\dA-F]{2})(?<X>[\dA-F]{4})(?<Y>[\dA-F]{4})(?<Z>[\dA-F]{4})(?<CHK>[\dA-F]{2})$");
+        private static readonly Regex ButtonRegex = new Regex(@"^:(?<Rptr>[\dA-F]{8})(?<Lqi>[\dA-F]{2})(?<Ct>[\dA-F]{4})(?<Sid>[\dA-F]{8})(?<Id>[\dA-F]{2})(?<Pkt>[\dA-F]{2})(?<Bt>[\dA-F]{2})(?<Adc1>[\dA-F]{4})(?<Adc2>[\dA-F]{4})(?<Mode>[\dA-F]{2})(?<Din>[\dA-F]{2})(?<Dout>[\dA-F]{2})?(?<CHK>[\dA-F]{2})$");
         private static readonly Regex[] regexs = { ADXL345Regex, ButtonRegex };
 
         public AsciiScanner()
@@ -22,7 +22,7 @@ namespace SerialMonitor.Scanner
 
         public TagInfo Scan(string msg)
         {
-            TagInfo info = new TagInfo() { valid = false };
+            TagInfo info = new TagInfo() { Valid = false };
             if (msg.StartsWith(":"))
             {
                 foreach (var r in regexs)
@@ -31,9 +31,9 @@ namespace SerialMonitor.Scanner
                     if (m.Success)
                     {
                         CopyInfo(info, m.Groups, r.GetGroupNames());
-                        if(info.valid && !(info.pkt == 0xFE && ((info.din ^ info.mode) & 1) == 0))
+                        if(info.Valid && !(info.Pkt == 0xFE && ((info.Din ^ info.Mode) & 1) == 0))
                         {
-                            info.wolTrigger = true;
+                            info.WolTrigger = true;
                             break;
                         }
                     }
@@ -51,59 +51,81 @@ namespace SerialMonitor.Scanner
                 {
                     switch (name)
                     {
-                        case nameof(TagInfo.rptr):
-                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.rptr);
+                        case nameof(TagInfo.Rptr):
+                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint rptr);
+                            info.Rptr = rptr;
                             break;
-                        case nameof(TagInfo.lqi):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.lqi);
+                        case nameof(TagInfo.Lqi):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte lqi);
+                            info.Lqi = lqi;
                             break;
-                        case nameof(TagInfo.ct):
-                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.ct);
+                        case nameof(TagInfo.Ct):
+                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort ct);
+                            info.Ct = ct;
                             break;
-                        case nameof(TagInfo.sid):
-                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.sid);
-                            if (valid) { info.serial = (info.sid & 0x7FFFFFFF); }
-                            break;
-                        case nameof(TagInfo.serial):
-                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.serial);
-                            if (valid) { info.sid = (info.serial | 0x80000000); }
-                            break;
-                        case nameof(TagInfo.id):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.id);
-                            break;
-                        case nameof(TagInfo.pkt):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.pkt);
-                            break;
-                        case nameof(TagInfo.bt):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.bt);
+                        case nameof(TagInfo.Sid):
+                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint sid);
                             if (valid)
                             {
-                                info.batt = TagInfo.DecodeVolt(info.bt);
+                                info.Sid = sid;
+                                 info.Serial = (sid & 0x7FFFFFFF);
                             }
                             break;
-                        case nameof(TagInfo.adc1):
-                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.adc1);
+                        case nameof(TagInfo.Serial):
+                            valid &= uint.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out uint serial);
+                            if (valid)
+                            {
+                                info.Serial = serial;
+                                info.Sid = (serial | 0x80000000);
+                            }
                             break;
-                        case nameof(TagInfo.adc2):
-                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.adc2);
+                        case nameof(TagInfo.Id):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte id);
+                            info.Id = id;
                             break;
-                        case nameof(TagInfo.mode):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.mode);
+                        case nameof(TagInfo.Pkt):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte pkt);
+                            info.Pkt = pkt;
                             break;
-                        case nameof(TagInfo.din):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.din);
+                        case nameof(TagInfo.Bt):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte bt);
+                            if (valid)
+                            {
+                                info.Bt = bt;
+                                info.Batt = TagInfo.DecodeVolt(bt);
+                            }
                             break;
-                        case nameof(TagInfo.dout):
-                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.dout);
+                        case nameof(TagInfo.Adc1):
+                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort adc1);
+                            info.Adc1 = adc1;
                             break;
-                        case nameof(TagInfo.x):
-                            valid &= short.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.x);
+                        case nameof(TagInfo.Adc2):
+                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort adc2);
+                            info.Adc2 = adc2;
                             break;
-                        case nameof(TagInfo.y):
-                            valid &= short.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.y);
+                        case nameof(TagInfo.Mode):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte mode);
+                            info.Mode = mode;
                             break;
-                        case nameof(TagInfo.z):
-                            valid &= short.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out info.z);
+                        case nameof(TagInfo.Din):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte din);
+                            info.Din = din;
+                            break;
+                        case nameof(TagInfo.Dout):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte dout);
+                            info.Dout = dout;
+                            break;
+                        case nameof(TagInfo.X):
+                            valid &= short.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short x);
+                            info.X = x;
+                            break;
+                        case nameof(TagInfo.Y):
+                            valid &= short.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short y);
+                            info.Y = y;
+                            break;
+                        case nameof(TagInfo.Z):
+                            valid &= short.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short z);
+                            info.Z = z;
                             break;
                         default:
                             break;
@@ -115,7 +137,7 @@ namespace SerialMonitor.Scanner
                 }
                 if (!valid) { break; }
             }
-            info.valid = valid;
+            info.Valid = valid;
         }
     }
 }

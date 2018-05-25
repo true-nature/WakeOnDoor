@@ -29,7 +29,7 @@ namespace SerialMonitor
             semaphore = new SemaphoreSlim(1, 1);
             commService = new SerialCommService();
             tcs = new TaskCompletionSource<bool>();
-            writer = new SyslogWriter(Facility.local0, "Serial");
+            writer = new SyslogWriter(Facility.local0, "TWELITE");
         }
 
         public void Dispose()
@@ -104,9 +104,9 @@ namespace SerialMonitor
             foreach (var s in Scanners)
             {
                 var info = s.Scan(msg);
-                if (info.valid) {
+                if (info.Valid) {
                     await writer.Info(info.ToString());
-                    if (info.wolTrigger)
+                    if (info.WolTrigger)
                     {
                         await writer.Debug("WOL!");
                         await WOLHelper.WakeUpAllAsync();

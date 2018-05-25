@@ -1,4 +1,5 @@
 ﻿using Prism.Mvvm;
+using SerialMonitor.Scanner;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,9 +24,16 @@ namespace WakeOnDoor.Models
             get { return textLog; }
         }
 
+        private Dictionary<uint, TagInfo> tags;
+        public IEnumerable<TagInfo> Tags
+        {
+            get { return tags.Values; }
+        }
+
         private PacketLogModel()
         {
             textLog = new List<string>();
+            tags = new Dictionary<uint, TagInfo>();
             commService = LogReceiveServer.GetInstance();
             commService.Received += this.OnReceived;
 
@@ -52,6 +60,11 @@ namespace WakeOnDoor.Models
 
         private void OnReceived(ICommService sender, MessageEventArgs args)
         {
+            TagInfo tagValue = TagInfo.FromString(args.Message);
+            if (tagValue.Valid)
+            {
+                tags.Add(tagValue.Serial, tagValue);
+            }
             while (textLog.Count > LOG_CAPACITY)
             {
                 textLog.RemoveAt(0);
