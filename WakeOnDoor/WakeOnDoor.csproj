@@ -107,6 +107,7 @@
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="ViewModels\PacketLogPageViewModel.cs" />
+    <Compile Include="ViewModels\SensorStatusPageViewModel.cs" />
     <Compile Include="ViewModels\TargetEditorPageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\NavigationPage.xaml.cs">
@@ -115,6 +116,9 @@
     <Compile Include="ViewModels\NavigationPageViewModel.cs" />
     <Compile Include="Views\PacketLogPage.xaml.cs">
       <DependentUpon>PacketLogPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SensorStatusPage.xaml.cs">
+      <DependentUpon>SensorStatusPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TargetEditorPage.xaml.cs">
       <DependentUpon>TargetEditorPage.xaml</DependentUpon>
@@ -194,6 +198,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SensorStatusPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TargetEditorPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -201,10 +209,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>6.1.4</Version>
+      <Version>6.1.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
-      <Version>2.2.0</Version>
+      <Version>3.0.0</Version>
     </PackageReference>
     <PackageReference Include="NETStandard.Library">
       <Version>2.0.3</Version>

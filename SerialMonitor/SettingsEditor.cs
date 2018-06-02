@@ -67,6 +67,9 @@ namespace SerialMonitor
                         resValues[nameof(Keys.Result)] = true.ToString();
                         resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
                         break;
+                    case nameof(AppCommands.SetInterval):
+                        SetInterval(settings, resValues, message);
+                        break;
                     default:
                         resValues[nameof(Keys.Result)] = false.ToString();
                         break;
@@ -137,37 +140,61 @@ namespace SerialMonitor
 
         private static bool RemoveTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet resValues, ValueSet message)
         {
+            bool result = false;
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
-                return false;
             }
-            if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
+            else if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
-                return false;
             }
-            NormalizePhysical(ref physical);
-
-            bool result = false;
-            if (macList.ContainsKey(physical))
+            else
             {
-                resValues[nameof(Keys.Result)] = macList.Remove(physical);
-                SaveMacList(settings, macList.Values);
+                NormalizePhysical(ref physical);
+
+                if (macList.ContainsKey(physical))
+                {
+                    resValues[nameof(Keys.Result)] = macList.Remove(physical);
+                    SaveMacList(settings, macList.Values);
+                    resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
+                    result = true;
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(physical))
+                    {
+                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
+                    }
+                    else
+                    {
+                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.EntryNotFound);
+                    }
+                }
+            }
+            resValues[nameof(Keys.Result)] = result.ToString();
+
+            return result;
+        }
+
+        private static bool SetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
+        {
+            bool result = false;
+            if (!message.ContainsKey(nameof(Keys.IntervalSec)))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
+            }
+            else if (int.TryParse(message[nameof(Keys.IntervalSec)] as string, out int interval))
+            {
+                settings.Values[nameof(Keys.IntervalSec)] = interval.ToString();
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
                 result = true;
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(physical))
-                {
-                    resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
-                }
-                else
-                {
-                    resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.EntryNotFound);
-                }
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
             }
+            resValues[nameof(Keys.Result)] = result.ToString();
 
             return result;
         }

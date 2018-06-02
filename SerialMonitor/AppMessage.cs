@@ -6,6 +6,7 @@
         Get,
         Add,
         Remove,
+        SetInterval,
     }
 
     public enum Keys
@@ -14,6 +15,8 @@
         PhysicalAddress,
         Comment,
         TargetList,
+        IntervalSec,
+        LastWolTime,
         Result,
         StatusMessage,
     }

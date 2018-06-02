@@ -24,16 +24,20 @@ namespace WakeOnDoor.Models
             get { return textLog; }
         }
 
-        private Dictionary<uint, TagInfo> tags;
-        public IEnumerable<TagInfo> Tags
+        private TagInfo tagInfo;
+        public TagInfo Tag
         {
-            get { return tags.Values; }
+            get { return tagInfo; }
+            set
+            {
+                SetProperty(ref tagInfo, value);
+            }
         }
 
         private PacketLogModel()
         {
             textLog = new List<string>();
-            tags = new Dictionary<uint, TagInfo>();
+            tagInfo = new TagInfo();
             commService = LogReceiveServer.GetInstance();
             commService.Received += this.OnReceived;
 
@@ -63,7 +67,7 @@ namespace WakeOnDoor.Models
             TagInfo tagValue = TagInfo.FromString(args.Message);
             if (tagValue.Valid)
             {
-                tags.Add(tagValue.Serial, tagValue);
+                Tag = tagValue;
             }
             while (textLog.Count > LOG_CAPACITY)
             {

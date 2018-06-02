@@ -6,11 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
+using Windows.Storage;
 
 namespace SerialMonitor
 {
     internal class TweLiteWatcher: IDisposable
     {
+        private int DEFAULT_INTERVAL_SECS = 5;
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
 
@@ -108,10 +110,27 @@ namespace SerialMonitor
                     await writer.Info(info.ToString());
                     if (info.WolTrigger)
                     {
+                        CheckInterval();
                         await writer.Debug("WOL!");
                         await WOLHelper.WakeUpAllAsync();
                     }
                     break;
+                }
+            }
+        }
+
+        private void CheckInterval()
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            int interval = DEFAULT_INTERVAL_SECS;
+            if (settings.Values.TryGetValue(nameof(Keys.IntervalSec), out object intervalValue))
+            {
+                if (int.TryParse(intervalValue as string, out interval))
+                {
+                    if (interval < 1)
+                    {
+                        interval = DEFAULT_INTERVAL_SECS;
+                    }
                 }
             }
         }

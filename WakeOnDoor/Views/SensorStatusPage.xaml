@@ -1,0 +1,37 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WakeOnDoor.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sc="using:SerialMonitor.Scanner"
+    xmlns:mvvm="using:Prism.Windows.Mvvm"
+    xmlns:Converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Custom="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    x:Class="WakeOnDoor.Views.SensorStatusPage"
+    mvvm:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Converters:BoolToObjectConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed"/>
+        <Converters:StringFormatConverter x:Key="StringFormatConverter"/>
+    </Page.Resources>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Sensor Health Satus" FontSize="24"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.Tag.Serial,Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter='SERIAL:{0:X08}'}" FontSize="32" HorizontalAlignment="Center"/>
+        <Custom:RadialGauge Grid.Row="2" Grid.Column="0" Margin="20" Value="{x:Bind ViewModel.Tag.Lqi,Mode=OneWay}" Maximum="255" Unit="LQI" TickSpacing="16" />
+        <Border Grid.Row="2" Grid.Column="1" Background="Red" Visibility="{x:Bind ViewModel.IsLowBattery,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}" />
+        <Custom:RadialGauge Grid.Row="2" Grid.Column="1" Margin="20" Value="{x:Bind ViewModel.Tag.Batt,Mode=OneWay}" Maximum="3300" Minimum="2000" TickSpacing="100" Unit="BATT[mV]" />
+    </Grid>
+</Page>
