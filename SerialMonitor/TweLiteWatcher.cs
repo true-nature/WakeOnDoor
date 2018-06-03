@@ -12,7 +12,7 @@ namespace SerialMonitor
 {
     internal class TweLiteWatcher: IDisposable
     {
-        private int DEFAULT_INTERVAL_SECS = 5;
+        private int DEFAULT_INTERVAL_SECS = 10;
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
 
@@ -23,6 +23,7 @@ namespace SerialMonitor
 
         private IEnumerable<IMessageScanner> Scanners;
         private TaskCompletionSource<bool> tcs;
+        private DateTimeOffset lastWolTime;
 
         public TweLiteWatcher()
         {
@@ -32,6 +33,7 @@ namespace SerialMonitor
             commService = new SerialCommService();
             tcs = new TaskCompletionSource<bool>();
             writer = new SyslogWriter(Facility.local0, "TWELITE");
+            lastWolTime = DateTimeOffset.MinValue;
         }
 
         public void Dispose()
@@ -110,16 +112,19 @@ namespace SerialMonitor
                     await writer.Info(info.ToString());
                     if (info.WolTrigger)
                     {
-                        CheckInterval();
-                        await writer.Debug("WOL!");
-                        await WOLHelper.WakeUpAllAsync();
+                        if (CheckInterval())
+                        {
+                            lastWolTime = DateTimeOffset.Now;
+                            await writer.Debug("WOL!");
+                            await WOLHelper.WakeUpAllAsync();
+                        }
                     }
                     break;
                 }
             }
         }
 
-        private void CheckInterval()
+        private bool CheckInterval()
         {
             var settings = ApplicationData.Current.LocalSettings;
             int interval = DEFAULT_INTERVAL_SECS;
@@ -133,6 +138,7 @@ namespace SerialMonitor
                     }
                 }
             }
+            return ((DateTimeOffset.Now - lastWolTime).TotalSeconds > interval);
         }
 
         private async Task DisconnectAsync()

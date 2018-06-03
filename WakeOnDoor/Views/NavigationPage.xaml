@@ -31,7 +31,7 @@
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
                     <Grid Margin="24,10,0,0">
-                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Wake On Door" FontSize="28" VerticalAlignment="Center"/>
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Wake On Door" FontSize="32" VerticalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
