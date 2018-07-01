@@ -100,7 +100,10 @@ namespace WakeOnDoor.Models
             using (var conn = await OpenAppServiceAsync())
             {
                 if (conn == null) { return; }
-                ValueSet request = new ValueSet();
+                var request = new ValueSet
+                {
+                    [nameof(Keys.Command)] = nameof(AppCommands.Get),
+                };
                 var response = await conn.SendMessageAsync(request);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {

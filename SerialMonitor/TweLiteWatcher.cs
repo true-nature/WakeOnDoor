@@ -124,6 +124,10 @@ namespace SerialMonitor
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if interval time has expired</returns>
         private bool CheckInterval()
         {
             var settings = ApplicationData.Current.LocalSettings;
