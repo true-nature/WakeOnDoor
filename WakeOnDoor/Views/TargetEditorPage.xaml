@@ -20,7 +20,7 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Target Editor" FontSize="24"/>
+        <TextBlock Grid.Row="0" x:Uid="TargetEditor" Text="WOL Target Editor" FontSize="24"/>
         <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -33,13 +33,13 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="MAC Address" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" x:Uid="MACAddress" Text="MAC Address" VerticalAlignment="Center"/>
             <TextBox x:Name="PhysicalTextBox" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" MaxLength="18" Text="{x:Bind ViewModel.PhysicalToEdit,Mode=TwoWay}"/>
             <ItemsControl Grid.Row="0" Grid.Column="3" Foreground="Red" ItemsSource="{Binding Errors[PhysicalToEdit],Mode=OneWay}" VerticalAlignment="Center" IsTabStop="False"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Comment" VerticalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" x:Uid="Comment" Text="Comment" VerticalAlignment="Center"/>
             <TextBox x:Name="CommentTextBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
-            <Button Grid.Row="2" Grid.Column="0" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
-            <Button Grid.Row="2" Grid.Column="1" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
+            <Button Grid.Row="2" Grid.Column="0" x:Uid="Add" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
+            <Button Grid.Row="2" Grid.Column="1" x:Uid="Remove" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
         </Grid>
         <ListView x:Name="TargetListView" Grid.Row="2" ItemsSource="{x:Bind ViewModel.WOLTargets,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
             <ListView.Resources>

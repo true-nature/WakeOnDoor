@@ -104,6 +104,7 @@
     </Compile>
     <Compile Include="Models\PacketLogModel.cs" />
     <Compile Include="Models\TargetEditorModel.cs" />
+    <Compile Include="PageTokens.cs" />
     <Compile Include="Services\ICommService.cs" />
     <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="ViewModels\PacketLogPageViewModel.cs" />

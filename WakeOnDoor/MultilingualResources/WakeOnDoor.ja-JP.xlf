@@ -23,12 +23,57 @@
           <target state="translated">成功しました。</target>
         </trans-unit>
         <trans-unit id="UnknownCommand" translate="yes" xml:space="preserve">
-          <source>Internal command error: Unknown ommand</source>
-          <target state="translated">内部コマンドエラー: Unknown ommand</target>
+          <source>Internal command error: Unknown command</source>
+          <target state="needs-review-translation">内部コマンドエラー: Unknown ommand</target>
+          <note from="MultilingualUpdate" annotates="source" priority="2">Please verify the translation’s accuracy as the source string was updated after it was translated.</note>
         </trans-unit>
         <trans-unit id="InvalidPhysicalFormat" translate="yes" xml:space="preserve">
           <source>Invalid physical (MAC) address format.</source>
           <target state="translated">MACアドレスの書式に誤りがあります。</target>
+        </trans-unit>
+        <trans-unit id="Add" translate="yes" xml:space="preserve">
+          <source>Add</source>
+          <target state="new">Add</target>
+        </trans-unit>
+        <trans-unit id="AppTitle" translate="yes" xml:space="preserve">
+          <source>Wake On Door</source>
+          <target state="new">Wake On Door</target>
+        </trans-unit>
+        <trans-unit id="Comment" translate="yes" xml:space="preserve">
+          <source>Comment</source>
+          <target state="new">Comment</target>
+        </trans-unit>
+        <trans-unit id="IoTOnlyFeature" translate="yes" xml:space="preserve">
+          <source>This feature is enabled on IoT DeviceFamily only.</source>
+          <target state="new">This feature is enabled on IoT DeviceFamily only.</target>
+        </trans-unit>
+        <trans-unit id="MACAddress" translate="yes" xml:space="preserve">
+          <source>MAC Address</source>
+          <target state="new">MAC Address</target>
+        </trans-unit>
+        <trans-unit id="PacketLog" translate="yes" xml:space="preserve">
+          <source>Packet Log</source>
+          <target state="new">Packet Log</target>
+        </trans-unit>
+        <trans-unit id="Remove" translate="yes" xml:space="preserve">
+          <source>Remove</source>
+          <target state="new">Remove</target>
+        </trans-unit>
+        <trans-unit id="SensorStatus" translate="yes" xml:space="preserve">
+          <source>Sensor Health Satus</source>
+          <target state="new">Sensor Health Satus</target>
+        </trans-unit>
+        <trans-unit id="Shutdown" translate="yes" xml:space="preserve">
+          <source>Shutdown</source>
+          <target state="new">Shutdown</target>
+        </trans-unit>
+        <trans-unit id="ShutdownTitle" translate="yes" xml:space="preserve">
+          <source>Shutdown the Computer</source>
+          <target state="new">Shutdown the Computer</target>
+        </trans-unit>
+        <trans-unit id="TargetEditor" translate="yes" xml:space="preserve">
+          <source>WOL Target Editor</source>
+          <target state="new">WOL Target Editor</target>
         </trans-unit>
       </group>
     </body>

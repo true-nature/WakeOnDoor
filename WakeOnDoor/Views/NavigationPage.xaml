@@ -15,14 +15,14 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
         <NavigationView x:Name="NavView" IsSettingsVisible="False" ItemInvoked="NavView_ItemInvoked">
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Sensor Health Satus" Tag="SensorStatus">
+                <NavigationViewItem x:Uid="SensorStatus" Content="Sensor Health Satus" Tag="SensorStatus">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE95E;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Icon="Manage" Content="Target Editor" Tag="TargetEditor" />
-                <NavigationViewItem Icon="Message" Content="Packet Log" Tag="PacketLog"/>
-                <NavigationViewItem Content="Shutdown" Tag="Shutdown">
+                <NavigationViewItem Icon="Manage" x:Uid="TargetEditor" Content="Target Editor" Tag="TargetEditor" />
+                <NavigationViewItem Icon="Message" x:Uid="PacketLog" Content="Packet Log" Tag="PacketLog"/>
+                <NavigationViewItem x:Uid="Shutdown" Content="Shutdown" Tag="Shutdown">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7E8;"/>
                     </NavigationViewItem.Icon>
@@ -31,7 +31,7 @@
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
                     <Grid Margin="24,10,0,0">
-                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="Wake On Door" FontSize="32" VerticalAlignment="Center"/>
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" x:Uid="AppTitle" Text="Wake On Door" FontSize="32" VerticalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
@@ -44,12 +44,13 @@
             </Frame>
         </NavigationView>
         <ContentDialog x:Name="PowerContentDialog"
+                       x:Uid="ShutdownTitle"
                        Title="Shutdown the Computer"
                        PrimaryButtonText="OK"
                        SecondaryButtonText="Cancel"
                        IsPrimaryButtonEnabled="{x:Bind ViewModel.IsIoTDeviceFamily}">
             <Grid>
-                <TextBlock Text="This feature is enabled on IoT DeviceFamily only." Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToInvisibilityConverter}}"/>
+                <TextBlock x:Uid="IoTOnlyFeature" Text="This feature is enabled on IoT DeviceFamily only." Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToInvisibilityConverter}}"/>
             </Grid>
         </ContentDialog>
     </Grid>

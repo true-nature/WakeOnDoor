@@ -10,13 +10,11 @@ namespace WakeOnDoor.ViewModels
 {
     public class NavigationPageViewModel : ViewModelBase
     {
-        private const string SHUTDOWN = "Shutdown";
-
         public bool IsIoTDeviceFamily { get { return App.IsIoTDeviceFamily; } }
 
-       public INavigationService NavigationService { get; set; }
+        public INavigationService NavigationService { get; set; }
 
-       public ContentDialog PowerDialog { get; set; }
+        public ContentDialog PowerDialog { get; set; }
 
         private string currentPage;
         public string CurrentPage
@@ -25,7 +23,7 @@ namespace WakeOnDoor.ViewModels
             {
                switch (value)
                 {
-                    case SHUTDOWN:
+                    case PageTokens.ShutdownDialog:
                         ShowPowerDialog();
                         break;
                     default:

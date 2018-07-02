@@ -18,7 +18,7 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBlock Text="Packet Log" FontSize="24"/>
+            <TextBlock x:Uid="PacketLog" Text="Packet Log" FontSize="24"/>
             <Button Content="Clear" Margin="3" Command="{x:Bind ViewModel.ClearLogCommand}" Width="80" HorizontalAlignment="Left"/>
         </StackPanel>
         <Border Grid.Row="1" BorderBrush="DimGray" BorderThickness="2">

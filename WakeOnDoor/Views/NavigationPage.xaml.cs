@@ -25,7 +25,7 @@ namespace WakeOnDoor.Views
                     new FrameFacadeAdapter(ContentFrame),
                     s => Type.GetType(this.GetType().Namespace + $".{s}Page"),
                     new SessionStateService());
-                ViewModel.CurrentPage = "SensorStatus";
+                ViewModel.CurrentPage = PageTokens.SensorStatusPage;
             };
         }
 

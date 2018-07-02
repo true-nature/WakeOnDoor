@@ -28,7 +28,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Sensor Health Satus" FontSize="24"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" x:Uid="SensorStatus" Text="Sensor Health Satus" FontSize="24"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.Tag.Serial,Mode=OneWay,Converter={StaticResource StringFormatConverter}, ConverterParameter='SERIAL:{0:X08}'}" FontSize="32" HorizontalAlignment="Center"/>
         <Custom:RadialGauge Grid.Row="2" Grid.Column="0" Margin="20" Value="{x:Bind ViewModel.Tag.Lqi,Mode=OneWay}" Maximum="255" Unit="LQI" TickSpacing="16" />
         <Border Grid.Row="2" Grid.Column="1" Background="Red" Visibility="{x:Bind ViewModel.IsLowBattery,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}" />
