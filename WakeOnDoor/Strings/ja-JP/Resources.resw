@@ -25,9 +25,42 @@
     <value>成功しました。</value>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>内部コマンドエラー: Unknown ommand</value>
+    <value>内部コマンドエラー: Unknown command</value>
   </data>
   <data name="InvalidPhysicalFormat" xml:space="preserve">
     <value>MACアドレスの書式に誤りがあります。</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Wake On Door</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="IoTOnlyFeature" xml:space="preserve">
+    <value>この機能はIoT DeviceFamily でのみ有効です。</value>
+  </data>
+  <data name="MACAddress" xml:space="preserve">
+    <value>MACアドレス</value>
+  </data>
+  <data name="PacketLog" xml:space="preserve">
+    <value>パケット・ログ</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="SensorStatus" xml:space="preserve">
+    <value>センサー健全性</value>
+  </data>
+  <data name="Shutdown" xml:space="preserve">
+    <value>シャットダウン</value>
+  </data>
+  <data name="ShutdownTitle" xml:space="preserve">
+    <value>コンピュータをシャットダウン</value>
+  </data>
+  <data name="TargetEditor" xml:space="preserve">
+    <value>WOLターゲット・エディター</value>
   </data>
 </root>
