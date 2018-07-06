@@ -30,49 +30,69 @@
           <source>Invalid physical (MAC) address format.</source>
           <target state="translated">MACアドレスの書式に誤りがあります。</target>
         </trans-unit>
-        <trans-unit id="Add" translate="yes" xml:space="preserve">
-          <source>Add</source>
-          <target state="translated">追加</target>
-        </trans-unit>
-        <trans-unit id="AppTitle" translate="yes" xml:space="preserve">
-          <source>Wake On Door</source>
-          <target state="translated">Wake On Door</target>
-        </trans-unit>
-        <trans-unit id="Comment" translate="yes" xml:space="preserve">
-          <source>Comment</source>
-          <target state="translated">コメント</target>
-        </trans-unit>
-        <trans-unit id="IoTOnlyFeature" translate="yes" xml:space="preserve">
-          <source>This feature is enabled on IoT DeviceFamily only.</source>
-          <target state="translated">この機能はIoT DeviceFamily でのみ有効です。</target>
-        </trans-unit>
-        <trans-unit id="MACAddress" translate="yes" xml:space="preserve">
-          <source>MAC Address</source>
-          <target state="translated">MACアドレス</target>
-        </trans-unit>
-        <trans-unit id="PacketLog" translate="yes" xml:space="preserve">
+        <trans-unit id="PacketLogItem.Content" translate="yes" xml:space="preserve">
           <source>Packet Log</source>
           <target state="translated">パケット・ログ</target>
         </trans-unit>
-        <trans-unit id="Remove" translate="yes" xml:space="preserve">
+        <trans-unit id="TargetEditorItem.Content" translate="yes" xml:space="preserve">
+          <source>WOL Target Editor</source>
+          <target state="translated">WOLターゲット・エディタ</target>
+        </trans-unit>
+        <trans-unit id="Add.Content" translate="yes" xml:space="preserve">
+          <source>Add</source>
+          <target state="translated">追加</target>
+        </trans-unit>
+        <trans-unit id="AppTitle.Text" translate="yes" xml:space="preserve">
+          <source>Wake On Door</source>
+          <target state="final">Wake On Door</target>
+        </trans-unit>
+        <trans-unit id="Comment.Text" translate="yes" xml:space="preserve">
+          <source>Comment</source>
+          <target state="translated">コメント</target>
+        </trans-unit>
+        <trans-unit id="IoTOnlyFeature.Text" translate="yes" xml:space="preserve">
+          <source>This feature is enabled on IoT DeviceFamily only.</source>
+          <target state="translated">この機能はIoT DeviceFamily でのみ有効です。</target>
+        </trans-unit>
+        <trans-unit id="MACAddress.Text" translate="yes" xml:space="preserve">
+          <source>MAC Address</source>
+          <target state="translated">MACアドレス</target>
+        </trans-unit>
+        <trans-unit id="PacketLog.Text" translate="yes" xml:space="preserve">
+          <source>Packet Log</source>
+          <target state="translated">パケット・ログ</target>
+        </trans-unit>
+        <trans-unit id="Remove.Content" translate="yes" xml:space="preserve">
           <source>Remove</source>
           <target state="translated">削除</target>
         </trans-unit>
-        <trans-unit id="SensorStatus" translate="yes" xml:space="preserve">
+        <trans-unit id="SensorStatus.Text" translate="yes" xml:space="preserve">
           <source>Sensor Health Satus</source>
-          <target state="translated">センサー健全性</target>
+          <target state="translated">センサー電力状態</target>
         </trans-unit>
-        <trans-unit id="Shutdown" translate="yes" xml:space="preserve">
+        <trans-unit id="Shutdown.Text" translate="yes" xml:space="preserve">
           <source>Shutdown</source>
           <target state="translated">シャットダウン</target>
         </trans-unit>
-        <trans-unit id="ShutdownTitle" translate="yes" xml:space="preserve">
+        <trans-unit id="ShutdownTitle.Title" translate="yes" xml:space="preserve">
           <source>Shutdown the Computer</source>
           <target state="translated">コンピュータをシャットダウン</target>
         </trans-unit>
-        <trans-unit id="TargetEditor" translate="yes" xml:space="preserve">
+        <trans-unit id="TargetEditor.Text" translate="yes" xml:space="preserve">
           <source>WOL Target Editor</source>
-          <target state="translated">WOLターゲット・エディター</target>
+          <target state="translated">WOLターゲット・エディタ</target>
+        </trans-unit>
+        <trans-unit id="Clear.Content" translate="yes" xml:space="preserve">
+          <source>Clear</source>
+          <target state="translated">クリア</target>
+        </trans-unit>
+        <trans-unit id="SensorStatusItem.Content" translate="yes" xml:space="preserve">
+          <source>Sensor Health Satus</source>
+          <target state="translated">センサー電力状態</target>
+        </trans-unit>
+        <trans-unit id="ShutdownItem.Content" translate="yes" xml:space="preserve">
+          <source>Shutdown</source>
+          <target state="translated">シャットダウン</target>
         </trans-unit>
       </group>
     </body>

@@ -30,37 +30,52 @@
   <data name="InvalidPhysicalFormat" xml:space="preserve">
     <value>MACアドレスの書式に誤りがあります。</value>
   </data>
-  <data name="Add" xml:space="preserve">
-    <value>追加</value>
-  </data>
-  <data name="AppTitle" xml:space="preserve">
-    <value>Wake On Door</value>
-  </data>
-  <data name="Comment" xml:space="preserve">
-    <value>コメント</value>
-  </data>
-  <data name="IoTOnlyFeature" xml:space="preserve">
-    <value>この機能はIoT DeviceFamily でのみ有効です。</value>
-  </data>
-  <data name="MACAddress" xml:space="preserve">
-    <value>MACアドレス</value>
-  </data>
-  <data name="PacketLog" xml:space="preserve">
+  <data name="PacketLogItem.Content" xml:space="preserve">
     <value>パケット・ログ</value>
   </data>
-  <data name="Remove" xml:space="preserve">
+  <data name="TargetEditorItem.Content" xml:space="preserve">
+    <value>WOLターゲット・エディタ</value>
+  </data>
+  <data name="Add.Content" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="AppTitle.Text" xml:space="preserve">
+    <value>Wake On Door</value>
+  </data>
+  <data name="Comment.Text" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="IoTOnlyFeature.Text" xml:space="preserve">
+    <value>この機能はIoT DeviceFamily でのみ有効です。</value>
+  </data>
+  <data name="MACAddress.Text" xml:space="preserve">
+    <value>MACアドレス</value>
+  </data>
+  <data name="PacketLog.Text" xml:space="preserve">
+    <value>パケット・ログ</value>
+  </data>
+  <data name="Remove.Content" xml:space="preserve">
     <value>削除</value>
   </data>
-  <data name="SensorStatus" xml:space="preserve">
-    <value>センサー健全性</value>
+  <data name="SensorStatus.Text" xml:space="preserve">
+    <value>センサー電力状態</value>
   </data>
-  <data name="Shutdown" xml:space="preserve">
+  <data name="Shutdown.Text" xml:space="preserve">
     <value>シャットダウン</value>
   </data>
-  <data name="ShutdownTitle" xml:space="preserve">
+  <data name="ShutdownTitle.Title" xml:space="preserve">
     <value>コンピュータをシャットダウン</value>
   </data>
-  <data name="TargetEditor" xml:space="preserve">
-    <value>WOLターゲット・エディター</value>
+  <data name="TargetEditor.Text" xml:space="preserve">
+    <value>WOLターゲット・エディタ</value>
+  </data>
+  <data name="Clear.Content" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="SensorStatusItem.Content" xml:space="preserve">
+    <value>センサー電力状態</value>
+  </data>
+  <data name="ShutdownItem.Content" xml:space="preserve">
+    <value>シャットダウン</value>
   </data>
 </root>

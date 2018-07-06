@@ -15,14 +15,14 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
         <NavigationView x:Name="NavView" IsSettingsVisible="False" ItemInvoked="NavView_ItemInvoked">
             <NavigationView.MenuItems>
-                <NavigationViewItem x:Uid="SensorStatus" Content="Sensor Health Satus" Tag="SensorStatus">
+                <NavigationViewItem x:Uid="SensorStatusItem" Content="Sensor Health Satus" Tag="SensorStatus">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE95E;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Icon="Manage" x:Uid="TargetEditor" Content="Target Editor" Tag="TargetEditor" />
-                <NavigationViewItem Icon="Message" x:Uid="PacketLog" Content="Packet Log" Tag="PacketLog"/>
-                <NavigationViewItem x:Uid="Shutdown" Content="Shutdown" Tag="Shutdown">
+                <NavigationViewItem Icon="Manage" x:Uid="TargetEditorItem" Content="Target Editor" Tag="TargetEditor" />
+                <NavigationViewItem Icon="Message" x:Uid="PacketLogItem" Content="Packet Log" Tag="PacketLog"/>
+                <NavigationViewItem x:Uid="ShutdownItem" Content="Shutdown" Tag="Shutdown">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE7E8;"/>
                     </NavigationViewItem.Icon>

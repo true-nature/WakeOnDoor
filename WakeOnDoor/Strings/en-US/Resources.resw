@@ -117,13 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add" xml:space="preserve">
+  <data name="Add.Content" xml:space="preserve">
     <value>Add</value>
   </data>
-  <data name="AppTitle" xml:space="preserve">
+  <data name="AppTitle.Text" xml:space="preserve">
     <value>Wake On Door</value>
   </data>
-  <data name="Comment" xml:space="preserve">
+  <data name="Clear.Content" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Comment.Text" xml:space="preserve">
     <value>Comment</value>
   </data>
   <data name="EntryNotFound" xml:space="preserve">
@@ -135,34 +138,46 @@
   <data name="InvalidPhysicalFormat" xml:space="preserve">
     <value>Invalid physical (MAC) address format.</value>
   </data>
-  <data name="IoTOnlyFeature" xml:space="preserve">
+  <data name="IoTOnlyFeature.Text" xml:space="preserve">
     <value>This feature is enabled on IoT DeviceFamily only.</value>
   </data>
-  <data name="MACAddress" xml:space="preserve">
+  <data name="MACAddress.Text" xml:space="preserve">
     <value>MAC Address</value>
   </data>
   <data name="NoPhysicakAddress" xml:space="preserve">
     <value>Physical (MAC) addres must be specified.</value>
   </data>
-  <data name="PacketLog" xml:space="preserve">
+  <data name="PacketLog.Text" xml:space="preserve">
     <value>Packet Log</value>
   </data>
-  <data name="Remove" xml:space="preserve">
+  <data name="PacketLogItem.Content" xml:space="preserve">
+    <value>Packet Log</value>
+  </data>
+  <data name="Remove.Content" xml:space="preserve">
     <value>Remove</value>
   </data>
-  <data name="SensorStatus" xml:space="preserve">
+  <data name="SensorStatus.Text" xml:space="preserve">
     <value>Sensor Health Satus</value>
   </data>
-  <data name="Shutdown" xml:space="preserve">
+  <data name="SensorStatusItem.Content" xml:space="preserve">
+    <value>Sensor Health Satus</value>
+  </data>
+  <data name="Shutdown.Text" xml:space="preserve">
     <value>Shutdown</value>
   </data>
-  <data name="ShutdownTitle" xml:space="preserve">
+  <data name="ShutdownItem.Content" xml:space="preserve">
+    <value>Shutdown</value>
+  </data>
+  <data name="ShutdownTitle.Title" xml:space="preserve">
     <value>Shutdown the Computer</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Success</value>
   </data>
-  <data name="TargetEditor" xml:space="preserve">
+  <data name="TargetEditor.Text" xml:space="preserve">
+    <value>WOL Target Editor</value>
+  </data>
+  <data name="TargetEditorItem.Content" xml:space="preserve">
     <value>WOL Target Editor</value>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
