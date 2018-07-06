@@ -51,7 +51,7 @@ namespace SerialMonitor
             var message = args.Request.Message;
             var resValues = new ValueSet
             {
-                [nameof(Keys.StatusMessage)] = nameof(CommandStatus.UnknownCommand),
+                [nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_UnknownCommand),
             };
             if (message.TryGetValue(nameof(Keys.Command), out object command))
             {
@@ -65,7 +65,7 @@ namespace SerialMonitor
                         break;
                     case nameof(AppCommands.Get):
                         resValues[nameof(Keys.Result)] = true.ToString();
-                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
+                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
                         break;
                     case nameof(AppCommands.SetInterval):
                         SetInterval(settings, resValues, message);
@@ -105,17 +105,17 @@ namespace SerialMonitor
         {
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
                 return false;
             }
             if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
                 return false;
             }
             if (!NormalizePhysical(ref physical))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.InvalidPhysicalFormat);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidPhysicalFormat);
                 return false;
             }
 
@@ -124,14 +124,14 @@ namespace SerialMonitor
             var target = new WOLTarget() { Physical = physical as string, Comment = comment as string };
             if (string.IsNullOrWhiteSpace(target.Physical))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
             }
             else
             {
                 macList[target.Physical] = target;
                 resValues[nameof(Keys.Result)] = true.ToString();
                 SaveMacList(settings, macList.Values);
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
                 result = true;
             }
 
@@ -143,11 +143,11 @@ namespace SerialMonitor
             bool result = false;
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
             }
             else if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
             }
             else
             {
@@ -157,18 +157,18 @@ namespace SerialMonitor
                 {
                     resValues[nameof(Keys.Result)] = macList.Remove(physical);
                     SaveMacList(settings, macList.Values);
-                    resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
+                    resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
                     result = true;
                 }
                 else
                 {
                     if (string.IsNullOrWhiteSpace(physical))
                     {
-                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.NoPhysicalAddress);
+                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
                     }
                     else
                     {
-                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.EntryNotFound);
+                        resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_EntryNotFound);
                     }
                 }
             }
@@ -182,17 +182,17 @@ namespace SerialMonitor
             bool result = false;
             if (!message.ContainsKey(nameof(Keys.IntervalSec)))
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
             }
             else if (int.TryParse(message[nameof(Keys.IntervalSec)] as string, out int interval))
             {
                 settings.Values[nameof(Keys.IntervalSec)] = interval.ToString();
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.Success);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
                 result = true;
             }
             else
             {
-                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.IncompleteParameters);
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
             }
             resValues[nameof(Keys.Result)] = result.ToString();
 

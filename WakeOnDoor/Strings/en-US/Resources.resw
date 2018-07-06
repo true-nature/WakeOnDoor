@@ -129,23 +129,11 @@
   <data name="Comment.Text" xml:space="preserve">
     <value>Comment</value>
   </data>
-  <data name="EntryNotFound" xml:space="preserve">
-    <value>Target entry not found</value>
-  </data>
-  <data name="IncompleteParameters" xml:space="preserve">
-    <value>Internal command error: Incomplete parameters</value>
-  </data>
-  <data name="InvalidPhysicalFormat" xml:space="preserve">
-    <value>Invalid physical (MAC) address format.</value>
-  </data>
   <data name="IoTOnlyFeature.Text" xml:space="preserve">
     <value>This feature is enabled on IoT DeviceFamily only.</value>
   </data>
   <data name="MACAddress.Text" xml:space="preserve">
     <value>MAC Address</value>
-  </data>
-  <data name="NoPhysicakAddress" xml:space="preserve">
-    <value>Physical (MAC) addres must be specified.</value>
   </data>
   <data name="PacketLog.Text" xml:space="preserve">
     <value>Packet Log</value>
@@ -171,16 +159,28 @@
   <data name="ShutdownTitle.Title" xml:space="preserve">
     <value>Shutdown the Computer</value>
   </data>
-  <data name="Success" xml:space="preserve">
+  <data name="S_EntryNotFound" xml:space="preserve">
+    <value>Target entry not found</value>
+  </data>
+  <data name="S_IncompleteParameters" xml:space="preserve">
+    <value>Internal command error: Incomplete parameters</value>
+  </data>
+  <data name="S_InvalidPhysicalFormat" xml:space="preserve">
+    <value>Invalid physical (MAC) address format.</value>
+  </data>
+  <data name="S_NoPhysicakAddress" xml:space="preserve">
+    <value>Physical (MAC) addres must be specified.</value>
+  </data>
+  <data name="S_Success" xml:space="preserve">
     <value>Success</value>
+  </data>
+  <data name="S_UnknownCommand" xml:space="preserve">
+    <value>Internal command error: Unknown command</value>
   </data>
   <data name="TargetEditor.Text" xml:space="preserve">
     <value>WOL Target Editor</value>
   </data>
   <data name="TargetEditorItem.Content" xml:space="preserve">
     <value>WOL Target Editor</value>
-  </data>
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Internal command error: Unknown command</value>
   </data>
 </root>

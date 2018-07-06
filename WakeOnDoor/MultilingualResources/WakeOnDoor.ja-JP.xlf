@@ -6,30 +6,6 @@
     </header>
     <body>
       <group id="WAKEONDOOR/STRINGS/EN-US/RESOURCES.RESW" datatype="resx">
-        <trans-unit id="EntryNotFound" translate="yes" xml:space="preserve">
-          <source>Target entry not found</source>
-          <target state="translated">ターゲットのエントリが存在しません。</target>
-        </trans-unit>
-        <trans-unit id="IncompleteParameters" translate="yes" xml:space="preserve">
-          <source>Internal command error: Incomplete parameters</source>
-          <target state="translated">内部コマンドエラー: Incomplete parameters</target>
-        </trans-unit>
-        <trans-unit id="NoPhysicakAddress" translate="yes" xml:space="preserve">
-          <source>Physical (MAC) addres must be specified.</source>
-          <target state="translated">物理(MAC)アドレスを指定してください。</target>
-        </trans-unit>
-        <trans-unit id="Success" translate="yes" xml:space="preserve">
-          <source>Success</source>
-          <target state="translated">成功しました。</target>
-        </trans-unit>
-        <trans-unit id="UnknownCommand" translate="yes" xml:space="preserve">
-          <source>Internal command error: Unknown command</source>
-          <target state="translated">内部コマンドエラー: Unknown command</target>
-        </trans-unit>
-        <trans-unit id="InvalidPhysicalFormat" translate="yes" xml:space="preserve">
-          <source>Invalid physical (MAC) address format.</source>
-          <target state="translated">MACアドレスの書式に誤りがあります。</target>
-        </trans-unit>
         <trans-unit id="PacketLogItem.Content" translate="yes" xml:space="preserve">
           <source>Packet Log</source>
           <target state="translated">パケット・ログ</target>
@@ -93,6 +69,30 @@
         <trans-unit id="ShutdownItem.Content" translate="yes" xml:space="preserve">
           <source>Shutdown</source>
           <target state="translated">シャットダウン</target>
+        </trans-unit>
+        <trans-unit id="S_EntryNotFound" translate="yes" xml:space="preserve">
+          <source>Target entry not found</source>
+          <target state="translated">ターゲットのエントリが存在しません。</target>
+        </trans-unit>
+        <trans-unit id="S_IncompleteParameters" translate="yes" xml:space="preserve">
+          <source>Internal command error: Incomplete parameters</source>
+          <target state="translated">内部コマンドエラー: Incomplete parameters</target>
+        </trans-unit>
+        <trans-unit id="S_InvalidPhysicalFormat" translate="yes" xml:space="preserve">
+          <source>Invalid physical (MAC) address format.</source>
+          <target state="translated">MACアドレスの書式に誤りがあります。</target>
+        </trans-unit>
+        <trans-unit id="S_NoPhysicakAddress" translate="yes" xml:space="preserve">
+          <source>Physical (MAC) addres must be specified.</source>
+          <target state="translated">物理(MAC)アドレスを指定してください。</target>
+        </trans-unit>
+        <trans-unit id="S_Success" translate="yes" xml:space="preserve">
+          <source>Success</source>
+          <target state="translated">成功しました。</target>
+        </trans-unit>
+        <trans-unit id="S_UnknownCommand" translate="yes" xml:space="preserve">
+          <source>Internal command error: Unknown command</source>
+          <target state="translated">内部コマンドエラー: Unknown command</target>
         </trans-unit>
       </group>
     </body>

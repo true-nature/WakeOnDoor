@@ -12,24 +12,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EntryNotFound" xml:space="preserve">
-    <value>ターゲットのエントリが存在しません。</value>
-  </data>
-  <data name="IncompleteParameters" xml:space="preserve">
-    <value>内部コマンドエラー: Incomplete parameters</value>
-  </data>
-  <data name="NoPhysicakAddress" xml:space="preserve">
-    <value>物理(MAC)アドレスを指定してください。</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>成功しました。</value>
-  </data>
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>内部コマンドエラー: Unknown command</value>
-  </data>
-  <data name="InvalidPhysicalFormat" xml:space="preserve">
-    <value>MACアドレスの書式に誤りがあります。</value>
-  </data>
   <data name="PacketLogItem.Content" xml:space="preserve">
     <value>パケット・ログ</value>
   </data>
@@ -77,5 +59,23 @@
   </data>
   <data name="ShutdownItem.Content" xml:space="preserve">
     <value>シャットダウン</value>
+  </data>
+  <data name="S_EntryNotFound" xml:space="preserve">
+    <value>ターゲットのエントリが存在しません。</value>
+  </data>
+  <data name="S_IncompleteParameters" xml:space="preserve">
+    <value>内部コマンドエラー: Incomplete parameters</value>
+  </data>
+  <data name="S_InvalidPhysicalFormat" xml:space="preserve">
+    <value>MACアドレスの書式に誤りがあります。</value>
+  </data>
+  <data name="S_NoPhysicakAddress" xml:space="preserve">
+    <value>物理(MAC)アドレスを指定してください。</value>
+  </data>
+  <data name="S_Success" xml:space="preserve">
+    <value>成功しました。</value>
+  </data>
+  <data name="S_UnknownCommand" xml:space="preserve">
+    <value>内部コマンドエラー: Unknown command</value>
   </data>
 </root>

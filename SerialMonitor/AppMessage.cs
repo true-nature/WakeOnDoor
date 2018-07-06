@@ -23,12 +23,12 @@
 
     public enum CommandStatus
     {
-        Success,
-        UnknownCommand,
-        IncompleteParameters,
-        NoPhysicalAddress,
-        EntryNotFound,
-        InvalidPhysicalFormat
+        S_Success,
+        S_UnknownCommand,
+        S_IncompleteParameters,
+        S_NoPhysicalAddress,
+        S_EntryNotFound,
+        S_InvalidPhysicalFormat
     }
 
 }
