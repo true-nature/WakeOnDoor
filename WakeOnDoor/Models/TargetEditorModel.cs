@@ -95,7 +95,7 @@ namespace WakeOnDoor.Models
             }
         }
 
-        public async Task InitializeAsync()
+        public async Task GetListAsync()
         {
             using (var conn = await OpenAppServiceAsync())
             {

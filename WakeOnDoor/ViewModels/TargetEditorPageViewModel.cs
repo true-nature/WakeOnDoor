@@ -25,7 +25,7 @@ namespace WakeOnDoor.ViewModels
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
 
-        private TargetEditorModel editorModel = new TargetEditorModel();
+        private TargetEditorModel EditorModel;
         public ObservableCollection<WOLTarget> WOLTargets { get; }
 
         private string statusMessage;
@@ -47,18 +47,15 @@ namespace WakeOnDoor.ViewModels
         public TargetEditorPageViewModel()
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
-
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-            editorModel.InitializeAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+            EditorModel = new TargetEditorModel();
 
             AddMacCommand = new DelegateCommand(async () => {
                 WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
-                await editorModel.AddAsync(target);
+                await EditorModel.AddAsync(target);
             });
             RemoveMacCommand = new DelegateCommand(async () => {
                 WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
-                await editorModel.RemoveAsync(target);
+                await EditorModel.RemoveAsync(target);
             });
         }
         private string physicalToEdit;
@@ -95,11 +92,11 @@ namespace WakeOnDoor.ViewModels
             switch (args.PropertyName)
             {
                 case nameof(StatusMessage):
-                    StatusMessage = editorModel.StatusMessage;
+                    StatusMessage = EditorModel.StatusMessage;
                     break;
                 case nameof(WOLTargets):
                     WOLTargets.Clear();
-                    foreach (var m in editorModel.WOLTargets)
+                    foreach (var m in EditorModel.WOLTargets)
                     {
                         WOLTargets.Add(m);
                     }
@@ -111,7 +108,7 @@ namespace WakeOnDoor.ViewModels
         }
 
         public const string TEMP_PREFIX = "Temp.TargetEditor.";
-        public void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        public async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
             var settings = ApplicationData.Current.LocalSettings;
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out object value))
@@ -122,12 +119,13 @@ namespace WakeOnDoor.ViewModels
             {
                 CommentToEdit = value as string;
             }
-            editorModel.PropertyChanged += OnModelPropertyChanged;
+            EditorModel.PropertyChanged += OnModelPropertyChanged;
+            await EditorModel.GetListAsync();
         }
 
         public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
         {
-            editorModel.PropertyChanged -= OnModelPropertyChanged;
+            EditorModel.PropertyChanged -= OnModelPropertyChanged;
         }
     }
 }
