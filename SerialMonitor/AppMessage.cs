@@ -7,6 +7,7 @@
         Add,
         Remove,
         SetInterval,
+        GetInterval,
     }
 
     public enum Keys

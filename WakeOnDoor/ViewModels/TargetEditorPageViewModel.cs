@@ -3,20 +3,12 @@ using Prism.Windows.AppModel;
 using Prism.Windows.Navigation;
 using Prism.Windows.Validation;
 using SerialMonitor;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Runtime.Serialization.Json;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using WakeOnDoor.Models;
-using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Resources;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 
 namespace WakeOnDoor.ViewModels
@@ -47,7 +39,7 @@ namespace WakeOnDoor.ViewModels
         public TargetEditorPageViewModel()
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
-            EditorModel = new TargetEditorModel();
+            EditorModel = TargetEditorModel.GetInstance();
 
             AddMacCommand = new DelegateCommand(async () => {
                 WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };

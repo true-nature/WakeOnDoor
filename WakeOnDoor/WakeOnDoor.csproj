@@ -115,6 +115,7 @@
     <Compile Include="Services\LogReceiveServer.cs" />
     <Compile Include="ViewModels\PacketLogPageViewModel.cs" />
     <Compile Include="ViewModels\SensorStatusPageViewModel.cs" />
+    <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="ViewModels\TargetEditorPageViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\NavigationPage.xaml.cs">
@@ -126,6 +127,9 @@
     </Compile>
     <Compile Include="Views\SensorStatusPage.xaml.cs">
       <DependentUpon>SensorStatusPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\TargetEditorPage.xaml.cs">
       <DependentUpon>TargetEditorPage.xaml</DependentUpon>
@@ -206,6 +210,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SensorStatusPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

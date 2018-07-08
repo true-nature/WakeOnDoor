@@ -4,27 +4,65 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 
 namespace WakeOnDoor.Models
 {
     internal class TargetEditorModel: BindableBase
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
+        private static readonly string[] LANGUAGES = { "en-US", "ja-JP" };
+        private const string KEY_LANGUAGE = "language";
+
+        private static TargetEditorModel instance;
+        private ApplicationDataContainer settings;
+
         public ObservableCollection<WOLTarget> WOLTargets { get; }
 
-        private string statusMessage;
-
-        public TargetEditorModel()
+        private TargetEditorModel()
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
+            settings = ApplicationData.Current.LocalSettings;
+            if (!settings.Values.ContainsKey(KEY_LANGUAGE))
+            {
+                settings.Values[KEY_LANGUAGE] = LANGUAGES[0];
+            }
         }
 
+        public static TargetEditorModel GetInstance()
+        {
+            if (instance == null)
+            {
+                instance = new TargetEditorModel();
+            }
+            return instance;
+        }
+
+        private string language;
+        public string Language
+        {
+            get
+            {
+                return settings.Values[KEY_LANGUAGE].ToString();
+            }
+            set
+            {
+                if (LANGUAGES.Contains(value))
+                {
+                    settings.Values[KEY_LANGUAGE] = value;
+                    SetProperty(ref language, value);
+                }
+            }
+        }
+
+        private string statusMessage;
         public string StatusMessage
         {
             get
@@ -109,6 +147,24 @@ namespace WakeOnDoor.Models
                 {
                     var targetListStr = response.Message[nameof(Keys.TargetList)] as string;
                     RefreshTargetList(targetListStr);
+                }
+            }
+        }
+
+        public async Task SetInterval(int interval)
+        {
+            using (var conn = await OpenAppServiceAsync())
+            {
+                if (conn == null) { return; }
+                var values = new ValueSet
+                {
+                    [nameof(Keys.Command)] = nameof(AppCommands.SetInterval),
+                    [nameof(Keys.IntervalSec)] = interval.ToString(),
+                };
+                var response = await conn.SendMessageAsync(values);
+                if (response.Status == AppServiceResponseStatus.Success)
+                {
+                    var IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
                 }
             }
         }

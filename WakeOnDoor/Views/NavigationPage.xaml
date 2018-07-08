@@ -13,7 +13,7 @@
         <Converters:BoolToObjectConverter x:Key="BoolToInvisibilityConverter" TrueValue="Collapsed" FalseValue="Visible"/>
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
-        <NavigationView x:Name="NavView" IsSettingsVisible="False" ItemInvoked="NavView_ItemInvoked">
+        <NavigationView x:Name="NavView" ItemInvoked="NavView_ItemInvoked">
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Uid="SensorStatusItem" Content="Sensor Health Satus" Tag="SensorStatus">
                     <NavigationViewItem.Icon>
