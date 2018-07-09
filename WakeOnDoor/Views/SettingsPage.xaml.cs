@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using WakeOnDoor.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +23,7 @@ namespace WakeOnDoor.Views
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public SettingsPageViewModel ViewModel => this.DataContext as SettingsPageViewModel;
         public SettingsPage()
         {
             this.InitializeComponent();

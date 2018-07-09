@@ -33,7 +33,7 @@ namespace WakeOnDoor.Views
         {
             if (args.IsSettingsInvoked)
             {
-                ContentFrame.Navigate(typeof(TargetEditorPage));
+                ContentFrame.Navigate(typeof(SettingsPage));
             }
             else
             {

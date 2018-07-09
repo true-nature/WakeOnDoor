@@ -78,4 +78,7 @@
   <data name="S_UnknownCommand" xml:space="preserve">
     <value>内部コマンドエラー: Unknown command</value>
   </data>
+  <data name="Language.Text" xml:space="preserve">
+    <value>言語</value>
+  </data>
 </root>

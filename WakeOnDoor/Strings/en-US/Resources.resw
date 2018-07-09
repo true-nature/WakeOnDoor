@@ -183,4 +183,10 @@
   <data name="TargetEditorItem.Content" xml:space="preserve">
     <value>WOL Target Editor</value>
   </data>
+  <data name="Apply.Content" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Language.Text" xml:space="preserve">
+    <value>Language</value>
+  </data>
 </root>

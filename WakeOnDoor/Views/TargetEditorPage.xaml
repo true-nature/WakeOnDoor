@@ -39,7 +39,7 @@
             <TextBlock Grid.Row="1" Grid.Column="0" x:Uid="Comment" Text="Comment" VerticalAlignment="Center"/>
             <TextBox x:Name="CommentTextBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
             <Button Grid.Row="2" Grid.Column="0" x:Uid="Add" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
-            <Button Grid.Row="2" Grid.Column="1" x:Uid="Remove" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
+            <Button Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Uid="Remove" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
         </Grid>
         <ListView x:Name="TargetListView" Grid.Row="2" ItemsSource="{x:Bind ViewModel.WOLTargets,Mode=OneWay}" SelectionChanged="ListView_SelectionChanged">
             <ListView.Resources>

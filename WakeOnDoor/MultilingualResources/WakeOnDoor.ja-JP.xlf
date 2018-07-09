@@ -20,7 +20,7 @@
         </trans-unit>
         <trans-unit id="AppTitle.Text" translate="yes" xml:space="preserve">
           <source>Wake On Door</source>
-          <target state="final">Wake On Door</target>
+          <target state="translated">Wake On Door</target>
         </trans-unit>
         <trans-unit id="Comment.Text" translate="yes" xml:space="preserve">
           <source>Comment</source>
@@ -93,6 +93,10 @@
         <trans-unit id="S_UnknownCommand" translate="yes" xml:space="preserve">
           <source>Internal command error: Unknown command</source>
           <target state="translated">内部コマンドエラー: Unknown command</target>
+        </trans-unit>
+        <trans-unit id="Language.Text" translate="yes" xml:space="preserve">
+          <source>Language</source>
+          <target state="translated">言語</target>
         </trans-unit>
       </group>
     </body>

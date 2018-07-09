@@ -10,18 +10,31 @@ namespace WakeOnDoor.ViewModels
 {
     public class SettingsPageViewModel : ViewModelBase
     {
+        private Dictionary<string, string> languages;
         public SettingsPageViewModel()
         {
+            languages = new Dictionary<string, string>()
+            {
+                { "en-US", "English" },
+                { "ja-JP", "Japanese" }
+            };
         }
 
-        public ICommand SetIntervalCommand { get; }
-        public ICommand SetLanguageCommand { get; }
+        public ICommand ApplyCommand { get; }
 
         private int intervalSec;
         public int IntervalSec
         {
             get => intervalSec;
             set => SetProperty(ref intervalSec, value);
+        }
+
+        public Dictionary<string, string> Languages
+        {
+            get
+            {
+                return languages;
+            }
         }
 
     }
