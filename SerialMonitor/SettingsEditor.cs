@@ -13,6 +13,7 @@ namespace SerialMonitor
 {
     public sealed class SettingsEditor : IBackgroundTask
     {
+        private const int DEFAULT_INTERVAL_SECS = 10;
         private BackgroundTaskDeferral taskDeferral;
         private AppServiceConnection connection;
 
@@ -70,6 +71,9 @@ namespace SerialMonitor
                     case nameof(AppCommands.SetInterval):
                         SetInterval(settings, resValues, message);
                         break;
+                    case nameof(AppCommands.GetInterval):
+                        GetInterval(settings, resValues, message);
+                        break;
                     default:
                         resValues[nameof(Keys.Result)] = false.ToString();
                         break;
@@ -85,6 +89,10 @@ namespace SerialMonitor
             if (!settings.Values.ContainsKey(nameof(Keys.TargetList)))
             {
                 SaveMacList(settings, new HashSet<WOLTarget>());
+            }
+            if (!settings.Values.ContainsKey(nameof(Keys.IntervalSec)))
+            {
+                settings.Values[nameof(Keys.IntervalSec)] = DEFAULT_INTERVAL_SECS.ToString();
             }
         }
 
@@ -194,6 +202,18 @@ namespace SerialMonitor
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
             }
+            resValues[nameof(Keys.IntervalSec)] = settings.Values[nameof(Keys.IntervalSec)];
+            resValues[nameof(Keys.Result)] = result.ToString();
+
+            return result;
+        }
+
+        private static bool GetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
+        {
+            bool result = true;
+            resValues[nameof(Keys.IntervalSec)] = settings.Values[nameof(Keys.IntervalSec)];
+            resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
+            result = true;
             resValues[nameof(Keys.Result)] = result.ToString();
 
             return result;

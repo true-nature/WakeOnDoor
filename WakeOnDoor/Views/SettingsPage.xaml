@@ -28,8 +28,8 @@
         <TextBlock Grid.Row="1" Grid.Column="0" x:Uid="Deadtime" Text="WOL Deadtime[msec]" VerticalAlignment="Center"/>
         <TextBox x:Name="IntervalSec" Grid.Row="1" Grid.Column="1" MaxLength="5" Text="{x:Bind ViewModel.IntervalSec,Mode=TwoWay}"/>
         <TextBlock Grid.Row="2" Grid.Column="0" x:Uid="Language" Text="Language" VerticalAlignment="Center"/>
-        <ComboBox x:Name="Language"  Grid.Row="2" Grid.Column="1"  ItemsSource="{x:Bind ViewModel.Languages,Mode=OneTime}"
-                  DisplayMemberPath="Value" SelectedValuePath="Key"/>
+        <ComboBox x:Name="Languages"  Grid.Row="2" Grid.Column="1"  Margin="5" ItemsSource="{x:Bind ViewModel.Languages,Mode=OneTime}"
+                  DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{x:Bind ViewModel.SelectedKey,Mode=TwoWay}"/>
         <Button Grid.Row="3" Grid.Column="1" x:Uid="Apply" Content="Apply" Margin="3" Command="{x:Bind ViewModel.ApplyCommand}" Width="80" HorizontalAlignment="Left"/>
     </Grid>
 </Page>

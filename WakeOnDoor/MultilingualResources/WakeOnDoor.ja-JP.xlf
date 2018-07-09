@@ -98,6 +98,10 @@
           <source>Language</source>
           <target state="translated">言語</target>
         </trans-unit>
+        <trans-unit id="Apply.Content" translate="yes" xml:space="preserve">
+          <source>Apply</source>
+          <target state="new">Apply</target>
+        </trans-unit>
       </group>
     </body>
   </file>

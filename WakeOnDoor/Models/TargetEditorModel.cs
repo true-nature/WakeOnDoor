@@ -62,6 +62,19 @@ namespace WakeOnDoor.Models
             }
         }
 
+        private string intervalSecStr;
+        public string IntervalSecStr
+        {
+            get
+            {
+                return intervalSecStr;
+            }
+            private set
+            {
+                SetProperty(ref intervalSecStr, value);
+            }
+        }
+
         private string statusMessage;
         public string StatusMessage
         {
@@ -164,7 +177,7 @@ namespace WakeOnDoor.Models
                 var response = await conn.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
-                    var IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
+                    IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
                 }
             }
         }
