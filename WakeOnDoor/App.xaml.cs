@@ -3,12 +3,15 @@ using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using WakeOnDoor.Models;
+using WakeOnDoor.Views;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Globalization;
 using Windows.Storage;
 using Windows.System.Profile;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor
 {
@@ -45,9 +48,12 @@ namespace WakeOnDoor
                     {
                         // FIDME not navigated
                         ApplicationLanguages.PrimaryLanguageOverride = EditorModel.Language;
+                        var rootFrame = Window.Current.Content as Frame;
+                        rootFrame.CacheSize = 0;
                         ResourceContext.GetForCurrentView().Reset();
                         ResourceContext.GetForViewIndependentUse().Reset();
-                        this.NavigationService.Navigate("Navigation", null);
+                        //NavigationService.Navigate("Navigation", null);
+                        rootFrame.Navigate(typeof(NavigationPage));
                     });
                     break;
                 default:

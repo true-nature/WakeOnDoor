@@ -189,4 +189,10 @@
   <data name="Language.Text" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="Cancel.Content" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Deadtime.Text" xml:space="preserve">
+    <value>WOL Deadtime[sec]</value>
+  </data>
 </root>

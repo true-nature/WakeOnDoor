@@ -57,7 +57,8 @@ namespace WakeOnDoor.Models
                 if (LANGUAGES.Contains(value))
                 {
                     settings.Values[KEY_LANGUAGE] = value;
-                    SetProperty(ref language, value);
+                    language = value;
+                    RaisePropertyChanged(nameof(Language)); // force raise event
                 }
             }
         }

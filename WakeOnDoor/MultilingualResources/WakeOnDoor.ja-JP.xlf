@@ -100,7 +100,15 @@
         </trans-unit>
         <trans-unit id="Apply.Content" translate="yes" xml:space="preserve">
           <source>Apply</source>
-          <target state="new">Apply</target>
+          <target state="translated">適用</target>
+        </trans-unit>
+        <trans-unit id="Cancel.Content" translate="yes" xml:space="preserve">
+          <source>Cancel</source>
+          <target state="translated">キャンセル</target>
+        </trans-unit>
+        <trans-unit id="Deadtime.Text" translate="yes" xml:space="preserve">
+          <source>WOL Deadtime[sec]</source>
+          <target state="translated">WOLデッドタイム[秒]</target>
         </trans-unit>
       </group>
     </body>

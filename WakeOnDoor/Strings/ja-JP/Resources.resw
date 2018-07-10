@@ -81,4 +81,13 @@
   <data name="Language.Text" xml:space="preserve">
     <value>言語</value>
   </data>
+  <data name="Apply.Content" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="Cancel.Content" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Deadtime.Text" xml:space="preserve">
+    <value>WOLデッドタイム[秒]</value>
+  </data>
 </root>

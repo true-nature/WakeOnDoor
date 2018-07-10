@@ -29,7 +29,8 @@ namespace WakeOnDoor.ViewModels
             });
             CancelCommand = new DelegateCommand(() =>
             {
-                // nothing to do
+                // overwrite to raise propertychanged event
+                EditorModel.Language = EditorModel.Language;
             });
         }
 
