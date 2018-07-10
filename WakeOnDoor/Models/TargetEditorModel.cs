@@ -164,22 +164,49 @@ namespace WakeOnDoor.Models
             }
         }
 
-        public async Task SetInterval(int interval)
+        public async Task<int> SetIntervalAsync(int interval)
         {
             using (var conn = await OpenAppServiceAsync())
             {
-                if (conn == null) { return; }
-                var values = new ValueSet
+                if (conn != null)
                 {
-                    [nameof(Keys.Command)] = nameof(AppCommands.SetInterval),
-                    [nameof(Keys.IntervalSec)] = interval.ToString(),
-                };
-                var response = await conn.SendMessageAsync(values);
-                if (response.Status == AppServiceResponseStatus.Success)
-                {
-                    IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
+                    var values = new ValueSet
+                    {
+                        [nameof(Keys.Command)] = nameof(AppCommands.SetInterval),
+                        [nameof(Keys.IntervalSec)] = interval.ToString(),
+                    };
+                    var response = await conn.SendMessageAsync(values);
+                    if (response.Status == AppServiceResponseStatus.Success)
+                    {
+                        IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
+                    }
                 }
             }
+            int intervalSec = 0;
+            Int32.TryParse(IntervalSecStr, out intervalSec);
+            return intervalSec;
+        }
+
+        public async Task<int> GetIntervalAsync()
+        {
+            using (var conn = await OpenAppServiceAsync())
+            {
+                if (conn != null)
+                {
+                    var values = new ValueSet
+                    {
+                        [nameof(Keys.Command)] = nameof(AppCommands.GetInterval),
+                    };
+                    var response = await conn.SendMessageAsync(values);
+                    if (response.Status == AppServiceResponseStatus.Success)
+                    {
+                        IntervalSecStr = response.Message[nameof(Keys.IntervalSec)] as string;
+                    }
+                }
+            }
+            int intervalSec = 0;
+            Int32.TryParse(IntervalSecStr, out intervalSec);
+            return intervalSec;
         }
 
         private async Task<AppServiceConnection> OpenAppServiceAsync()

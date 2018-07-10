@@ -1,11 +1,14 @@
 ﻿using Prism.Unity.Windows;
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using WakeOnDoor.Models;
-using WakeOnDoor.Services;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources.Core;
+using Windows.Globalization;
 using Windows.Storage;
 using Windows.System.Profile;
+using Windows.UI.Core;
 
 namespace WakeOnDoor
 {
@@ -26,9 +29,30 @@ namespace WakeOnDoor
         protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         {
             ClearTempSettings();
+            EditorModel = TargetEditorModel.GetInstance();
+            EditorModel.PropertyChanged += OnModelPropertyChanged;
             LogModel = PacketLogModel.GetInstance();
             await LogModel.InitializeAsync();
             this.NavigationService.Navigate("Navigation", null);
+        }
+
+        private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case nameof(EditorModel.Language):
+                    await  Shell.Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        // FIDME not navigated
+                        ApplicationLanguages.PrimaryLanguageOverride = EditorModel.Language;
+                        ResourceContext.GetForCurrentView().Reset();
+                        ResourceContext.GetForViewIndependentUse().Reset();
+                        this.NavigationService.Navigate("Navigation", null);
+                    });
+                    break;
+                default:
+                    break;
+            }
         }
 
         private static void ClearTempSettings()
@@ -44,6 +68,7 @@ namespace WakeOnDoor
         }
 
         private PacketLogModel LogModel;
+        private TargetEditorModel EditorModel;
         private static bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
         public static bool IsIoTDeviceFamily { get { return deviceFamily; } }
     }

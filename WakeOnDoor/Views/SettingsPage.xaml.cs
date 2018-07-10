@@ -27,6 +27,7 @@ namespace WakeOnDoor.Views
         public SettingsPage()
         {
             this.InitializeComponent();
+            ViewModel.Dispatcher = this.Dispatcher;
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Prism.Commands;
 using Prism.Windows.Mvvm;
+using Prism.Windows.Navigation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows.Input;
 using WakeOnDoor.Models;
+using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
@@ -23,14 +23,18 @@ namespace WakeOnDoor.ViewModels
             };
             EditorModel = TargetEditorModel.GetInstance();
             selectedKey = EditorModel.Language;
-            // TODO IntervalSec
             ApplyCommand = new DelegateCommand(async () => {
                 EditorModel.Language = selectedKey;
-                await EditorModel.SetInterval(intervalSec);
+                await EditorModel.SetIntervalAsync(intervalSec);
+            });
+            CancelCommand = new DelegateCommand(() =>
+            {
+                // nothing to do
             });
         }
 
         public ICommand ApplyCommand { get; }
+        public ICommand CancelCommand { get; }
 
         private int intervalSec;
         public int IntervalSec
@@ -52,6 +56,45 @@ namespace WakeOnDoor.ViewModels
             {
                 return languages;
             }
+        }
+
+        private CoreDispatcher dispatcher;
+        public CoreDispatcher Dispatcher
+        {
+            get { return dispatcher; }
+            set
+            {
+                dispatcher = value;
+            }
+        }
+
+        private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case nameof(EditorModel.IntervalSecStr):
+                    Int32.TryParse(EditorModel.IntervalSecStr, out intervalSec);
+                    await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        RaisePropertyChanged(nameof(IntervalSec));
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+        public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+        {
+            base.OnNavigatedTo(e, viewModelState);
+            IntervalSec = await EditorModel.GetIntervalAsync();
+            EditorModel.PropertyChanged += OnModelPropertyChanged;
+            await EditorModel.GetListAsync();
+        }
+
+        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        {
+            base.OnNavigatingFrom(e, viewModelState, suspending);
+            EditorModel.PropertyChanged -= OnModelPropertyChanged;
         }
 
     }
