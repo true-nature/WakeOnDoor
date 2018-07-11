@@ -52,7 +52,6 @@ namespace WakeOnDoor
                         rootFrame.CacheSize = 0;
                         ResourceContext.GetForCurrentView().Reset();
                         ResourceContext.GetForViewIndependentUse().Reset();
-                        //NavigationService.Navigate("Navigation", null);
                         rootFrame.Navigate(typeof(NavigationPage));
                     });
                     break;

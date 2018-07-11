@@ -16,5 +16,10 @@ namespace WakeOnDoor.Views
             this.InitializeComponent();
             ViewModel.Dispatcher = this.Dispatcher;
         }
+
+        private void LogBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LogScroller.ChangeView(0.0f, LogScroller.ExtentHeight, 1.0f);
+        }
     }
 }

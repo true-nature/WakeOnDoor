@@ -26,9 +26,8 @@
             <CheckBox x:Uid="Lock" Content="Lock" Margin="3" IsChecked="{x:Bind ViewModel.IsLocked,Mode=TwoWay}" Width="80" HorizontalAlignment="Left"/>
         </StackPanel>
         <Border Grid.Row="1" BorderBrush="DimGray" BorderThickness="2">
-            <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom"
-                          MinHeight="250">
-                <TextBlock x:Name="LogBox" Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
+            <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom">
+                <TextBox x:Name="LogBox" Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" TextChanged="LogBox_TextChanged"/>
             </ScrollViewer>
         </Border>
     </Grid>
