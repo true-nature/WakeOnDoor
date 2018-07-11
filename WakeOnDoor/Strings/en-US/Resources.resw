@@ -195,4 +195,7 @@
   <data name="Deadtime.Text" xml:space="preserve">
     <value>WOL Deadtime[sec]</value>
   </data>
+  <data name="Lock.Content" xml:space="preserve">
+    <value>Lock</value>
+  </data>
 </root>

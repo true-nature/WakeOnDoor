@@ -28,6 +28,21 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
+        private bool isLocked;
+        public bool IsLocked
+        {
+            get { return isLocked; }
+            set
+            {
+                SetProperty(ref isLocked, value);
+                if(!isLocked)
+                {
+                    textLog = LogModel.LogList;
+                    RaisePropertyChanged(nameof(TextLog));
+                }
+            }
+        }
+
         private List<string> textLog;
         public string TextLog
         {
@@ -46,16 +61,25 @@ namespace WakeOnDoor.ViewModels
             });
         }
 
+        private void ScrollTo(int position)
+        {
+
+        }
+
         private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
             {
                 case nameof(LogModel.LogList):
-                    textLog = LogModel.LogList;
-                    await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
-                      {
-                          RaisePropertyChanged(nameof(TextLog));
-                      });
+                    if (!isLocked)
+                    {
+                        textLog = LogModel.LogList;
+                        await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+                          {
+                              RaisePropertyChanged(nameof(TextLog));
+                              // TODO: scrol to bottom automatically
+                          });
+                    }
                     break;
                 default:
                     break;

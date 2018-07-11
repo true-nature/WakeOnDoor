@@ -11,6 +11,9 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Converters:BoolNegationConverter x:Key="BoolNegationConverter" />
+    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -19,12 +22,13 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock x:Uid="PacketLog" Text="Packet Log" FontSize="24"/>
-            <Button x:Uid="Clear" Content="Clear" Margin="3" Command="{x:Bind ViewModel.ClearLogCommand}" Width="80" HorizontalAlignment="Left"/>
+            <Button x:Uid="Clear" Content="Clear" Margin="3" IsEnabled="{Binding IsLocked,Converter={StaticResource BoolNegationConverter}}" Command="{x:Bind ViewModel.ClearLogCommand}" Width="80" HorizontalAlignment="Left"/>
+            <CheckBox x:Uid="Lock" Content="Lock" Margin="3" IsChecked="{x:Bind ViewModel.IsLocked,Mode=TwoWay}" Width="80" HorizontalAlignment="Left"/>
         </StackPanel>
         <Border Grid.Row="1" BorderBrush="DimGray" BorderThickness="2">
             <ScrollViewer x:Name="LogScroller" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Bottom"
                           MinHeight="250">
-                <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
+                <TextBlock x:Name="LogBox" Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" MaxWidth="{Binding ElementName=LogScroller, Path=ActualWidth}"/>
             </ScrollViewer>
         </Border>
     </Grid>

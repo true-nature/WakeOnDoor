@@ -110,6 +110,10 @@
           <source>WOL Deadtime[sec]</source>
           <target state="translated">WOLデッドタイム[秒]</target>
         </trans-unit>
+        <trans-unit id="Lock.Content" translate="yes" xml:space="preserve">
+          <source>Lock</source>
+          <target state="translated">ロック</target>
+        </trans-unit>
       </group>
     </body>
   </file>
