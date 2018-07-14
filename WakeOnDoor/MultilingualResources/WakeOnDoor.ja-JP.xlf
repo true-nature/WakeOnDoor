@@ -107,12 +107,16 @@
           <target state="translated">キャンセル</target>
         </trans-unit>
         <trans-unit id="Deadtime.Text" translate="yes" xml:space="preserve">
-          <source>WOL Deadtime[sec]</source>
-          <target state="translated">WOLデッドタイム[秒]</target>
+          <source>WOL Deadtime</source>
+          <target state="translated">WOLデッドタイム</target>
         </trans-unit>
         <trans-unit id="Lock.Content" translate="yes" xml:space="preserve">
           <source>Lock</source>
           <target state="translated">ロック</target>
+        </trans-unit>
+        <trans-unit id="UnitSec.Text" translate="yes" xml:space="preserve">
+          <source>[sec]</source>
+          <target state="translated">[秒]</target>
         </trans-unit>
       </group>
     </body>

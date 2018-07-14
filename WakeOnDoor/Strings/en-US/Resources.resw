@@ -193,9 +193,12 @@
     <value>Cancel</value>
   </data>
   <data name="Deadtime.Text" xml:space="preserve">
-    <value>WOL Deadtime[sec]</value>
+    <value>WOL Deadtime</value>
   </data>
   <data name="Lock.Content" xml:space="preserve">
     <value>Lock</value>
+  </data>
+  <data name="UnitSec.Text" xml:space="preserve">
+    <value>[sec]</value>
   </data>
 </root>

@@ -88,9 +88,12 @@
     <value>キャンセル</value>
   </data>
   <data name="Deadtime.Text" xml:space="preserve">
-    <value>WOLデッドタイム[秒]</value>
+    <value>WOLデッドタイム</value>
   </data>
   <data name="Lock.Content" xml:space="preserve">
     <value>ロック</value>
+  </data>
+  <data name="UnitSec.Text" xml:space="preserve">
+    <value>[秒]</value>
   </data>
 </root>
