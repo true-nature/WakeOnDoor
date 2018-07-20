@@ -3,7 +3,6 @@ using Prism.Windows.Navigation;
 using System;
 using WakeOnDoor.Services;
 using Windows.System;
-using Windows.System.Profile;
 using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor.ViewModels

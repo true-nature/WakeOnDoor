@@ -3,8 +3,6 @@ using SerialMonitor.Scanner;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WakeOnDoor.Services;
 
@@ -12,7 +10,7 @@ namespace WakeOnDoor.Models
 {
     internal class PacketLogModel : BindableBase, IDisposable
     {
-        private const int LOG_CAPACITY = 50;
+        private const int LOG_CAPACITY = 1000;
 
         private static PacketLogModel instance;
 

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Windows.ApplicationModel.AppService;
-using Windows.ApplicationModel.Background;
-using Windows.Foundation.Collections;
-using Windows.Storage;
+﻿using Windows.ApplicationModel.Background;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
 
