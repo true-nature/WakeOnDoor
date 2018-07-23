@@ -87,7 +87,7 @@ namespace SerialMonitor.Scanner
                             info.Lqi = lqi;
                             break;
                         case nameof(TagInfo.Ct):
-                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort ct);
+                            valid &= ushort.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort ct);
                             info.Ct = ct;
                             break;
                         case nameof(TagInfo.Serial):
