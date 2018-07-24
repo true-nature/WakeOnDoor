@@ -30,7 +30,9 @@ namespace SerialMonitor.Scanner
                     if (m.Success)
                     {
                         CopyInfo(info, m.Groups, r.GetGroupNames());
-                        if (info.Valid && !(info.Pkt == 0xFE && ((info.Din ^ info.Mode) & 1) == 0))
+                        if (info.Valid &&
+                            ((info.Pkt == PacketId.ADXL345) // 加速度センサーが反応した
+                            || (info.Pkt == PacketId.BUTTON && ((info.Din ^ info.Mode) & 1) == 0))) // DI1リードスイッチが開いた
                         {
                             info.WolTrigger = true;
                             break;
@@ -96,11 +98,11 @@ namespace SerialMonitor.Scanner
                         case nameof(TagInfo.Dout):
                             valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte dout);
                             info.Dout = dout;
-                            info.Pkt = 0xfe;
+                            info.Pkt = PacketId.BUTTON;
                             break;
                         case nameof(TagInfo.X):
                             valid &= short.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out short x);
-                            info.Pkt = 0x35;
+                            info.Pkt = PacketId.ADXL345;
                             info.X = x;
                             break;
                         case nameof(TagInfo.Y):

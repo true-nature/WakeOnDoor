@@ -5,6 +5,13 @@ using System.Text.RegularExpressions;
 
 namespace SerialMonitor.Scanner
 {
+    internal sealed class PacketId
+    {
+        public const byte STANDARD = 0x10;
+        public const byte ADXL345 = 0x35;
+        public const byte BUTTON = 0xFE;
+    }
+
     /// <summary>
     /// Scanned tag info
     /// </summary>

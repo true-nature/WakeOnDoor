@@ -33,7 +33,9 @@ namespace SerialMonitor.Scanner
                     {
                         CopyInfo(info, m.Groups, r.GetGroupNames());
                         info.Pkt = Flag2Pkt(m.Groups["flg"].Value);
-                        if (info.Valid && !(info.Pkt == 0xFE && ((info.Din ^ info.Mode) & 1) == 0))
+                        if (info.Valid &&
+                            ((info.Pkt == PacketId.ADXL345) // 加速度センサーが反応した
+                            || (info.Pkt == PacketId.BUTTON && ((info.Din ^ info.Mode) & 1) == 0))) // DI1リードスイッチが開いた
                         {
                             info.WolTrigger = true;
                             break;
@@ -52,10 +54,10 @@ namespace SerialMonitor.Scanner
                 switch (flag)
                 {
                     case "X":
-                        pkt = 0x35;
+                        pkt = PacketId.ADXL345;
                         break;
                     case "P":
-                        pkt = 0xFE;
+                        pkt = PacketId.BUTTON;
                         break;
                     //case "S":
                     //    pkt = 0x10;
