@@ -16,6 +16,9 @@ namespace SerialMonitor.Scanner
         private static readonly Regex ButtonRegex = new Regex(@";(?<Ts>\d+);(?<Rptr>[\dA-F]{8});(?<Lqi>\d{3});(?<Ct>\d+);(?<Serial>[\da-f]{7});(?<Batt>\d+);(?<Adc1>\d+);(?<Adc2>\d+);(?<Mode>\d{4});(?<Din>\d{4});(?<Flg>P);(?<Dout>\d{4});");
         //private static readonly Regex StandardRegex = new Regex(@";(?<Ts>\d+);(?<Rptr>[\dA-F]+);(?<Lqi>\d+);(?<Ct>[\dA-F]+);(?<Serial>[\da-f]{7});(?<Batt>\d+);(?<Lm61>\d+);(?<Cap>\d+);(?<Adc1>\d+);(?<Adc2>\d+);(?<Flg>S);");
         private static readonly Regex[] regexs = { ADXL345Regex, ButtonRegex };
+        private const string KEY_FLG = "Flg";
+        private const string FLG_ADXL34 = "X";
+        private const string FLG_BUTTON = "P";
 
         public SmplTag3Scanner()
         {
@@ -32,7 +35,7 @@ namespace SerialMonitor.Scanner
                     if (m.Success)
                     {
                         CopyInfo(info, m.Groups, r.GetGroupNames());
-                        info.Pkt = Flag2Pkt(m.Groups["flg"].Value);
+                        info.Pkt = Flag2Pkt(m.Groups[KEY_FLG].Value);
                         if (info.Valid &&
                             ((info.Pkt == PacketId.ADXL345) // 加速度センサーが反応した
                             || (info.Pkt == PacketId.BUTTON && ((info.Din ^ info.Mode) & 1) == 0))) // DI1リードスイッチが開いた
@@ -46,17 +49,17 @@ namespace SerialMonitor.Scanner
             return info;
         }
 
-        private byte Flag2Pkt(string flag)
+        private static byte Flag2Pkt(string flag)
         {
             byte pkt = 0;
             if (!string.IsNullOrWhiteSpace(flag))
             {
                 switch (flag)
                 {
-                    case "X":
+                    case FLG_ADXL34:
                         pkt = PacketId.ADXL345;
                         break;
-                    case "P":
+                    case FLG_BUTTON:
                         pkt = PacketId.BUTTON;
                         break;
                     //case "S":
