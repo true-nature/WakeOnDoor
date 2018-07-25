@@ -119,7 +119,7 @@ namespace SerialMonitor.Scanner
             sb.AppendFormat(",ct={0}", Ct);
             sb.AppendFormat(",sid={0:X08}", Sid);
             sb.AppendFormat(",id={0}", Id);
-            sb.AppendFormat(",pkt={0}", Pkt);
+            sb.AppendFormat(",pkt={0:X02}", Pkt);
             sb.AppendFormat(",bt={0}", Bt);
             sb.AppendFormat(",batt={0}", Batt);
             sb.AppendFormat(",adc1={0}", Adc1);
@@ -133,7 +133,7 @@ namespace SerialMonitor.Scanner
             return sb.ToString();
         }
 
-        private static readonly Regex TagInfoRegex = new Regex(@"ts=(?<Ts>\d+),rptr=(?<Rptr>[\dA-F]{8}),lqi=(?<Lqi>\d+),ct=(?<Ct>\d+),sid=(?<Sid>[\dA-F]{8}),id=(?<Id>\d+),pkt=(?<Pkt>\d+),bt=(?<Bt>\d+),batt=(?<Batt>\d+),adc1=(?<Adc1>\d+),adc2=(?<Adc2>\d+),mode=(?<Mode>\d+),din=(?<Din>\d+),dout=(?<Dout>\d+),x=(?<X>-?\d+),y=(?<Y>-?\d+),z=(?<Z>-?\d+)$");
+        private static readonly Regex TagInfoRegex = new Regex(@"ts=(?<Ts>\d+),rptr=(?<Rptr>[\dA-F]{8}),lqi=(?<Lqi>\d+),ct=(?<Ct>\d+),sid=(?<Sid>[\dA-F]{8}),id=(?<Id>\d+),pkt=(?<Pkt>[\dA-F]{2}),bt=(?<Bt>\d+),batt=(?<Batt>\d+),adc1=(?<Adc1>\d+),adc2=(?<Adc2>\d+),mode=(?<Mode>\d+),din=(?<Din>\d+),dout=(?<Dout>\d+),x=(?<X>-?\d+),y=(?<Y>-?\d+),z=(?<Z>-?\d+)$");
         
         public static TagInfo FromString(string msg)
         {
