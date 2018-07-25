@@ -79,6 +79,8 @@ namespace SerialMonitor.Scanner
         /// <summary>
         /// sensor mode
         /// </summary>
+        /// <remarks>BUTTON Input(Pkt=0xFE)の場合の動作モード。
+        /// 0:DI1（DIO12）の立ち下がりを検出する, 1:DI1（DIO12）の立ち上がりを検出する, 2:DI1（DIO12）で立ち下がり、DI2（DIO13）で立ち上がりを検出する</remarks>
         public byte Mode { get; set; }
         /// <summary>
         /// DI status

@@ -38,7 +38,7 @@ namespace SerialMonitor.Scanner
                         info.Pkt = Flag2Pkt(m.Groups[KEY_FLG].Value);
                         if (info.Valid &&
                             ((info.Pkt == PacketId.ADXL345) // 加速度センサーが反応した
-                            || (info.Pkt == PacketId.BUTTON && ((info.Din ^ info.Mode) & 1) == 0))) // DI1リードスイッチが開いた
+                            || (info.Pkt == PacketId.BUTTON && ((info.Din ^ info.Mode) & 1) == 1))) // DI1リードスイッチが作動
                         {
                             info.WolTrigger = true;
                             break;
