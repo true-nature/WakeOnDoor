@@ -2,6 +2,7 @@
 using Prism.Windows.Navigation;
 using System;
 using WakeOnDoor.Services;
+using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
 
@@ -14,6 +15,19 @@ namespace WakeOnDoor.ViewModels
         public INavigationService NavigationService { get; set; }
 
         public ContentDialog PowerDialog { get; set; }
+
+        private string title;
+        public string Title
+        {
+            get
+            {
+                return title;
+            }
+            set
+            {
+                SetProperty(ref title, value);
+            }
+        }
 
         private string currentPage;
         public string CurrentPage
@@ -30,6 +44,8 @@ namespace WakeOnDoor.ViewModels
                         {
                             currentPage = value;
                             NavigationService.Navigate(value, null);
+                            var resourceLoader = ResourceLoader.GetForCurrentView();
+                            Title = resourceLoader.GetString(currentPage + "/Text");
                         }
                         break;
                 }

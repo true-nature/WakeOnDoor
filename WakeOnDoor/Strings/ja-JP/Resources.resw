@@ -96,4 +96,7 @@
   <data name="UnitSec.Text" xml:space="preserve">
     <value>[秒]</value>
   </data>
+  <data name="Settings.Text" xml:space="preserve">
+    <value>設定</value>
+  </data>
 </root>

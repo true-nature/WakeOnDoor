@@ -201,4 +201,7 @@
   <data name="UnitSec.Text" xml:space="preserve">
     <value>[sec]</value>
   </data>
+  <data name="Settings.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
 </root>

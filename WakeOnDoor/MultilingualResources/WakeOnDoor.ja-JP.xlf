@@ -118,6 +118,10 @@
           <source>[sec]</source>
           <target state="translated">[秒]</target>
         </trans-unit>
+        <trans-unit id="Settings.Text" translate="yes" xml:space="preserve">
+          <source>Settings</source>
+          <target state="translated">設定</target>
+        </trans-unit>
       </group>
     </body>
   </file>

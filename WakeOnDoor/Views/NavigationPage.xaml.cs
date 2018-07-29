@@ -33,7 +33,7 @@ namespace WakeOnDoor.Views
         {
             if (args.IsSettingsInvoked)
             {
-                ContentFrame.Navigate(typeof(SettingsPage));
+                ViewModel.CurrentPage = PageTokens.SettingsPage;
             }
             else
             {
