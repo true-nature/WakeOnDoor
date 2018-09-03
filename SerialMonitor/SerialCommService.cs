@@ -12,6 +12,8 @@ namespace SerialMonitor
     internal class SerialCommService : ISerialCommService, IDisposable
     {
         private const uint BUFFER_LENGTH = 256;
+        private const string PRODUCT_TOCOSTICK_PREFIX = "TWE-Lite-";
+        private const string PRODUCT_MONOSTICK_PREFIX = "MONOSTICK";
         private SerialDevice device;
         private DeviceInformation info;
         private CancellationTokenSource Source;
@@ -76,7 +78,7 @@ namespace SerialMonitor
             foreach (var d in devices)
             {
                 // "TWE-Lite-USB" or "TWE-Lite-R" is expected
-                if (d.Name.StartsWith("TWE-Lite-"))
+                if (d.Name.StartsWith(PRODUCT_TOCOSTICK_PREFIX) || d.Name.StartsWith(PRODUCT_MONOSTICK_PREFIX))
                 {
                     // Use the first
                     device = await SerialDevice.FromIdAsync(d.Id);
