@@ -11,7 +11,7 @@ namespace SerialMonitor
     internal class WOLHelper
     {
         private const string ALLNODE = "FF02::1";   // Link-Local Scope Multicast Addresses / All Nodes Address
-        private const string PORT = "7";
+        private const string PORT = "9";    // Discard protocol
 
         internal static async Task WakeUpAllAsync()
         {
