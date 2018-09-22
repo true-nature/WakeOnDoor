@@ -204,4 +204,10 @@
   <data name="Settings.Text" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="WakeNow.Content" xml:space="preserve">
+    <value>WOL Now!</value>
+  </data>
+  <data name="S_SentWOL" xml:space="preserve">
+    <value>Sent WOL packet.</value>
+  </data>
 </root>

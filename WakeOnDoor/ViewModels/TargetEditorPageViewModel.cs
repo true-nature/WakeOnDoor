@@ -35,6 +35,7 @@ namespace WakeOnDoor.ViewModels
 
         public ICommand AddMacCommand { get; }
         public ICommand RemoveMacCommand { get; }
+        public ICommand WakeNowCommand { get; }
 
         public TargetEditorPageViewModel()
         {
@@ -48,6 +49,10 @@ namespace WakeOnDoor.ViewModels
             RemoveMacCommand = new DelegateCommand(async () => {
                 WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
                 await EditorModel.RemoveAsync(target);
+            });
+            WakeNowCommand = new DelegateCommand(async () => {
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                await EditorModel.WakeNowAsync(target);
             });
         }
         private string physicalToEdit;

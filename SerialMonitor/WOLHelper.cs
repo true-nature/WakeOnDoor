@@ -23,11 +23,12 @@ namespace SerialMonitor
             }
         }
 
-        private static async Task WakeUpAsync(string physical)
+        internal static async Task<bool> WakeUpAsync(string physical)
         {
+            var result = false;
             if (string.IsNullOrWhiteSpace(physical))
             {
-                return;
+                return false;
             }
             try
             {
@@ -35,11 +36,14 @@ namespace SerialMonitor
                 if (parsed)
                 {
                     await WakeUpAsync(mac);
+                    result = true;
                 }
-            } catch (Exception)
+            }
+            catch (Exception)
             {
 
             }
+            return result;
         }
 
         private static async Task WakeUpAsync(ulong mac)

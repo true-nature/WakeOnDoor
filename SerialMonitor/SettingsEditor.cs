@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
@@ -63,6 +64,9 @@ namespace SerialMonitor
                         break;
                     case nameof(AppCommands.Remove):
                         RemoveTarget(settings, targetDic, resValues, message);
+                        break;
+                    case nameof(AppCommands.Wake):
+                        WakeTargetAsync(settings, targetDic, message, resValues);
                         break;
                     case nameof(AppCommands.Get):
                         resValues[nameof(Keys.Result)] = true.ToString();
@@ -183,6 +187,36 @@ namespace SerialMonitor
             resValues[nameof(Keys.Result)] = result.ToString();
 
             return result;
+        }
+
+        private static async void WakeTargetAsync(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
+        {
+            if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
+                return;
+            }
+            if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
+                return;
+            }
+            if (!NormalizePhysical(ref physical))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidPhysicalFormat);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(physical))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
+            }
+            else
+            {
+                bool result = await WOLHelper.WakeUpAsync(physical.Replace("-", ""));
+                resValues[nameof(Keys.Result)] = result.ToString();
+                resValues[nameof(Keys.StatusMessage)] = (result ? nameof(CommandStatus.S_SentWOL) : nameof(CommandStatus.S_IncompleteParameters));
+            }
         }
 
         private static bool SetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)

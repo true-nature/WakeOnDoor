@@ -6,6 +6,7 @@
         Get,
         Add,
         Remove,
+        Wake,
         SetInterval,
         GetInterval,
     }
@@ -25,6 +26,7 @@
     public enum CommandStatus
     {
         S_Success,
+        S_SentWOL,
         S_UnknownCommand,
         S_IncompleteParameters,
         S_NoPhysicalAddress,

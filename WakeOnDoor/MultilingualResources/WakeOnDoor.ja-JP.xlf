@@ -122,6 +122,14 @@
           <source>Settings</source>
           <target state="translated">設定</target>
         </trans-unit>
+        <trans-unit id="WakeNow.Content" translate="yes" xml:space="preserve">
+          <source>WOL Now!</source>
+          <target state="translated">WOL Now!</target>
+        </trans-unit>
+        <trans-unit id="S_SentWOL" translate="yes" xml:space="preserve">
+          <source>Sent WOL packet.</source>
+          <target state="translated">WOLパケットを送信しました。</target>
+        </trans-unit>
       </group>
     </body>
   </file>

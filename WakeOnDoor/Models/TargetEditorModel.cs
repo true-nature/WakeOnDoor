@@ -132,6 +132,28 @@ namespace WakeOnDoor.Models
             }
         }
 
+        public async Task WakeNowAsync(WOLTarget target)
+        {
+            using (var conn = await OpenAppServiceAsync())
+            {
+                if (conn == null) { return; }
+                var values = new ValueSet
+                {
+                    [nameof(Keys.Command)] = nameof(AppCommands.Wake),
+                    [nameof(Keys.PhysicalAddress)] = target.Physical,
+                    [nameof(Keys.Comment)] = target.Comment
+                };
+                var response = await conn.SendMessageAsync(values);
+                if (response.Status == AppServiceResponseStatus.Success)
+                {
+                    var resourceLoader = ResourceLoader.GetForCurrentView();
+                    var status = response.Message[nameof(Keys.StatusMessage)] as string;
+                    if (!string.IsNullOrEmpty(status)) StatusMessage = resourceLoader.GetString(status);
+                }
+            }
+
+        }
+
         private void RefreshTargetList(string targetJsonStr)
         {
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(targetJsonStr)))

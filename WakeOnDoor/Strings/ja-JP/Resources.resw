@@ -99,4 +99,10 @@
   <data name="Settings.Text" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="WakeNow.Content" xml:space="preserve">
+    <value>WOL Now!</value>
+  </data>
+  <data name="S_SentWOL" xml:space="preserve">
+    <value>WOLパケットを送信しました。</value>
+  </data>
 </root>
