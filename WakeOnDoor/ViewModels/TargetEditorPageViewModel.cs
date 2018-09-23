@@ -43,15 +43,15 @@ namespace WakeOnDoor.ViewModels
             EditorModel = TargetEditorModel.GetInstance();
 
             AddMacCommand = new DelegateCommand(async () => {
-                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit, Address=AddressToEdit, Port=PortToEdit };
                 await EditorModel.AddAsync(target);
             });
             RemoveMacCommand = new DelegateCommand(async () => {
-                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit };
                 await EditorModel.RemoveAsync(target);
             });
             WakeNowCommand = new DelegateCommand(async () => {
-                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit };
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Address = AddressToEdit, Port = PortToEdit };
                 await EditorModel.WakeNowAsync(target);
             });
         }
@@ -64,6 +64,23 @@ namespace WakeOnDoor.ViewModels
             get { return physicalToEdit; }
             set { SetProperty(ref physicalToEdit, value); }
         }
+
+        private string addressToEdit;
+        [RestorableState]
+        public string AddressToEdit
+        {
+            get { return addressToEdit; }
+            set { SetProperty(ref addressToEdit, value); }
+        }
+
+        private string portToEdit;
+        [RestorableState]
+        public string PortToEdit
+        {
+            get { return portToEdit; }
+            set { SetProperty(ref portToEdit, value); }
+        }
+
         private string commentToEdit;
         [RestorableState]
         public string CommentToEdit
@@ -79,6 +96,8 @@ namespace WakeOnDoor.ViewModels
                 if (!string.IsNullOrEmpty(value?.Physical))
                 {
                     PhysicalToEdit = value?.Physical;
+                    AddressToEdit = value?.Address;
+                    PortToEdit = value?.Port;
                     CommentToEdit = value?.Comment;
                 }
             }
@@ -111,6 +130,14 @@ namespace WakeOnDoor.ViewModels
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out object value))
             {
                 PhysicalToEdit = value as string;
+            }
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(AddressToEdit), out value))
+            {
+                AddressToEdit = value as string;
+            }
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PortToEdit), out value))
+            {
+                PortToEdit = value as string;
             }
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(CommentToEdit), out value))
             {

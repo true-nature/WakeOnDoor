@@ -17,6 +17,8 @@
         PhysicalAddress,
         Comment,
         TargetList,
+        IpAddress,
+        PortNo,
         IntervalSec,
         LastWolTime,
         Result,
@@ -31,7 +33,8 @@
         S_IncompleteParameters,
         S_NoPhysicalAddress,
         S_EntryNotFound,
-        S_InvalidPhysicalFormat
+        S_InvalidPhysicalFormat,
+        S_InvalidAddressFormat
     }
 
 }

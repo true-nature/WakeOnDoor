@@ -105,4 +105,7 @@
   <data name="S_SentWOL" xml:space="preserve">
     <value>WOLパケットを送信しました。</value>
   </data>
+  <data name="S_InvalidAddressFormat" xml:space="preserve">
+    <value>宛先アドレスの書式が不正です。</value>
+  </data>
 </root>

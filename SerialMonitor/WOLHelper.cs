@@ -10,20 +10,17 @@ namespace SerialMonitor
 {
     internal class WOLHelper
     {
-        private const string ALLNODE = "FF02::1";   // Link-Local Scope Multicast Addresses / All Nodes Address
-        private const string PORT = "9";    // Discard protocol
-
         internal static async Task WakeUpAllAsync()
         {
             var settings = ApplicationData.Current.LocalSettings;
             var targetDic = SettingsEditor.ReadMacList(settings);
             foreach (var t in targetDic)
             {
-                await WakeUpAsync(t.Value.Physical.Replace("-",""));
+                await WakeUpAsync(t.Value.Physical.Replace("-",""), t.Value.Address, t.Value.Port);
             }
         }
 
-        internal static async Task<bool> WakeUpAsync(string physical)
+        internal static async Task<bool> WakeUpAsync(string physical, string address, string port)
         {
             var result = false;
             if (string.IsNullOrWhiteSpace(physical))
@@ -32,10 +29,12 @@ namespace SerialMonitor
             }
             try
             {
-                var parsed = UInt64.TryParse(physical, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong mac);
-                if (parsed)
+                var parsed_physical = UInt64.TryParse(physical, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong mac);
+                var host = new HostName(address);
+                var parsed_port = Int32.TryParse(port, out int portNo);
+                if (parsed_physical && parsed_port)
                 {
-                    await WakeUpAsync(mac);
+                    await WakeUpAsync(mac, host, port);
                     result = true;
                 }
             }
@@ -46,7 +45,7 @@ namespace SerialMonitor
             return result;
         }
 
-        private static async Task WakeUpAsync(ulong mac)
+        private static async Task WakeUpAsync(ulong mac, HostName hostname, string port)
         {
             byte[] buf = new byte[6*17];
             for (int k =0; k<6; k++)
@@ -60,10 +59,9 @@ namespace SerialMonitor
                     buf[6 * i + j] = (byte)(0xff & (mac >> (8 * (5 - j))));
                 }
             }
-            var hostname = new HostName(ALLNODE);
             using (var socket = new DatagramSocket())
             {
-                using (Stream stream = (await socket.GetOutputStreamAsync(hostname, PORT)).AsStreamForWrite())
+                using (Stream stream = (await socket.GetOutputStreamAsync(hostname, port)).AsStreamForWrite())
                 {
                     await stream.WriteAsync(buf, 0, buf.Length);
                 }

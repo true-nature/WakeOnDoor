@@ -210,4 +210,7 @@
   <data name="S_SentWOL" xml:space="preserve">
     <value>Sent WOL packet.</value>
   </data>
+  <data name="S_InvalidAddressFormat" xml:space="preserve">
+    <value>Invalid dest address format.</value>
+  </data>
 </root>

@@ -28,6 +28,8 @@ namespace WakeOnDoor.Views
         {
             var settings = ApplicationData.Current.LocalSettings;
             settings.Values[TargetEditorPageViewModel.TEMP_PREFIX + nameof(ViewModel.PhysicalToEdit)] = PhysicalTextBox.Text;
+            settings.Values[TargetEditorPageViewModel.TEMP_PREFIX + nameof(ViewModel.AddressToEdit)] = AddressTextBox.Text;
+            settings.Values[TargetEditorPageViewModel.TEMP_PREFIX + nameof(ViewModel.PortToEdit)] = PortTextBox.Text;
             settings.Values[TargetEditorPageViewModel.TEMP_PREFIX + nameof(ViewModel.CommentToEdit)] = CommentTextBox.Text;
             base.OnNavigatingFrom(e);
         }

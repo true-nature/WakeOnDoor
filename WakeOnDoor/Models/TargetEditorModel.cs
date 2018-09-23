@@ -98,6 +98,8 @@ namespace WakeOnDoor.Models
                 {
                     [nameof(Keys.Command)] = nameof(AppCommands.Add),
                     [nameof(Keys.PhysicalAddress)] = target.Physical,
+                    [nameof(Keys.IpAddress)] = target.Address,
+                    [nameof(Keys.PortNo)] = target.Port,
                     [nameof(Keys.Comment)] = target.Comment
                 };
                 var response = await conn.SendMessageAsync(values);
@@ -121,7 +123,6 @@ namespace WakeOnDoor.Models
                 {
                     [nameof(Keys.Command)] = nameof(AppCommands.Remove),
                     [nameof(Keys.PhysicalAddress)] = target.Physical,
-                    [nameof(Keys.Comment)] = target.Comment
                 };
                 var response = await conn.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
@@ -141,7 +142,8 @@ namespace WakeOnDoor.Models
                 {
                     [nameof(Keys.Command)] = nameof(AppCommands.Wake),
                     [nameof(Keys.PhysicalAddress)] = target.Physical,
-                    [nameof(Keys.Comment)] = target.Comment
+                    [nameof(Keys.IpAddress)] = target.Address,
+                    [nameof(Keys.PortNo)] = target.Port,
                 };
                 var response = await conn.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
@@ -187,7 +189,7 @@ namespace WakeOnDoor.Models
             }
         }
 
-        public async Task<int> SetIntervalAsync(int interval)
+        public async Task SetIntervalAsync(int interval)
         {
             using (var conn = await OpenAppServiceAsync())
             {
@@ -205,9 +207,6 @@ namespace WakeOnDoor.Models
                     }
                 }
             }
-            int intervalSec = 0;
-            Int32.TryParse(IntervalSecStr, out intervalSec);
-            return intervalSec;
         }
 
         public async Task<int> GetIntervalAsync()

@@ -4,17 +4,19 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Networking;
 
 namespace SerialMonitor
 {
     public sealed class SettingsEditor : IBackgroundTask
     {
         private const int DEFAULT_INTERVAL_SECS = 10;
+        private const string DEFAULT_DEST_ADDRESS = "FF02::1";   // Link-Local Scope Multicast Addresses / All Nodes Address
+        private const string DEFAULT_PORT = "9";    // Discard protocol
         private BackgroundTaskDeferral taskDeferral;
         private AppServiceConnection connection;
 
@@ -113,27 +115,36 @@ namespace SerialMonitor
             }
         }
 
-        private static bool AddTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
+        private static void AddTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
         {
+            resValues[nameof(Keys.Result)] = false.ToString();
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_IncompleteParameters);
-                return false;
+                return;
             }
             if (!(message[nameof(Keys.PhysicalAddress)] is string physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
-                return false;
+                return;
             }
             if (!NormalizePhysical(ref physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidPhysicalFormat);
-                return false;
+                return;
             }
 
-            bool result = false;
+            if (!message.ContainsKey(nameof(Keys.IpAddress)) || !(message[nameof(Keys.IpAddress)] is string address) || !IsValidAddress(address))
+            {
+                address = DEFAULT_DEST_ADDRESS;
+            }
+            if (!message.ContainsKey(nameof(Keys.PortNo)) || !(message[nameof(Keys.PortNo)] is string port) || !IsValidPort(port))
+            {
+                port = DEFAULT_PORT;
+            }
+
             message.TryGetValue(nameof(Keys.Comment), out object comment);
-            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string };
+            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string, Address = address as string, Port = port as string };
             if (string.IsNullOrWhiteSpace(target.Physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
@@ -141,16 +152,13 @@ namespace SerialMonitor
             else
             {
                 macList[target.Physical] = target;
-                resValues[nameof(Keys.Result)] = true.ToString();
                 SaveMacList(settings, macList.Values);
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
-                result = true;
+                resValues[nameof(Keys.Result)] = true.ToString();
             }
-
-            return result;
         }
 
-        private static bool RemoveTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet resValues, ValueSet message)
+        private static void RemoveTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet resValues, ValueSet message)
         {
             bool result = false;
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
@@ -185,8 +193,6 @@ namespace SerialMonitor
                 }
             }
             resValues[nameof(Keys.Result)] = result.ToString();
-
-            return result;
         }
 
         private static async void WakeTargetAsync(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
@@ -206,6 +212,19 @@ namespace SerialMonitor
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidPhysicalFormat);
                 return;
             }
+            if (!message.ContainsKey(nameof(Keys.IpAddress)) || !(message[nameof(Keys.IpAddress)] is string address))
+            {
+                address = DEFAULT_DEST_ADDRESS;
+            }
+            if (!message.ContainsKey(nameof(Keys.PortNo)) || !(message[nameof(Keys.PortNo)] is string port))
+            {
+                port = DEFAULT_PORT;
+            }
+            if (!NormalizeDestAddress(address, port))
+            {
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidAddressFormat);
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(physical))
             {
@@ -213,13 +232,13 @@ namespace SerialMonitor
             }
             else
             {
-                bool result = await WOLHelper.WakeUpAsync(physical.Replace("-", ""));
+                bool result = await WOLHelper.WakeUpAsync(physical.Replace("-", ""), address, port);
                 resValues[nameof(Keys.Result)] = result.ToString();
                 resValues[nameof(Keys.StatusMessage)] = (result ? nameof(CommandStatus.S_SentWOL) : nameof(CommandStatus.S_IncompleteParameters));
             }
         }
 
-        private static bool SetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
+        private static void SetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
         {
             bool result = false;
             if (!message.ContainsKey(nameof(Keys.IntervalSec)))
@@ -238,19 +257,13 @@ namespace SerialMonitor
             }
             resValues[nameof(Keys.IntervalSec)] = settings.Values[nameof(Keys.IntervalSec)];
             resValues[nameof(Keys.Result)] = result.ToString();
-
-            return result;
         }
 
-        private static bool GetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
+        private static void GetInterval(ApplicationDataContainer settings, ValueSet resValues, ValueSet message)
         {
-            bool result = true;
             resValues[nameof(Keys.IntervalSec)] = settings.Values[nameof(Keys.IntervalSec)];
             resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_Success);
-            result = true;
-            resValues[nameof(Keys.Result)] = result.ToString();
-
-            return result;
+            resValues[nameof(Keys.Result)] = true.ToString();
         }
 
         /// <summary>
@@ -275,6 +288,29 @@ namespace SerialMonitor
             return m.Success;
         }
 
+        private static bool IsValidAddress(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return false;
+            }
+            var host = new HostName(address);
+            return (host.Type == HostNameType.Ipv4 || host.Type == HostNameType.Ipv6);
+        }
+
+        private static bool IsValidPort(string port)
+        {
+            int portNo = -1;
+            var parsed = int.TryParse(port, out portNo);
+            parsed &= portNo > 0 && portNo < 65536;
+            return (parsed && portNo > 0 && portNo < 65536);
+        }
+
+        private static bool NormalizeDestAddress(string address, string port)
+        {
+            return IsValidAddress(address) && IsValidPort(port);
+        }
+
         internal static Dictionary<string, WOLTarget> ReadMacList(ApplicationDataContainer settings)
         {
             Dictionary<string, WOLTarget> result = new Dictionary<string, WOLTarget>();
@@ -285,6 +321,14 @@ namespace SerialMonitor
                 var targets = serializer.ReadObject(stream) as HashSet<WOLTarget>;
                 foreach (var t in targets)
                 {
+                    if (!IsValidAddress(t.Address))
+                    {
+                        t.Address = DEFAULT_DEST_ADDRESS;
+                    }
+                    if (!IsValidPort(t.Port))
+                    {
+                        t.Port = DEFAULT_PORT;
+                    }
                     result.Add(t.Physical, t);
                 }
             }

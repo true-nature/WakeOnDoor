@@ -130,6 +130,10 @@
           <source>Sent WOL packet.</source>
           <target state="translated">WOLパケットを送信しました。</target>
         </trans-unit>
+        <trans-unit id="S_InvalidAddressFormat" translate="yes" xml:space="preserve">
+          <source>Invalid dest address format.</source>
+          <target state="translated">宛先アドレスの書式が不正です。</target>
+        </trans-unit>
       </group>
     </body>
   </file>
