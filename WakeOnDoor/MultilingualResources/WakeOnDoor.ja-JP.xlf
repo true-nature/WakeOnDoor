@@ -134,6 +134,18 @@
           <source>Invalid dest address format.</source>
           <target state="translated">宛先アドレスの書式が不正です。</target>
         </trans-unit>
+        <trans-unit id="Restart.Text" translate="yes" xml:space="preserve">
+          <source>Restart</source>
+          <target state="translated">再起動</target>
+        </trans-unit>
+        <trans-unit id="RestartItem.Content" translate="yes" xml:space="preserve">
+          <source>Restart</source>
+          <target state="translated">再起動</target>
+        </trans-unit>
+        <trans-unit id="RestartTitle.Title" translate="yes" xml:space="preserve">
+          <source>Restart the Computer</source>
+          <target state="translated">コンピュータを再起動</target>
+        </trans-unit>
       </group>
     </body>
   </file>

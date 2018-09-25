@@ -108,4 +108,13 @@
   <data name="S_InvalidAddressFormat" xml:space="preserve">
     <value>宛先アドレスの書式が不正です。</value>
   </data>
+  <data name="Restart.Text" xml:space="preserve">
+    <value>再起動</value>
+  </data>
+  <data name="RestartItem.Content" xml:space="preserve">
+    <value>再起動</value>
+  </data>
+  <data name="RestartTitle.Title" xml:space="preserve">
+    <value>コンピュータを再起動</value>
+  </data>
 </root>

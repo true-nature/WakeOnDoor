@@ -27,6 +27,11 @@
                         <FontIcon Glyph="&#xE7E8;"/>
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem x:Uid="RestartItem" Content="Restart" Tag="Restart">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE72C;"/>
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
             <NavigationView.HeaderTemplate>
                 <DataTemplate>
@@ -43,9 +48,19 @@
                 </Frame.ContentTransitions>
             </Frame>
         </NavigationView>
-        <ContentDialog x:Name="PowerContentDialog"
+        <ContentDialog x:Name="ShutdownContentDialog"
                        x:Uid="ShutdownTitle"
                        Title="Shutdown the Computer"
+                       PrimaryButtonText="OK"
+                       SecondaryButtonText="Cancel"
+                       IsPrimaryButtonEnabled="{x:Bind ViewModel.IsIoTDeviceFamily}">
+            <Grid>
+                <TextBlock x:Uid="IoTOnlyFeature" Text="This feature is enabled on IoT DeviceFamily only." Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToInvisibilityConverter}}"/>
+            </Grid>
+        </ContentDialog>
+        <ContentDialog x:Name="RestartContentDialog"
+                       x:Uid="RestartTitle"
+                       Title="Restart the Computer"
                        PrimaryButtonText="OK"
                        SecondaryButtonText="Cancel"
                        IsPrimaryButtonEnabled="{x:Bind ViewModel.IsIoTDeviceFamily}">

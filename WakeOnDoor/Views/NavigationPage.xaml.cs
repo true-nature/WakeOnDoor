@@ -18,7 +18,8 @@ namespace WakeOnDoor.Views
         public NavigationPage()
         {
             this.InitializeComponent();
-            ViewModel.PowerDialog = PowerContentDialog;
+            ViewModel.ShutdownDialog = ShutdownContentDialog;
+            ViewModel.RestartDialog = RestartContentDialog;
             DataContextChanged += (sender, args) =>
             {
                 ViewModel.NavigationService = new FrameNavigationService(

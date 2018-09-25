@@ -14,7 +14,8 @@ namespace WakeOnDoor.ViewModels
 
         public INavigationService NavigationService { get; set; }
 
-        public ContentDialog PowerDialog { get; set; }
+        public ContentDialog ShutdownDialog { get; set; }
+        public ContentDialog RestartDialog { get; set; }
 
         private string title;
         public string Title
@@ -37,7 +38,10 @@ namespace WakeOnDoor.ViewModels
                switch (value)
                 {
                     case PageTokens.ShutdownDialog:
-                        ShowPowerDialog();
+                        ShowPowerDialog(ShutdownKind.Shutdown);
+                        break;
+                    case PageTokens.RestartDialog:
+                        ShowPowerDialog(ShutdownKind.Restart);
                         break;
                     default:
                         if (currentPage != value)
@@ -56,13 +60,14 @@ namespace WakeOnDoor.ViewModels
         {
         }
 
-        public async void ShowPowerDialog()
+        public async void ShowPowerDialog(ShutdownKind kind)
         {
-            var result = await PowerDialog.ShowAsync();
+            var dialog = (kind == ShutdownKind.Restart ? RestartDialog : ShutdownDialog);
+            var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && IsIoTDeviceFamily)
             {
                 await LogReceiveServer.GetInstance().DisconnectAsync();
-                ShutdownManager.BeginShutdown(ShutdownKind.Shutdown, TimeSpan.FromSeconds(0));
+                ShutdownManager.BeginShutdown(kind, TimeSpan.FromSeconds(0));
             }
         }
     }
