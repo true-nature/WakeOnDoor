@@ -7,8 +7,8 @@ using System.Text.RegularExpressions;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
-using Windows.Storage;
 using Windows.Networking;
+using Windows.Storage;
 
 namespace SerialMonitor
 {
@@ -68,7 +68,7 @@ namespace SerialMonitor
                         RemoveTarget(settings, targetDic, resValues, message);
                         break;
                     case nameof(AppCommands.Wake):
-                        WakeTargetAsync(settings, targetDic, message, resValues);
+                        WakeTarget(settings, targetDic, message, resValues);
                         break;
                     case nameof(AppCommands.Get):
                         resValues[nameof(Keys.Result)] = true.ToString();
@@ -195,7 +195,7 @@ namespace SerialMonitor
             resValues[nameof(Keys.Result)] = result.ToString();
         }
 
-        private static async void WakeTargetAsync(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
+        private static void WakeTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
         {
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
@@ -232,9 +232,9 @@ namespace SerialMonitor
             }
             else
             {
-                bool result = await WOLHelper.WakeUpAsync(physical.Replace("-", ""), address, port);
-                resValues[nameof(Keys.Result)] = result.ToString();
-                resValues[nameof(Keys.StatusMessage)] = (result ? nameof(CommandStatus.S_SentWOL) : nameof(CommandStatus.S_IncompleteParameters));
+                var result = WOLHelper.WakeUpAsync(physical.Replace("-", ""), address, port);   // awaitしない
+                resValues[nameof(Keys.Result)] = true.ToString();
+                resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_SentWOL);
             }
         }
 

@@ -135,6 +135,7 @@ namespace WakeOnDoor.Models
 
         public async Task WakeNowAsync(WOLTarget target)
         {
+            StatusMessage = String.Empty;
             using (var conn = await OpenAppServiceAsync())
             {
                 if (conn == null) { return; }
@@ -148,12 +149,16 @@ namespace WakeOnDoor.Models
                 var response = await conn.SendMessageAsync(values);
                 if (response.Status == AppServiceResponseStatus.Success)
                 {
-                    var resourceLoader = ResourceLoader.GetForCurrentView();
-                    var status = response.Message[nameof(Keys.StatusMessage)] as string;
-                    if (!string.IsNullOrEmpty(status)) StatusMessage = resourceLoader.GetString(status);
+                    if (response.Message.ContainsKey(nameof(Keys.StatusMessage))) {
+                        var status = response.Message[nameof(Keys.StatusMessage)] as string;
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            var resourceLoader = ResourceLoader.GetForCurrentView();
+                            StatusMessage = resourceLoader.GetString(status);
+                        }
+                    }
                 }
             }
-
         }
 
         private void RefreshTargetList(string targetJsonStr)
