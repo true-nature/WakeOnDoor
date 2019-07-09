@@ -1,4 +1,4 @@
-﻿using Prism.Unity.Windows;
+﻿using Prism.Windows;
 using SerialMonitor;
 using System;
 using System.Threading.Tasks;
@@ -12,7 +12,7 @@ namespace TweLiteMonitorOnPC
     /// <summary>
     /// 既定の Application クラスを補完するアプリケーション固有の動作を提供します。
     /// </summary>
-    sealed partial class App : PrismUnityApplication
+    sealed partial class App : PrismApplication
     {
         /// <summary>
         /// 単一アプリケーション オブジェクトを初期化します。これは、実行される作成したコードの
