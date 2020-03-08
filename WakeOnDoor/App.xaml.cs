@@ -46,7 +46,7 @@ namespace WakeOnDoor
                 case nameof(EditorModel.Language):
                     await  Shell.Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        // FIDME not navigated
+                        // FIXME not navigated
                         ApplicationLanguages.PrimaryLanguageOverride = EditorModel.Language;
                         var rootFrame = Window.Current.Content as Frame;
                         rootFrame.CacheSize = 0;
