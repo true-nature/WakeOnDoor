@@ -81,6 +81,14 @@ namespace WakeOnDoor.ViewModels
             set { SetProperty(ref portToEdit, value); }
         }
 
+        private string delayToEdit;
+        [RestorableState]
+        public string DelayToEdit
+        {
+            get { return delayToEdit; }
+            set { SetProperty(ref delayToEdit, value); }
+        }
+
         private string commentToEdit;
         [RestorableState]
         public string CommentToEdit

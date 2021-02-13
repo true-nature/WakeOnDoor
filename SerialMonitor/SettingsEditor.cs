@@ -17,6 +17,7 @@ namespace SerialMonitor
         private const int DEFAULT_INTERVAL_SECS = 10;
         private const string DEFAULT_DEST_ADDRESS = "FF02::1";   // Link-Local Scope Multicast Addresses / All Nodes Address
         private const string DEFAULT_PORT = "9";    // Discard protocol
+        private const string DEFAULT_DELAY = "0";
         private BackgroundTaskDeferral taskDeferral;
         private AppServiceConnection connection;
 
@@ -142,9 +143,13 @@ namespace SerialMonitor
             {
                 port = DEFAULT_PORT;
             }
+            if (!message.ContainsKey(nameof(Keys.DelaySec)) || !(message[nameof(Keys.DelaySec)] is string delay) || !IsValidDelay(delay))
+            {
+                delay = DEFAULT_DELAY;
+            }
 
             message.TryGetValue(nameof(Keys.Comment), out object comment);
-            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string, Address = address as string, Port = port as string };
+            var target = new WOLTarget() { Physical = physical as string, Comment = comment as string, Address = address as string, Port = port as string, Delay = delay };
             if (string.IsNullOrWhiteSpace(target.Physical))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_NoPhysicalAddress);
@@ -220,6 +225,7 @@ namespace SerialMonitor
             {
                 port = DEFAULT_PORT;
             }
+
             if (!NormalizeDestAddress(address, port))
             {
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_InvalidAddressFormat);
@@ -232,7 +238,8 @@ namespace SerialMonitor
             }
             else
             {
-                var result = WOLHelper.WakeUpAsync(physical.Replace("-", ""), address, port);   // awaitしない
+                var target = new WOLTarget() { Physical = physical, Address = address, Port = port, Delay = DEFAULT_DELAY };
+                _ = WOLHelper.WakeUpAsync(target);   // awaitしない
                 resValues[nameof(Keys.Result)] = true.ToString();
                 resValues[nameof(Keys.StatusMessage)] = nameof(CommandStatus.S_SentWOL);
             }
@@ -300,10 +307,18 @@ namespace SerialMonitor
 
         private static bool IsValidPort(string port)
         {
-            int portNo = -1;
+            int portNo;
             var parsed = int.TryParse(port, out portNo);
             parsed &= portNo > 0 && portNo < 65536;
             return (parsed && portNo > 0 && portNo < 65536);
+        }
+
+        private static bool IsValidDelay(string delay)
+        {
+            int delaySec;
+            var parsed = int.TryParse(delay, out delaySec);
+            parsed &= delaySec > 0 && delaySec < 3600;
+            return (parsed && delaySec > 0 && delaySec < 3600);
         }
 
         private static bool NormalizeDestAddress(string address, string port)
@@ -328,6 +343,10 @@ namespace SerialMonitor
                     if (!IsValidPort(t.Port))
                     {
                         t.Port = DEFAULT_PORT;
+                    }
+                    if (!IsValidDelay(t.Delay))
+                    {
+                        t.Delay = DEFAULT_DELAY;
                     }
                     result.Add(t.Physical, t);
                 }

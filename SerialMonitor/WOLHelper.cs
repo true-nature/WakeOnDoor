@@ -10,14 +10,41 @@ namespace SerialMonitor
 {
     internal class WOLHelper
     {
-        internal static async Task WakeUpAllAsync()
+        internal static void WakeUpAll()
         {
             var settings = ApplicationData.Current.LocalSettings;
             var targetDic = SettingsEditor.ReadMacList(settings);
             foreach (var t in targetDic)
             {
-                await WakeUpAsync(t.Value.Physical.Replace("-",""), t.Value.Address, t.Value.Port);
+                _ = WakeUpAsync(t.Value);
             }
+        }
+
+        internal static async Task<bool> WakeUpAsync(WOLTarget target)
+        {
+            var result = false;
+            var pysical = target.Physical.Replace("-", "");
+            if (target != null && !string.IsNullOrWhiteSpace(pysical))
+            {
+                try
+                {
+                    var parsed_physical = UInt64.TryParse(pysical, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong mac);
+                    var host = new HostName(target.Address);
+                    var parsed_port = Int32.TryParse(target.Port, out int portNo);
+                    var parsed_delay = Int32.TryParse(target.Delay, out int delayMs);
+                    if (parsed_physical && parsed_port && parsed_delay)
+                    {
+                        await Task.Delay(delayMs);
+                        await WakeUpAsync(mac, host, target.Port);
+                        result = true;
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            return result;
         }
 
         internal static async Task<bool> WakeUpAsync(string physical, string address, string port)

@@ -19,6 +19,7 @@
         TargetList,
         IpAddress,
         PortNo,
+        DelaySec,
         IntervalSec,
         LastWolTime,
         Result,

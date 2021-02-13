@@ -100,6 +100,7 @@ namespace WakeOnDoor.Models
                     [nameof(Keys.PhysicalAddress)] = target.Physical,
                     [nameof(Keys.IpAddress)] = target.Address,
                     [nameof(Keys.PortNo)] = target.Port,
+                    [nameof(Keys.DelaySec)] = target.Delay,
                     [nameof(Keys.Comment)] = target.Comment
                 };
                 var response = await conn.SendMessageAsync(values);
@@ -144,6 +145,7 @@ namespace WakeOnDoor.Models
                     [nameof(Keys.Command)] = nameof(AppCommands.Wake),
                     [nameof(Keys.PhysicalAddress)] = target.Physical,
                     [nameof(Keys.IpAddress)] = target.Address,
+                    [nameof(Keys.DelaySec)] = target.Delay,
                     [nameof(Keys.PortNo)] = target.Port,
                 };
                 var response = await conn.SendMessageAsync(values);

@@ -43,7 +43,10 @@
             <TextBox Grid.Row="1" Grid.Column="4" x:Name="PortTextBox" Text="{x:Bind ViewModel.PortToEdit,Mode=TwoWay}"/>
 
             <TextBlock Grid.Row="2" Grid.Column="0" x:Uid="Comment" Text="Comment" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommentTextBox" Grid.ColumnSpan="3" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="CommentTextBox" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.CommentToEdit,Mode=TwoWay}"/>
+            <TextBlock Grid.Row="2" Grid.Column="3" x:Uid="Delay" Text="Delay" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="4" x:Name="DelayTextBox" Text="{x:Bind ViewModel.DelayToEdit,Mode=TwoWay}"/>
+
             <Button Grid.Row="3" Grid.Column="0" x:Uid="Add" Content="Add" Margin="3" Command="{x:Bind ViewModel.AddMacCommand}" Width="80" HorizontalAlignment="Right"/>
             <Button Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" x:Uid="Remove" Content="Remove" Margin="3" Command="{x:Bind ViewModel.RemoveMacCommand}" Width="80" HorizontalAlignment="Left"/>
             <Button Grid.Row="3" Grid.Column="2" x:Uid="WakeNow" Content="WOL Now!" Margin="3" Command="{x:Bind ViewModel.WakeNowCommand}" HorizontalAlignment="Right"/>

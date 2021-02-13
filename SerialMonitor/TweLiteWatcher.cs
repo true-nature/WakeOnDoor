@@ -88,9 +88,7 @@ namespace SerialMonitor
                     IsConnected = result;
                     if (result)
                     {
-#pragma warning disable CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
-                        commService.StartAsync();
-#pragma warning restore CS4014 // この呼び出しを待たないため、現在のメソッドの実行は、呼び出しが完了する前に続行します
+                        _ = commService.StartAsync();
                         await writer.Debug(string.Format(CultureInfo.InvariantCulture, "Connected: {0}", commService.Description));
                     }
                 }
@@ -116,7 +114,7 @@ namespace SerialMonitor
                         {
                             lastWolTime = DateTimeOffset.Now;
                             await writer.Debug("WOL!");
-                            await WOLHelper.WakeUpAllAsync();
+                            WOLHelper.WakeUpAll();
                         }
                     }
                     break;

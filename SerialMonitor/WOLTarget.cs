@@ -11,6 +11,8 @@ namespace SerialMonitor
         public string Address { get; set; }
         [DataMember(Name = "port")]
         public string Port { get; set; }
+        [DataMember(Name = "delay")]
+        public string Delay { get; set; }
         [DataMember(Name ="comment")]
         public string Comment { get; set; }
 
@@ -21,6 +23,7 @@ namespace SerialMonitor
             Physical = "";
             Address = DEFAULT_ADDRESS;
             Port = "9";
+            Delay = "0";
             Comment = "";
         }
     }
