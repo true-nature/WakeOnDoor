@@ -12,8 +12,8 @@ namespace WakeOnDoor.ViewModels
 {
     public class SettingsPageViewModel : ViewModelBase
     {
-        private TargetEditorModel EditorModel;
-        private Dictionary<string, string> languages;
+        private readonly TargetEditorModel EditorModel;
+        private readonly Dictionary<string, string> languages;
         public SettingsPageViewModel()
         {
             languages = new Dictionary<string, string>()
