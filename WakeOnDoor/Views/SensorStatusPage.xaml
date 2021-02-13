@@ -32,5 +32,6 @@
         <Custom:RadialGauge Grid.Row="1" Grid.Column="0" Margin="20" Value="{x:Bind ViewModel.Tag.Lqi,Mode=OneWay}" Maximum="255" Unit="LQI" NeedleBrush="DodgerBlue" TrailBrush="DodgerBlue" TickSpacing="16" />
         <Border Grid.Row="1" Grid.Column="1" Background="Red" Visibility="{x:Bind ViewModel.IsLowBattery,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}" />
         <Custom:RadialGauge Grid.Row="1" Grid.Column="1" Margin="20" Value="{x:Bind ViewModel.Tag.Batt,Mode=OneWay}" Maximum="3300" Minimum="2000" NeedleBrush="DodgerBlue" TrailBrush="DodgerBlue" TickSpacing="100" Unit="BATT[mV]" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{x:Bind ViewModel.Tag.Timestamp,Mode=OneWay}" FontSize="32" HorizontalAlignment="Center"/>
     </Grid>
 </Page>
