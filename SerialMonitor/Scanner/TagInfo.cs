@@ -10,6 +10,7 @@ namespace SerialMonitor.Scanner
         public const byte STANDARD = 0x10;
         public const byte ADXL345 = 0x35;
         public const byte BUTTON = 0xFE;
+        public const byte PAL = 0x80;
     }
 
     /// <summary>
@@ -83,6 +84,10 @@ namespace SerialMonitor.Scanner
         /// 0:DI1（DIO12）の立ち下がりを検出する, 1:DI1（DIO12）の立ち上がりを検出する, 2:DI1（DIO12）で立ち下がり、DI2（DIO13）で立ち上がりを検出する</remarks>
         public byte Mode { get; set; }
         /// <summary>
+        /// 磁気センサー状態
+        /// </summary>
+        public byte Mag { get; set; }
+        /// <summary>
         /// DI status
         /// </summary>
         public byte Din { get; set; }
@@ -120,20 +125,37 @@ namespace SerialMonitor.Scanner
             sb.AppendFormat(",sid={0:X08}", Sid);
             sb.AppendFormat(",id={0}", Id);
             sb.AppendFormat(",pkt={0:X02}", Pkt);
-            sb.AppendFormat(",bt={0}", Bt);
             sb.AppendFormat(",batt={0}", Batt);
-            sb.AppendFormat(",adc1={0}", Adc1);
-            sb.AppendFormat(",adc2={0}", Adc2);
-            sb.AppendFormat(",mode={0}", Mode);
-            sb.AppendFormat(",din={0}", Din);
-            sb.AppendFormat(",dout={0}", Dout);
-            sb.AppendFormat(",x={0}", X);
-            sb.AppendFormat(",y={0}", Y);
-            sb.AppendFormat(",z={0}", Z);
+            switch (Pkt)
+            {
+                case PacketId.PAL:
+                    sb.AppendFormat(",mag={0:X02}", Mag);
+                    sb.AppendFormat(",adc1={0}", Adc1);
+                    break;
+                case PacketId.BUTTON:
+                    sb.AppendFormat(",bt={0}", Bt);
+                    sb.AppendFormat(",adc1={0}", Adc1);
+                    sb.AppendFormat(",adc2={0}", Adc2);
+                    sb.AppendFormat(",mode={0}", Mode);
+                    sb.AppendFormat(",din={0}", Din);
+                    sb.AppendFormat(",dout={0}", Dout);
+                    break;
+                case PacketId.ADXL345:
+                    sb.AppendFormat(",bt={0}", Bt);
+                    sb.AppendFormat(",adc1={0}", Adc1);
+                    sb.AppendFormat(",adc2={0}", Adc2);
+                    sb.AppendFormat(",mode={0}", Mode);
+                    sb.AppendFormat(",din={0}", Din);
+                    sb.AppendFormat(",dout={0}", Dout);
+                    sb.AppendFormat(",x={0}", X);
+                    sb.AppendFormat(",y={0}", Y);
+                    sb.AppendFormat(",z={0}", Z);
+                    break;
+            }
             return sb.ToString();
         }
 
-        private static readonly Regex TagInfoRegex = new Regex(@"ts=(?<Ts>\d+),rptr=(?<Rptr>[\dA-F]{8}),lqi=(?<Lqi>\d+),ct=(?<Ct>\d+),sid=(?<Sid>[\dA-F]{8}),id=(?<Id>\d+),pkt=(?<Pkt>[\dA-F]{2}),bt=(?<Bt>\d+),batt=(?<Batt>\d+),adc1=(?<Adc1>\d+),adc2=(?<Adc2>\d+),mode=(?<Mode>\d+),din=(?<Din>\d+),dout=(?<Dout>\d+),x=(?<X>-?\d+),y=(?<Y>-?\d+),z=(?<Z>-?\d+)$");
+        private static readonly Regex TagInfoRegex = new Regex(@"ts=(?<Ts>\d+),rptr=(?<Rptr>[\dA-F]{8}),lqi=(?<Lqi>\d+),ct=(?<Ct>\d+),sid=(?<Sid>[\dA-F]{8}),id=(?<Id>\d+),pkt=(?<Pkt>[\dA-F]{2}),batt=(?<Batt>\d+)(,bt=(?<Bt>\d+))?(,mag=(?<Mag>\d+))?,adc1=(?<Adc1>\d+)(,adc2=(?<Adc2>\d+),mode=(?<Mode>\d+),din=(?<Din>\d+),dout=(?<Dout>\d+)(,x=(?<X>-?\d+),y=(?<Y>-?\d+),z=(?<Z>-?\d+))?)?$");
         
         public static TagInfo FromString(string msg)
         {
@@ -146,11 +168,16 @@ namespace SerialMonitor.Scanner
 
             return info;
         }
+
         private static void CopyInfo(TagInfo info, GroupCollection groups, string[] names)
         {
             var valid = true;
             foreach (var name in names)
             {
+                if (!groups[name].Success)
+                {
+                    continue;
+                }
                 try
                 {
                     switch (name)
@@ -202,6 +229,10 @@ namespace SerialMonitor.Scanner
                         case nameof(TagInfo.Mode):
                             valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte mode);
                             info.Mode = mode;
+                            break;
+                        case nameof(TagInfo.Mag):
+                            valid &= byte.TryParse(groups[name].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out byte mag);
+                            info.Mag = mag;
                             break;
                         case nameof(TagInfo.Din):
                             valid &= byte.TryParse(groups[name].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out byte din);

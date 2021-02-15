@@ -12,17 +12,17 @@ namespace SerialMonitor
 {
     internal class TweLiteWatcher: IDisposable
     {
-        private int DEFAULT_INTERVAL_SECS = 10;
+        private const int DEFAULT_INTERVAL_SECS = 10;
         private static DeviceWatcher watcher = null;
         private static bool isEnumerated = false;
 
-        private SerialCommService commService;
+        private readonly SerialCommService commService;
         private bool IsConnected { get; set; }
-        private SemaphoreSlim semaphore;
+        private readonly SemaphoreSlim semaphore;
         private ISyslogWriter writer;
 
-        private IEnumerable<IMessageScanner> Scanners;
-        private TaskCompletionSource<bool> tcs;
+        private readonly IEnumerable<IMessageScanner> Scanners;
+        private readonly TaskCompletionSource<bool> tcs;
         private DateTimeOffset lastWolTime;
 
         public TweLiteWatcher()
