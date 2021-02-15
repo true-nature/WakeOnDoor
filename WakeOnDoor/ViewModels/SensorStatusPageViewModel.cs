@@ -12,7 +12,7 @@ namespace WakeOnDoor.ViewModels
     public class SensorStatusPageViewModel: ViewModelBase
     {
         private const ushort LOW_BATTERY_LEVEL = 2400;
-        private PacketLogModel LogModel;
+        private readonly PacketLogModel LogModel;
 
         private TagInfo tag;
         public TagInfo Tag
@@ -70,8 +70,8 @@ namespace WakeOnDoor.ViewModels
         }
         public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
         {
-            LogModel.PropertyChanged += OnModelPropertyChanged;
             base.OnNavigatedTo(e, viewModelState);
+            LogModel.PropertyChanged += OnModelPropertyChanged;
         }
 
         public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)

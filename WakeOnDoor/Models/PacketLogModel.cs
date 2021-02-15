@@ -14,9 +14,9 @@ namespace WakeOnDoor.Models
 
         private static PacketLogModel instance;
 
-        private ICommService commService;
+        private readonly ICommService commService;
 
-        private List<string> textLog;
+        private readonly List<string> textLog;
         public List<string> LogList
         {
             get { return textLog; }

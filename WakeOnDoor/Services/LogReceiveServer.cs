@@ -17,10 +17,10 @@ namespace WakeOnDoor.Services
 
         private static LogReceiveServer singleton;
 
-        private SemaphoreSlim semaphore;
+        private readonly SemaphoreSlim semaphore;
         private bool IsConnected;
         private DatagramSocket socket;
-        private StringBuilder builder;
+        private readonly StringBuilder builder;
 
         private LogReceiveServer()
         {
