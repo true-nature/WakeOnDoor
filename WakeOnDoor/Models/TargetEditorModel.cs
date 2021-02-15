@@ -22,7 +22,7 @@ namespace WakeOnDoor.Models
         private const string KEY_LANGUAGE = "language";
 
         private static TargetEditorModel instance;
-        private ApplicationDataContainer settings;
+        private readonly ApplicationDataContainer settings;
 
         public ObservableCollection<WOLTarget> WOLTargets { get; }
 
@@ -45,7 +45,6 @@ namespace WakeOnDoor.Models
             return instance;
         }
 
-        private string language;
         public string Language
         {
             get
@@ -57,7 +56,6 @@ namespace WakeOnDoor.Models
                 if (LANGUAGES.Contains(value))
                 {
                     settings.Values[KEY_LANGUAGE] = value;
-                    language = value;
                     RaisePropertyChanged(nameof(Language)); // force raise event
                 }
             }
@@ -233,8 +231,7 @@ namespace WakeOnDoor.Models
                     }
                 }
             }
-            int intervalSec = 0;
-            Int32.TryParse(IntervalSecStr, out intervalSec);
+            Int32.TryParse(IntervalSecStr, out int intervalSec);
             return intervalSec;
         }
 

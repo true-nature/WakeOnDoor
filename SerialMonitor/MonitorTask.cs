@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
 // The Background Application template is documented at http://go.microsoft.com/fwlink/?LinkID=533884&clcid=0x409
@@ -27,7 +27,7 @@ namespace SerialMonitor
                         await twatcher.WatchAsync();
                         await writer.Warning(CancelReason.ToString());
                     }
-                    catch (System.Threading.Tasks.TaskCanceledException e)
+                    catch (TaskCanceledException e)
                     {
                         await writer.Warning(e.Message);
                     }
@@ -36,7 +36,6 @@ namespace SerialMonitor
             }
             deferral.Complete();
         }
-
 
         private void OnCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)
         {

@@ -17,7 +17,7 @@ namespace WakeOnDoor.ViewModels
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
 
-        private TargetEditorModel EditorModel;
+        private readonly TargetEditorModel EditorModel;
         public ObservableCollection<WOLTarget> WOLTargets { get; }
 
         private string statusMessage;
@@ -43,7 +43,7 @@ namespace WakeOnDoor.ViewModels
             EditorModel = TargetEditorModel.GetInstance();
 
             AddMacCommand = new DelegateCommand(async () => {
-                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit, Address=AddressToEdit, Port=PortToEdit };
+                WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit, Address=AddressToEdit, Port=PortToEdit, Delay=DelayToEdit };
                 await EditorModel.AddAsync(target);
             });
             RemoveMacCommand = new DelegateCommand(async () => {
@@ -106,6 +106,7 @@ namespace WakeOnDoor.ViewModels
                     PhysicalToEdit = value?.Physical;
                     AddressToEdit = value?.Address;
                     PortToEdit = value?.Port;
+                    DelayToEdit = value?.Delay;
                     CommentToEdit = value?.Comment;
                 }
             }
@@ -146,6 +147,10 @@ namespace WakeOnDoor.ViewModels
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PortToEdit), out value))
             {
                 PortToEdit = value as string;
+            }
+            if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(DelayToEdit), out value))
+            {
+                DelayToEdit = value as string;
             }
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(CommentToEdit), out value))
             {

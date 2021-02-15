@@ -26,22 +26,31 @@ namespace SerialMonitor
             var pysical = target.Physical.Replace("-", "");
             if (target != null && !string.IsNullOrWhiteSpace(pysical))
             {
-                try
+                using (var writer = new SyslogWriter(Facility.local0, "WOLHelper"))
                 {
-                    var parsed_physical = UInt64.TryParse(pysical, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong mac);
-                    var host = new HostName(target.Address);
-                    var parsed_port = Int32.TryParse(target.Port, out int portNo);
-                    var parsed_delay = Int32.TryParse(target.Delay, out int delayMs);
-                    if (parsed_physical && parsed_port && parsed_delay)
+                    await writer.OpenAsync();
+                    try
                     {
-                        await Task.Delay(delayMs);
-                        await WakeUpAsync(mac, host, target.Port);
-                        result = true;
+                        var parsed_physical = UInt64.TryParse(pysical, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ulong mac);
+                        var host = new HostName(target.Address);
+                        var parsed_port = Int32.TryParse(target.Port, out int portNo);
+                        var parsed_delay = Int32.TryParse(target.Delay, out int delaySec);
+                        if (parsed_physical && parsed_port && parsed_delay)
+                        {
+                            if (delaySec > 0)
+                            {
+                                await writer.Debug(string.Format("Delay {0} for {1}ms", pysical, delaySec));
+                                await Task.Delay(1000 * delaySec);
+                            }
+                            await writer.Debug(string.Format("WakeUp {0} ({1})", pysical, target.Comment));
+                            await WakeUpAsync(mac, host, target.Port);
+                            result = true;
+                        }
                     }
-                }
-                catch (Exception)
-                {
-
+                    catch (Exception e)
+                    {
+                        _ = writer.Warning(e.Message);
+                    }
                 }
             }
             return result;

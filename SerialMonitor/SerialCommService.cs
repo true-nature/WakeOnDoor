@@ -117,29 +117,36 @@ namespace SerialMonitor
                 reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
                 while (true)
                 {
-                    var len = await reader.LoadAsync(BUFFER_LENGTH);
-                    if (Token.IsCancellationRequested || device == null)
+                    try
                     {
-                        break;
-                    }
-                    if (len > 0)
-                    {
-                        var received = reader.ReadString(len);
-                        foreach (var c in received)
+                        var len = await reader.LoadAsync(BUFFER_LENGTH);
+                        if (Token.IsCancellationRequested || device == null)
                         {
-                            if (c == '\r' || c == '\n')
+                            break;
+                        }
+                        if (len > 0)
+                        {
+                            var received = reader.ReadString(len);
+                            foreach (var c in received)
                             {
-                                if (sb.Length > 0)
+                                if (c == '\r' || c == '\n')
                                 {
-                                    Received?.Invoke(this, new MessageEventArgs(sb.ToString()));
-                                    sb.Clear();
+                                    if (sb.Length > 0)
+                                    {
+                                        Received?.Invoke(this, new MessageEventArgs(sb.ToString()));
+                                        sb.Clear();
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append((char)c);
                                 }
                             }
-                            else
-                            {
-                                sb.Append((char)c);
-                            }
                         }
+                    }
+                    catch (Exception)
+                    {
+                        break;
                     }
                 }
             }

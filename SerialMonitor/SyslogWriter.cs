@@ -77,7 +77,6 @@ namespace SerialMonitor
 
         public void Dispose()
         {
-            writer?.Dispose();
             writer = null;
         }
     }

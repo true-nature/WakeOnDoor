@@ -69,7 +69,7 @@ namespace SerialMonitor
                         RemoveTarget(settings, targetDic, resValues, message);
                         break;
                     case nameof(AppCommands.Wake):
-                        WakeTarget(settings, targetDic, message, resValues);
+                        WakeTarget(message, resValues);
                         break;
                     case nameof(AppCommands.Get):
                         resValues[nameof(Keys.Result)] = true.ToString();
@@ -87,7 +87,7 @@ namespace SerialMonitor
                 }
             }
             resValues[nameof(Keys.TargetList)] = settings.Values[nameof(Keys.TargetList)];
-            var result = args.Request.SendResponseAsync(resValues);
+            _ = args.Request.SendResponseAsync(resValues);
         }
 
         internal static void InitSettings()
@@ -200,7 +200,7 @@ namespace SerialMonitor
             resValues[nameof(Keys.Result)] = result.ToString();
         }
 
-        private static void WakeTarget(ApplicationDataContainer settings, Dictionary<string, WOLTarget> macList, ValueSet message, ValueSet resValues)
+        private static void WakeTarget(ValueSet message, ValueSet resValues)
         {
             if (!message.ContainsKey(nameof(Keys.PhysicalAddress)))
             {
@@ -307,16 +307,14 @@ namespace SerialMonitor
 
         private static bool IsValidPort(string port)
         {
-            int portNo;
-            var parsed = int.TryParse(port, out portNo);
+            var parsed = int.TryParse(port, out int portNo);
             parsed &= portNo > 0 && portNo < 65536;
             return (parsed && portNo > 0 && portNo < 65536);
         }
 
         private static bool IsValidDelay(string delay)
         {
-            int delaySec;
-            var parsed = int.TryParse(delay, out delaySec);
+            var parsed = int.TryParse(delay, out int delaySec);
             parsed &= delaySec > 0 && delaySec < 3600;
             return (parsed && delaySec > 0 && delaySec < 3600);
         }
