@@ -15,18 +15,17 @@ using Windows.Storage;
 
 namespace WakeOnDoor.Models
 {
-    internal class TargetEditorModel: BindableBase
+    public class TargetEditorModel: BindableBase
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
         private static readonly string[] LANGUAGES = { "en-US", "ja-JP" };
         private const string KEY_LANGUAGE = "language";
 
-        private static TargetEditorModel instance;
         private readonly ApplicationDataContainer settings;
 
         public ObservableCollection<WOLTarget> WOLTargets { get; }
 
-        private TargetEditorModel()
+        public TargetEditorModel()
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
             settings = ApplicationData.Current.LocalSettings;
@@ -36,14 +35,15 @@ namespace WakeOnDoor.Models
             }
         }
 
-        public static TargetEditorModel GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new TargetEditorModel();
-            }
-            return instance;
-        }
+        //private static TargetEditorModel instance;
+        //public static TargetEditorModel GetInstance()
+        //{
+        //    if (instance == null)
+        //    {
+        //        instance = new TargetEditorModel();
+        //    }
+        //    return instance;
+        //}
 
         public string Language
         {

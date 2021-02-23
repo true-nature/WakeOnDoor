@@ -2,11 +2,10 @@
     x:Class="TweLiteMonitorOnPC.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:TweLiteMonitorOnPC.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mvvm="using:Prism.Windows.Mvvm"
-    mvvm:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:mvvm="using:Prism.Mvvm"
+    mvvm:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Padding="2">

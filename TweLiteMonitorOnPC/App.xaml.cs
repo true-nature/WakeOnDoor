@@ -1,11 +1,8 @@
-﻿using Prism.Windows;
-using SerialMonitor;
-using System;
-using System.Threading.Tasks;
+﻿using Prism.DryIoc;
+using Prism.Ioc;
+using TweLiteMonitorOnPC.Views;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.System.Profile;
+using Windows.UI.Xaml;
 
 namespace TweLiteMonitorOnPC
 {
@@ -24,10 +21,13 @@ namespace TweLiteMonitorOnPC
             this.Suspending += OnSuspending;
         }
 
-        protected override Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            this.NavigationService.Navigate("Main", null);
-            return Task.CompletedTask;
+        }
+
+        protected override UIElement CreateShell()
+        {
+            return Container.Resolve<MainPage>();
         }
 
         /// <summary>

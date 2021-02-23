@@ -1,6 +1,6 @@
 ﻿using Prism.Commands;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,9 +10,9 @@ using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class PacketLogPageViewModel : ViewModelBase
+    public class PacketLogPageViewModel : BindableBase, INavigationAware
     {
-        private PacketLogModel LogModel;
+        private readonly PacketLogModel LogModel;
 
         private const int LOG_CAPACITY = 50;
 
@@ -61,11 +61,6 @@ namespace WakeOnDoor.ViewModels
             });
         }
 
-        private void ScrollTo(int position)
-        {
-
-        }
-
         private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
@@ -85,16 +80,17 @@ namespace WakeOnDoor.ViewModels
                     break;
             }
         }
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
             LogModel.PropertyChanged += OnModelPropertyChanged;
-            base.OnNavigatedTo(e, viewModelState);
         }
 
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             LogModel.PropertyChanged -= OnModelPropertyChanged;
-            base.OnNavigatingFrom(e, viewModelState, suspending);
         }
     }
 }

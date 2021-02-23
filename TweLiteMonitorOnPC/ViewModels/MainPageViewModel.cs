@@ -1,5 +1,5 @@
-﻿using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+﻿using Prism.Mvvm;
+using Prism.Regions;
 using SerialMonitor;
 using System;
 using System.Collections.Generic;
@@ -10,14 +10,14 @@ using Windows.UI.Core;
 
 namespace TweLiteMonitorOnPC.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : BindableBase, INavigationAware
     {
         private const int LOG_CAPACITY = 40;
         public MainPageViewModel()
         {            
         }
 
-        private List<string> textLog = new List<string>();
+        private readonly List<string> textLog = new List<string>();
         public string TextLog
         {
             get { return string.Join("\n", textLog); }
@@ -34,23 +34,6 @@ namespace TweLiteMonitorOnPC.ViewModels
                  textLog.Add(message);
                  RaisePropertyChanged(nameof(TextLog));
              });
-        }
-        public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
-        {
-            InPage = true;
-            if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
-            {
-                await StarTaskAsync();
-            }
-            base.OnNavigatedTo(e, viewModelState);
-        }
-
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
-        {
-            InPage = false;
-            taskRegistration?.Unregister(true);
-            taskRegistration = null;
-            base.OnNavigatingFrom(e, viewModelState, suspending);
         }
 
         public CoreDispatcher Dispatcher { get; set; }
@@ -88,6 +71,24 @@ namespace TweLiteMonitorOnPC.ViewModels
             var result = await trigger.RequestAsync();
             await AppendLogAsync(string.Format("Start BackgroundTask: {0}", result));
             return result;
+        }
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            InPage = true;
+            if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
+            {
+                await StarTaskAsync();
+            }
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            InPage = false;
+            taskRegistration?.Unregister(true);
+            taskRegistration = null;
         }
     }
 }

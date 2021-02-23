@@ -5,11 +5,9 @@
     xmlns:local="using:WakeOnDoor.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mvvm="using:Prism.Windows.Mvvm"
+    xmlns:mvvm="using:Prism.Mvvm"
     xmlns:Converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    mvvm:ViewModelLocator.AutoWireViewModel="True"
+    mvvm:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d">
     <Page.Resources>
         <Converters:BoolNegationConverter x:Key="BoolNegationConverter" />

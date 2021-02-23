@@ -1,7 +1,4 @@
-﻿using Prism.Windows.AppModel;
-using Prism.Windows.Navigation;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using WakeOnDoor.ViewModels;
 using Windows.UI.Xaml.Controls;
 
@@ -22,11 +19,11 @@ namespace WakeOnDoor.Views
             ViewModel.RestartDialog = RestartContentDialog;
             DataContextChanged += (sender, args) =>
             {
-                ViewModel.NavigationService = new FrameNavigationService(
-                    new FrameFacadeAdapter(ContentFrame),
-                    s => Type.GetType(this.GetType().Namespace + $".{s}Page"),
-                    new SessionStateService());
-                ViewModel.CurrentPage = PageTokens.SensorStatusPage;
+                //ViewModel.NavigationService = new FrameNavigationService(
+                //    new FrameFacadeAdapter(ContentFrame),
+                //    s => Type.GetType(this.GetType().Namespace + $".{s}Page"),
+                //    new SessionStateService());
+                //ViewModel.CurrentPage = PageTokens.SensorStatusPage;
             };
         }
 

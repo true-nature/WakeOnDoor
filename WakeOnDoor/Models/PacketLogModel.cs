@@ -8,7 +8,7 @@ using WakeOnDoor.Services;
 
 namespace WakeOnDoor.Models
 {
-    internal class PacketLogModel : BindableBase, IDisposable
+    public class PacketLogModel : BindableBase, IDisposable
     {
         private const int LOG_CAPACITY = 1000;
 

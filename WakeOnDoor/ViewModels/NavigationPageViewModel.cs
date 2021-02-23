@@ -1,5 +1,5 @@
-﻿using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+﻿using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using WakeOnDoor.Services;
 using Windows.ApplicationModel.Resources;
@@ -8,11 +8,9 @@ using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class NavigationPageViewModel : ViewModelBase
+    public class NavigationPageViewModel : BindableBase
     {
         public bool IsIoTDeviceFamily { get { return App.IsIoTDeviceFamily; } }
-
-        public INavigationService NavigationService { get; set; }
 
         public ContentDialog ShutdownDialog { get; set; }
         public ContentDialog RestartDialog { get; set; }
@@ -47,7 +45,7 @@ namespace WakeOnDoor.ViewModels
                         if (currentPage != value)
                         {
                             currentPage = value;
-                            NavigationService.Navigate(value, null);
+                            RegionManager.RequestNavigate("ContenetRegion", value);
                             var resourceLoader = ResourceLoader.GetForCurrentView();
                             Title = resourceLoader.GetString(currentPage + "/Text");
                         }
@@ -56,9 +54,12 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        public NavigationPageViewModel()
+        public NavigationPageViewModel(IRegionManager regionManager)
         {
+            RegionManager = regionManager;
         }
+
+        private readonly IRegionManager RegionManager;
 
         public async void ShowPowerDialog(ShutdownKind kind)
         {

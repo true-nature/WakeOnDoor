@@ -1,6 +1,6 @@
 ﻿using Prism.Commands;
-using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,18 +10,18 @@ using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class SettingsPageViewModel : ViewModelBase
+    public class SettingsPageViewModel : BindableBase, INavigationAware
     {
         private readonly TargetEditorModel EditorModel;
         private readonly Dictionary<string, string> languages;
-        public SettingsPageViewModel()
+        public SettingsPageViewModel(TargetEditorModel targetEditor)
         {
             languages = new Dictionary<string, string>()
             {
                 { "en-US", "English" },
                 { "ja-JP", "Japanese" }
             };
-            EditorModel = TargetEditorModel.GetInstance();
+            EditorModel = targetEditor;
             selectedKey = EditorModel.Language;
             ApplyCommand = new DelegateCommand(async () => {
                 EditorModel.Language = selectedKey;
@@ -84,19 +84,20 @@ namespace WakeOnDoor.ViewModels
                     break;
             }
         }
-        public override async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            base.OnNavigatedTo(e, viewModelState);
             IntervalSec = await EditorModel.GetIntervalAsync();
             EditorModel.PropertyChanged += OnModelPropertyChanged;
             await EditorModel.GetListAsync();
         }
 
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            base.OnNavigatingFrom(e, viewModelState, suspending);
             EditorModel.PropertyChanged -= OnModelPropertyChanged;
         }
-
     }
 }

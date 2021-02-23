@@ -1,83 +1,51 @@
-﻿using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+﻿using Prism.Mvvm;
+using Prism.Regions;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using SerialMonitor.Scanner;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using WakeOnDoor.Models;
-using Windows.UI.Core;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class SensorStatusPageViewModel: ViewModelBase
+    public class SensorStatusPageViewModel: BindableBase, INavigationAware, IDisposable
     {
         private const ushort LOW_BATTERY_LEVEL = 2400;
-        private readonly PacketLogModel LogModel;
 
-        private TagInfo tag;
-        public TagInfo Tag
+        public ReadOnlyReactivePropertySlim<TagInfo> Tag { get; }
+
+        public ReactivePropertySlim<bool> IsLowBattery { get; } = new ReactivePropertySlim<bool>(false);
+
+        public SensorStatusPageViewModel(PacketLogModel logModel)
         {
-            get { return tag; }
-            set
-            {
-                SetProperty(ref tag, value);
-            }
+            Tag = logModel.ObserveProperty(x => x.Tag).ToReadOnlyReactivePropertySlim();
         }
 
-        private bool isLowBattery;
-        public bool IsLowBattery
+        private void OnTagChanged(TagInfo tag)
         {
-            get
-            {
-                return isLowBattery;
-            }
-            set
-            {
-                SetProperty(ref isLowBattery, value);
-            }
+            IsLowBattery.Value = tag.Batt < LOW_BATTERY_LEVEL;
         }
 
-        private CoreDispatcher dispatcher;
-        public CoreDispatcher Dispatcher
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            get { return dispatcher; }
-            set
-            {
-                dispatcher = value;
-            }
         }
 
-        public SensorStatusPageViewModel()
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            LogModel = PacketLogModel.GetInstance();
-            tag = LogModel.Tag;
         }
 
-        private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        public void Dispose()
         {
-            switch (args.PropertyName)
-            {
-                case nameof(LogModel.Tag):
-                    await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        Tag = LogModel.Tag;
-                        IsLowBattery = Tag.Batt < LOW_BATTERY_LEVEL;
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }
-        public override void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
-        {
-            base.OnNavigatedTo(e, viewModelState);
-            LogModel.PropertyChanged += OnModelPropertyChanged;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        public override void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        protected virtual void Dispose(bool flag)
         {
-            LogModel.PropertyChanged -= OnModelPropertyChanged;
-            base.OnNavigatingFrom(e, viewModelState, suspending);
+            Tag.Dispose();
+            IsLowBattery.Dispose();
         }
     }
 }
