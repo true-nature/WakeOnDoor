@@ -12,8 +12,6 @@ namespace WakeOnDoor.Models
     {
         private const int LOG_CAPACITY = 1000;
 
-        private static PacketLogModel instance;
-
         private readonly ICommService commService;
 
         private readonly List<string> textLog;
@@ -32,22 +30,13 @@ namespace WakeOnDoor.Models
             }
         }
 
-        private PacketLogModel()
+        public PacketLogModel(ICommService logReceiveServer)
         {
             textLog = new List<string>();
             tagInfo = new TagInfo();
-            commService = LogReceiveServer.GetInstance();
+            commService = logReceiveServer;
             commService.Received += this.OnReceived;
 
-        }
-
-        public static PacketLogModel GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new PacketLogModel();
-            }
-            return instance;
         }
 
         public async Task InitializeAsync()

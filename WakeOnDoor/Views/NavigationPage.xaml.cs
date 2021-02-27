@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using WakeOnDoor.ViewModels;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 // 空白ページの項目テンプレートについては、https://go.microsoft.com/fwlink/?LinkId=234238 を参照してください
 
@@ -11,35 +9,9 @@ namespace WakeOnDoor.Views
     /// </summary>
     public sealed partial class NavigationPage : Page
     {
-        public NavigationPageViewModel ViewModel => this.DataContext as NavigationPageViewModel;
         public NavigationPage()
         {
             this.InitializeComponent();
-            ViewModel.ShutdownDialog = ShutdownContentDialog;
-            ViewModel.RestartDialog = RestartContentDialog;
-            DataContextChanged += (sender, args) =>
-            {
-                //ViewModel.NavigationService = new FrameNavigationService(
-                //    new FrameFacadeAdapter(ContentFrame),
-                //    s => Type.GetType(this.GetType().Namespace + $".{s}Page"),
-                //    new SessionStateService());
-                //ViewModel.CurrentPage = PageTokens.SensorStatusPage;
-            };
-        }
-
-        private void NavView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.IsSettingsInvoked)
-            {
-                ViewModel.CurrentPage = PageTokens.SettingsPage;
-            }
-            else
-            {
-                // find NavigationViewItem with Content that equals InvokedItem
-                var item = sender.MenuItems.OfType<NavigationViewItem>().First(x => (string)x.Content == (string)args.InvokedItem);
-                var tag = item.Tag as string;
-                ViewModel.CurrentPage = tag;
-            }
         }
     }
 }

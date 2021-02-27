@@ -49,9 +49,9 @@ namespace WakeOnDoor.ViewModels
             get { return string.Join("\n", textLog); }
         }
 
-        public PacketLogPageViewModel()
+        public PacketLogPageViewModel(PacketLogModel logModel)
         {
-            LogModel = PacketLogModel.GetInstance();
+            LogModel = logModel;
             textLog = LogModel.LogList;
 
             this.ClearLogCommand = new DelegateCommand(() =>

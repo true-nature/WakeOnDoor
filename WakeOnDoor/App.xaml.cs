@@ -1,6 +1,7 @@
 ﻿using Prism.DryIoc;
 using Prism.Ioc;
 using WakeOnDoor.Models;
+using WakeOnDoor.Services;
 using WakeOnDoor.Views;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
@@ -24,11 +25,14 @@ namespace WakeOnDoor
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<TargetEditorModel>();
+            containerRegistry.RegisterSingleton<ICommService,LogReceiveServer>();
             containerRegistry.RegisterSingleton<PacketLogModel>();
             containerRegistry.RegisterForNavigation<SensorStatusPage>();
             containerRegistry.RegisterForNavigation<PacketLogPage>();
             containerRegistry.RegisterForNavigation<TargetEditorPage>();
             containerRegistry.RegisterForNavigation<SettingsPage>();
+            containerRegistry.Register<RestartDialog>();
+            containerRegistry.Register<ShutdownDialog>();
         }
 
         protected override UIElement CreateShell()

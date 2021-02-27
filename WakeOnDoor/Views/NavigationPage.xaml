@@ -5,14 +5,22 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
-    xmlns:viewModels="using:Prism.Mvvm"
-    viewModels:ViewModelLocator.AutowireViewModel="True"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:regions="using:Prism.Regions"
+    xmlns:mvvm="using:Prism.Mvvm"
+    mvvm:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d">
     <Page.Resources>
         <Converters:BoolToObjectConverter x:Key="BoolToInvisibilityConverter" TrueValue="Collapsed" FalseValue="Visible"/>
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
-        <NavigationView x:Name="NavView" ItemInvoked="NavView_ItemInvoked">
+        <NavigationView x:Name="NavView">
+            <i:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="ItemInvoked">
+                    <core:InvokeCommandAction Command="{Binding ItemInvokedCommand}"/>
+                </core:EventTriggerBehavior>
+            </i:Interaction.Behaviors>
             <NavigationView.MenuItems>
                 <NavigationViewItem x:Uid="SensorStatusItem" Content="Sensor Health Satus" Tag="SensorStatus">
                     <NavigationViewItem.Icon>
@@ -39,33 +47,11 @@
                     </Grid>
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
-            <Frame x:Name="ContentFrame" Margin="12">
-                <Frame.ContentTransitions>
-                    <TransitionCollection>
-                        <NavigationThemeTransition/>
-                    </TransitionCollection>
-                </Frame.ContentTransitions>
+            <!--
+            <Frame>
+                <ContentControl regions:RegionManager.RegionName="ContentRegion"/>
             </Frame>
+            -->
         </NavigationView>
-        <ContentDialog x:Name="ShutdownContentDialog"
-                       x:Uid="ShutdownTitle"
-                       Title="Shutdown the Computer"
-                       PrimaryButtonText="OK"
-                       SecondaryButtonText="Cancel"
-                       IsPrimaryButtonEnabled="{x:Bind ViewModel.IsIoTDeviceFamily}">
-            <Grid>
-                <TextBlock x:Uid="IoTOnlyFeature" Text="This feature is enabled on IoT DeviceFamily only." Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToInvisibilityConverter}}"/>
-            </Grid>
-        </ContentDialog>
-        <ContentDialog x:Name="RestartContentDialog"
-                       x:Uid="RestartTitle"
-                       Title="Restart the Computer"
-                       PrimaryButtonText="OK"
-                       SecondaryButtonText="Cancel"
-                       IsPrimaryButtonEnabled="{x:Bind ViewModel.IsIoTDeviceFamily}">
-            <Grid>
-                <TextBlock x:Uid="IoTOnlyFeature" Text="This feature is enabled on IoT DeviceFamily only." Visibility="{Binding IsIoTDeviceFamily,Converter={StaticResource BoolToInvisibilityConverter}}"/>
-            </Grid>
-        </ContentDialog>
     </Grid>
 </Page>

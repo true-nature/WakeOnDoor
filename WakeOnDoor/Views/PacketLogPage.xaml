@@ -5,8 +5,8 @@
     xmlns:local="using:WakeOnDoor.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mvvm="using:Prism.Mvvm"
     xmlns:Converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:mvvm="using:Prism.Mvvm"
     mvvm:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d">
     <Page.Resources>
