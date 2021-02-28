@@ -1,16 +1,16 @@
 ﻿using Prism.Mvvm;
 using Prism.Regions;
+using Reactive.Bindings;
 using SerialMonitor;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.System.Profile;
-using Windows.UI.Core;
 
 namespace TweLiteMonitorOnPC.ViewModels
 {
-    public class MainPageViewModel : BindableBase, INavigationAware
+    public class MainPageViewModel : BindableBase
     {
         private const int LOG_CAPACITY = 40;
         public MainPageViewModel()
@@ -18,25 +18,18 @@ namespace TweLiteMonitorOnPC.ViewModels
         }
 
         private readonly List<string> textLog = new List<string>();
-        public string TextLog
-        {
-            get { return string.Join("\n", textLog); }
-        }
 
-        private async Task AppendLogAsync(string message)
-        {
-            await Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 while (textLog.Count > LOG_CAPACITY)
-                 {
-                     textLog.RemoveAt(0);
-                 }
-                 textLog.Add(message);
-                 RaisePropertyChanged(nameof(TextLog));
-             });
-        }
+        public ReactiveProperty<string> LogText { get; } = new ReactiveProperty<string>(String.Empty);
 
-        public CoreDispatcher Dispatcher { get; set; }
+        private void AppendLog(string message)
+        {
+            while (textLog.Count > LOG_CAPACITY)
+            {
+                textLog.RemoveAt(0);
+            }
+            textLog.Add(message);
+            LogText.Value = string.Join("\n", textLog);
+        }
 
         private bool InPage { get; set; }
         private BackgroundTaskRegistration taskRegistration;
@@ -62,14 +55,14 @@ namespace TweLiteMonitorOnPC.ViewModels
             taskRegistration = builder.Register();
             taskRegistration.Completed += async (sender, args) =>
             {
-                await AppendLogAsync("BackgroundTask Completed");
+                AppendLog("BackgroundTask Completed");
                 if (!InPage) return;
                 // restart when ExecutionTimeExceeded
                 var restarted = await trigger.RequestAsync();
-                await AppendLogAsync(string.Format("Restart BackgroundTask: {0}", restarted));
+                AppendLog(string.Format("Restart BackgroundTask: {0}", restarted));
             };
             var result = await trigger.RequestAsync();
-            await AppendLogAsync(string.Format("Start BackgroundTask: {0}", result));
+            AppendLog(string.Format("Start BackgroundTask: {0}", result));
             return result;
         }
 
@@ -81,8 +74,6 @@ namespace TweLiteMonitorOnPC.ViewModels
                 await StarTaskAsync();
             }
         }
-
-        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {

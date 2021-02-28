@@ -3,6 +3,7 @@ using Prism.Ioc;
 using WakeOnDoor.Models;
 using WakeOnDoor.Services;
 using WakeOnDoor.Views;
+using Windows.Storage;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
 
@@ -40,6 +41,12 @@ namespace WakeOnDoor
             return Container.Resolve<NavigationPage>();
         }
 
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            ClearTempSettings();
+        }
+
         //protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
         //{
         //    ClearTempSettings();
@@ -71,23 +78,19 @@ namespace WakeOnDoor
         //    }
         //}
 
-        //private static void ClearTempSettings()
-        //{
-        //    var settings = ApplicationData.Current.LocalSettings;
-        //    foreach (var key in settings.Values.Keys)
-        //    {
-        //        if (key.StartsWith("Temp."))
-        //        {
-        //            settings.Values.Remove(key);
-        //        }
-        //    }
-        //}
+        private static void ClearTempSettings()
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            foreach (var key in settings.Values.Keys)
+            {
+                if (key.StartsWith("Temp."))
+                {
+                    settings.Values.Remove(key);
+                }
+            }
+        }
 
-
-        //private PacketLogModel LogModel;
-        //private TargetEditorModel EditorModel;
-
-        private static bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
+        private static readonly bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
         public static bool IsIoTDeviceFamily { get { return deviceFamily; } }
     }
 }

@@ -21,7 +21,7 @@
                     <GradientStop Color="#FFFAFBFA" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <TextBlock Text="{x:Bind ViewModel.TextLog, Mode=OneWay}" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding LogText.Value, Mode=OneWay}" TextWrapping="Wrap" />
         </Border>
     </Grid>
 </Page>

@@ -1,7 +1,4 @@
-﻿using TweLiteMonitorOnPC.ViewModels;
-using Windows.UI.Xaml.Controls;
-
-// 空白ページの項目テンプレートについては、https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x411 を参照してください
+﻿using Windows.UI.Xaml.Controls;
 
 namespace TweLiteMonitorOnPC.Views
 {
@@ -10,11 +7,9 @@ namespace TweLiteMonitorOnPC.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public MainPageViewModel ViewModel => this.DataContext as MainPageViewModel;
         public MainPage()
         {
-            this.InitializeComponent();
-            ViewModel.Dispatcher = this.Dispatcher;
+            InitializeComponent();
         }
     }
 }

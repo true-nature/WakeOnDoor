@@ -35,16 +35,6 @@ namespace WakeOnDoor.Models
             }
         }
 
-        //private static TargetEditorModel instance;
-        //public static TargetEditorModel GetInstance()
-        //{
-        //    if (instance == null)
-        //    {
-        //        instance = new TargetEditorModel();
-        //    }
-        //    return instance;
-        //}
-
         public string Language
         {
             get

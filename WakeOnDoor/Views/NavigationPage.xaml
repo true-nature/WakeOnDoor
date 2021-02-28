@@ -15,7 +15,7 @@
         <Converters:BoolToObjectConverter x:Key="BoolToInvisibilityConverter" TrueValue="Collapsed" FalseValue="Visible"/>
     </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" RequestedTheme="Light">
-        <NavigationView x:Name="NavView">
+        <NavigationView x:Name="NavView" IsBackButtonVisible="Collapsed">
             <i:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="ItemInvoked">
                     <core:InvokeCommandAction Command="{Binding ItemInvokedCommand}"/>
@@ -47,11 +47,7 @@
                     </Grid>
                 </DataTemplate>
             </NavigationView.HeaderTemplate>
-            <!--
-            <Frame>
-                <ContentControl regions:RegionManager.RegionName="ContentRegion"/>
-            </Frame>
-            -->
+            <Frame x:Name="ContentFrame"/>
         </NavigationView>
     </Grid>
 </Page>

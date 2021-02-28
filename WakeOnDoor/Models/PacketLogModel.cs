@@ -3,7 +3,6 @@ using SerialMonitor.Scanner;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks;
 using WakeOnDoor.Services;
 
 namespace WakeOnDoor.Models
@@ -36,17 +35,12 @@ namespace WakeOnDoor.Models
             tagInfo = new TagInfo();
             commService = logReceiveServer;
             commService.Received += this.OnReceived;
-
+            _ = commService.ConnectAsync();
         }
 
-        public async Task InitializeAsync()
+        public void Dispose()
         {
-            await commService.ConnectAsync();
-        }
-
-        public async void Dispose()
-        {
-            await commService.DisconnectAsync();
+            _ = commService.DisconnectAsync();
         }
 
         private void OnReceived(ICommService sender, MessageEventArgs args)

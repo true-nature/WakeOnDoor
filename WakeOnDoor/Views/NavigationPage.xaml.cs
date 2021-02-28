@@ -1,17 +1,30 @@
-﻿using Windows.UI.Xaml.Controls;
-
-// 空白ページの項目テンプレートについては、https://go.microsoft.com/fwlink/?LinkId=234238 を参照してください
+﻿using System;
+using WakeOnDoor.ViewModels;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor.Views
 {
     /// <summary>
-    /// それ自体で使用できる空白ページまたはフレーム内に移動できる空白ページ。
+    /// ナビゲーションページ
     /// </summary>
     public sealed partial class NavigationPage : Page
     {
         public NavigationPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        public void OnLoaded(object sender, RoutedEventArgs args)
+        {
+            var vm = DataContext as NavigationPageViewModel;
+            vm.CurrentPage.Subscribe(OnPageSelected);
+        }
+
+        private void OnPageSelected(Type pageType)
+        {
+            ContentFrame.Navigate(pageType ?? typeof(SensorStatusPage));
         }
     }
 }

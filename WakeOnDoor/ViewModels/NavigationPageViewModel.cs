@@ -7,7 +7,6 @@ using System;
 using System.Windows.Input;
 using WakeOnDoor.Services;
 using WakeOnDoor.Views;
-using Windows.ApplicationModel.Resources;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
 
@@ -15,15 +14,14 @@ namespace WakeOnDoor.ViewModels
 {
     public class NavigationPageViewModel : BindableBase
     {
-        private readonly IRegionManager RegionManager;
         private readonly ICommService CommService;
 
         public bool IsIoTDeviceFamily { get { return App.IsIoTDeviceFamily; } }
 
-        public ReactivePropertySlim<string> CurrentPage { get; } = new ReactivePropertySlim<string>();
+        public ReactivePropertySlim<Type> CurrentPage { get; } = new ReactivePropertySlim<Type>(typeof(SensorStatusPage));
 
-        public ContentDialog ShutdownDialog { get; set; }
-        public ContentDialog RestartDialog { get; set; }
+        private ContentDialog ShutdownDialog { get; set; }
+        private ContentDialog RestartDialog { get; set; }
 
         private string title;
         public string Title
@@ -40,9 +38,8 @@ namespace WakeOnDoor.ViewModels
 
         public ICommand ItemInvokedCommand { get; }
 
-        public NavigationPageViewModel(IRegionManager regionManager, IContainerProvider container, ICommService commService)
+        public NavigationPageViewModel(IContainerProvider container, ICommService commService)
         {
-            RegionManager = regionManager;
             CommService = commService;
             ShutdownDialog = container.Resolve<ShutdownDialog>();
             RestartDialog = container.Resolve<RestartDialog>();
@@ -53,8 +50,7 @@ namespace WakeOnDoor.ViewModels
         {
             if (args.IsSettingsInvoked)
             {
-                RegionManager.RequestNavigate("ContenetRegion", PageTokens.SettingsPage);
-                CurrentPage.Value = PageTokens.SettingsPage;
+                CurrentPage.Value = typeof(SettingsPage);
             }
             else
             {
@@ -71,10 +67,16 @@ namespace WakeOnDoor.ViewModels
                         case PageTokens.RestartDialog:
                             ShowPowerDialog(ShutdownKind.Restart);
                             break;
+                        case PageTokens.SensorStatusPage:
+                            CurrentPage.Value = typeof(SensorStatusPage);
+                            break;
+                        case PageTokens.TargetEditorPage:
+                            CurrentPage.Value = typeof(TargetEditorPage);
+                            break;
+                        case PageTokens.PacketLogPage:
+                            CurrentPage.Value = typeof(PacketLogPage);
+                            break;
                         default:
-                                RegionManager.RequestNavigate("ContenetRegion", tag);
-                                var resourceLoader = ResourceLoader.GetForCurrentView();
-                                Title = resourceLoader.GetString(tag + "/Text");
                             break;
                     }
                 }
