@@ -11,7 +11,7 @@ namespace WakeOnDoor.ViewModels
 {
     public class SensorStatusPageViewModel: ViewModelBase
     {
-        private const ushort LOW_BATTERY_LEVEL = 2400;
+        private const ushort LOW_BATTERY_LEVEL = 2700;
         private readonly PacketLogModel LogModel;
 
         private TagInfo tag;
