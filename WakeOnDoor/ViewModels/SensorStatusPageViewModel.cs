@@ -10,7 +10,7 @@ namespace WakeOnDoor.ViewModels
 {
     public class SensorStatusPageViewModel: BindableBase, INavigationAware, IDisposable
     {
-        private const ushort LOW_BATTERY_LEVEL = 2400;
+        private const ushort LOW_BATTERY_LEVEL = 2700;
 
         public ReadOnlyReactivePropertySlim<TagInfo> Tag { get; }
 
