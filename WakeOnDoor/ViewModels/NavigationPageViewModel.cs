@@ -1,21 +1,27 @@
-﻿using Prism.Windows.Mvvm;
-using Prism.Windows.Navigation;
+﻿using GalaSoft.MvvmLight.Command;
+using Prism.Ioc;
+using Prism.Mvvm;
+using Prism.Regions;
+using Reactive.Bindings;
 using System;
+using System.Windows.Input;
 using WakeOnDoor.Services;
-using Windows.ApplicationModel.Resources;
+using WakeOnDoor.Views;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class NavigationPageViewModel : ViewModelBase
+    public class NavigationPageViewModel : BindableBase
     {
+        private readonly ICommService CommService;
+
         public bool IsIoTDeviceFamily { get { return App.IsIoTDeviceFamily; } }
 
-        public INavigationService NavigationService { get; set; }
+        public ReactivePropertySlim<Type> CurrentPage { get; } = new ReactivePropertySlim<Type>(typeof(SensorStatusPage));
 
-        public ContentDialog ShutdownDialog { get; set; }
-        public ContentDialog RestartDialog { get; set; }
+        private ContentDialog ShutdownDialog { get; set; }
+        private ContentDialog RestartDialog { get; set; }
 
         private string title;
         public string Title
@@ -30,34 +36,51 @@ namespace WakeOnDoor.ViewModels
             }
         }
 
-        private string currentPage;
-        public string CurrentPage
+        public ICommand ItemInvokedCommand { get; }
+
+        public NavigationPageViewModel(IContainerProvider container, ICommService commService)
         {
-            set
-            {
-               switch (value)
-                {
-                    case PageTokens.ShutdownDialog:
-                        ShowPowerDialog(ShutdownKind.Shutdown);
-                        break;
-                    case PageTokens.RestartDialog:
-                        ShowPowerDialog(ShutdownKind.Restart);
-                        break;
-                    default:
-                        if (currentPage != value)
-                        {
-                            currentPage = value;
-                            NavigationService.Navigate(value, null);
-                            var resourceLoader = ResourceLoader.GetForCurrentView();
-                            Title = resourceLoader.GetString(currentPage + "/Text");
-                        }
-                        break;
-                }
-            }
+            CommService = commService;
+            ShutdownDialog = container.Resolve<ShutdownDialog>();
+            RestartDialog = container.Resolve<RestartDialog>();
+            ItemInvokedCommand = new RelayCommand<NavigationViewItemInvokedEventArgs>(OnItemInvoked);
         }
 
-        public NavigationPageViewModel()
+        private void OnItemInvoked(NavigationViewItemInvokedEventArgs args)
         {
+            if (args.IsSettingsInvoked)
+            {
+                CurrentPage.Value = typeof(SettingsPage);
+            }
+            else
+            {
+                // find NavigationViewItem with Content that equals InvokedItem
+                var item = args.InvokedItemContainer as NavigationViewItem;
+                var tag = item?.Tag as string;
+                if (!String.IsNullOrEmpty(tag))
+                {
+                    switch (tag)
+                    {
+                        case PageTokens.ShutdownDialog:
+                            ShowPowerDialog(ShutdownKind.Shutdown);
+                            break;
+                        case PageTokens.RestartDialog:
+                            ShowPowerDialog(ShutdownKind.Restart);
+                            break;
+                        case PageTokens.SensorStatusPage:
+                            CurrentPage.Value = typeof(SensorStatusPage);
+                            break;
+                        case PageTokens.TargetEditorPage:
+                            CurrentPage.Value = typeof(TargetEditorPage);
+                            break;
+                        case PageTokens.PacketLogPage:
+                            CurrentPage.Value = typeof(PacketLogPage);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         public async void ShowPowerDialog(ShutdownKind kind)
@@ -66,7 +89,7 @@ namespace WakeOnDoor.ViewModels
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && IsIoTDeviceFamily)
             {
-                await LogReceiveServer.GetInstance().DisconnectAsync();
+                await CommService.DisconnectAsync();
                 ShutdownManager.BeginShutdown(kind, TimeSpan.FromSeconds(0));
             }
         }

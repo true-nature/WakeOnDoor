@@ -2,8 +2,7 @@
     x:Class="TweLiteMonitorOnPC.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:prism="using:Prism.Windows"
-    xmlns:local="using:TweLiteMonitorOnPC"
+    xmlns:prism="using:Prism.DryIoc"
     RequestedTheme="Light">
 
 </prism:PrismApplication>

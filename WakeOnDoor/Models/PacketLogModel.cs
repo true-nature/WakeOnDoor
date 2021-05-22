@@ -3,16 +3,13 @@ using SerialMonitor.Scanner;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks;
 using WakeOnDoor.Services;
 
 namespace WakeOnDoor.Models
 {
-    internal class PacketLogModel : BindableBase, IDisposable
+    public class PacketLogModel : BindableBase, IDisposable
     {
         private const int LOG_CAPACITY = 1000;
-
-        private static PacketLogModel instance;
 
         private readonly ICommService commService;
 
@@ -32,32 +29,18 @@ namespace WakeOnDoor.Models
             }
         }
 
-        private PacketLogModel()
+        public PacketLogModel(ICommService logReceiveServer)
         {
             textLog = new List<string>();
             tagInfo = new TagInfo();
-            commService = LogReceiveServer.GetInstance();
+            commService = logReceiveServer;
             commService.Received += this.OnReceived;
-
+            _ = commService.ConnectAsync();
         }
 
-        public static PacketLogModel GetInstance()
+        public void Dispose()
         {
-            if (instance == null)
-            {
-                instance = new PacketLogModel();
-            }
-            return instance;
-        }
-
-        public async Task InitializeAsync()
-        {
-            await commService.ConnectAsync();
-        }
-
-        public async void Dispose()
-        {
-            await commService.DisconnectAsync();
+            _ = commService.DisconnectAsync();
         }
 
         private void OnReceived(ICommService sender, MessageEventArgs args)

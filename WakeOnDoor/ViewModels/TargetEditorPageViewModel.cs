@@ -1,9 +1,7 @@
 ﻿using Prism.Commands;
-using Prism.Windows.AppModel;
-using Prism.Windows.Navigation;
-using Prism.Windows.Validation;
+using Prism.Mvvm;
+using Prism.Regions;
 using SerialMonitor;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +11,7 @@ using Windows.Storage;
 
 namespace WakeOnDoor.ViewModels
 {
-    public class TargetEditorPageViewModel : ValidatableBindableBase, INavigationAware
+    public class TargetEditorPageViewModel : BindableBase, INavigationAware
     {
         private const string PKGFAMILY = "TweLiteMonitor-uwp_mtz6gfc7cpfh4";
 
@@ -37,10 +35,10 @@ namespace WakeOnDoor.ViewModels
         public ICommand RemoveMacCommand { get; }
         public ICommand WakeNowCommand { get; }
 
-        public TargetEditorPageViewModel()
+        public TargetEditorPageViewModel(TargetEditorModel targetEditor)
         {
             WOLTargets = new ObservableCollection<WOLTarget>();
-            EditorModel = TargetEditorModel.GetInstance();
+            EditorModel = targetEditor;
 
             AddMacCommand = new DelegateCommand(async () => {
                 WOLTarget target = new WOLTarget() { Physical = PhysicalToEdit, Comment = CommentToEdit, Address=AddressToEdit, Port=PortToEdit, Delay=DelayToEdit };
@@ -55,8 +53,9 @@ namespace WakeOnDoor.ViewModels
                 await EditorModel.WakeNowAsync(target);
             });
         }
+
         private string physicalToEdit;
-        [RestorableState]
+        //[RestorableState]
         [Required(ErrorMessage = "Please input a Physical Address")]
         [RegularExpression(pattern: @"^[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}[\-:]?[\dA-Fa-f]{2}$", ErrorMessage = "Illegal format")]
         public string PhysicalToEdit
@@ -66,7 +65,7 @@ namespace WakeOnDoor.ViewModels
         }
 
         private string addressToEdit;
-        [RestorableState]
+        //[RestorableState]
         public string AddressToEdit
         {
             get { return addressToEdit; }
@@ -74,7 +73,7 @@ namespace WakeOnDoor.ViewModels
         }
 
         private string portToEdit;
-        [RestorableState]
+        //[RestorableState]
         public string PortToEdit
         {
             get { return portToEdit; }
@@ -82,7 +81,7 @@ namespace WakeOnDoor.ViewModels
         }
 
         private string delayToEdit;
-        [RestorableState]
+        //[RestorableState]
         public string DelayToEdit
         {
             get { return delayToEdit; }
@@ -90,7 +89,7 @@ namespace WakeOnDoor.ViewModels
         }
 
         private string commentToEdit;
-        [RestorableState]
+        //[RestorableState]
         public string CommentToEdit
         {
             get { return commentToEdit; }
@@ -133,7 +132,10 @@ namespace WakeOnDoor.ViewModels
         }
 
         public const string TEMP_PREFIX = "Temp.TargetEditor.";
-        public async void OnNavigatedTo(NavigatedToEventArgs e, Dictionary<string, object> viewModelState)
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
         {
             var settings = ApplicationData.Current.LocalSettings;
             if (settings.Values.TryGetValue(TEMP_PREFIX + nameof(PhysicalToEdit), out object value))
@@ -160,7 +162,7 @@ namespace WakeOnDoor.ViewModels
             await EditorModel.GetListAsync();
         }
 
-        public void OnNavigatingFrom(NavigatingFromEventArgs e, Dictionary<string, object> viewModelState, bool suspending)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             EditorModel.PropertyChanged -= OnModelPropertyChanged;
         }

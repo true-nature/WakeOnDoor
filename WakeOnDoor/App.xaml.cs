@@ -1,17 +1,11 @@
-﻿using Prism.Windows;
-using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
+﻿using Prism.DryIoc;
+using Prism.Ioc;
 using WakeOnDoor.Models;
+using WakeOnDoor.Services;
 using WakeOnDoor.Views;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Resources.Core;
-using Windows.Globalization;
 using Windows.Storage;
 using Windows.System.Profile;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace WakeOnDoor
 {
@@ -29,36 +23,60 @@ namespace WakeOnDoor
             this.InitializeComponent();
         }
 
-        protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            ClearTempSettings();
-            EditorModel = TargetEditorModel.GetInstance();
-            EditorModel.PropertyChanged += OnModelPropertyChanged;
-            LogModel = PacketLogModel.GetInstance();
-            await LogModel.InitializeAsync();
-            this.NavigationService.Navigate("Navigation", null);
+            containerRegistry.RegisterSingleton<TargetEditorModel>();
+            containerRegistry.RegisterSingleton<ICommService,LogReceiveServer>();
+            containerRegistry.RegisterSingleton<PacketLogModel>();
+            containerRegistry.RegisterForNavigation<SensorStatusPage>();
+            containerRegistry.RegisterForNavigation<PacketLogPage>();
+            containerRegistry.RegisterForNavigation<TargetEditorPage>();
+            containerRegistry.RegisterForNavigation<SettingsPage>();
+            containerRegistry.Register<RestartDialog>();
+            containerRegistry.Register<ShutdownDialog>();
         }
 
-        private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        protected override UIElement CreateShell()
         {
-            switch (args.PropertyName)
-            {
-                case nameof(EditorModel.Language):
-                    await  Shell.Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        // FIXME not navigated
-                        ApplicationLanguages.PrimaryLanguageOverride = EditorModel.Language;
-                        var rootFrame = Window.Current.Content as Frame;
-                        rootFrame.CacheSize = 0;
-                        ResourceContext.GetForCurrentView().Reset();
-                        ResourceContext.GetForViewIndependentUse().Reset();
-                        rootFrame.Navigate(typeof(NavigationPage));
-                    });
-                    break;
-                default:
-                    break;
-            }
+            return Container.Resolve<NavigationPage>();
         }
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+            ClearTempSettings();
+        }
+
+        //protected override async Task OnLaunchApplicationAsync(LaunchActivatedEventArgs args)
+        //{
+        //    ClearTempSettings();
+        //    EditorModel = TargetEditorModel.GetInstance();
+        //    EditorModel.PropertyChanged += OnModelPropertyChanged;
+        //    LogModel = PacketLogModel.GetInstance();
+        //    await LogModel.InitializeAsync();
+        //    this.NavigationService.Navigate("Navigation", null);
+        //}
+
+        //private async void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args)
+        //{
+        //    switch (args.PropertyName)
+        //    {
+        //        case nameof(EditorModel.Language):
+        //            await  Shell.Dispatcher.TryRunAsync(CoreDispatcherPriority.Normal, () =>
+        //            {
+        //                // FIXME not navigated
+        //                ApplicationLanguages.PrimaryLanguageOverride = EditorModel.Language;
+        //                var rootFrame = Window.Current.Content as Frame;
+        //                rootFrame.CacheSize = 0;
+        //                ResourceContext.GetForCurrentView().Reset();
+        //                ResourceContext.GetForViewIndependentUse().Reset();
+        //                rootFrame.Navigate(typeof(NavigationPage));
+        //            });
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
 
         private static void ClearTempSettings()
         {
@@ -72,9 +90,7 @@ namespace WakeOnDoor
             }
         }
 
-        private PacketLogModel LogModel;
-        private TargetEditorModel EditorModel;
-        private static bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
+        private static readonly bool deviceFamily = ("Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily));
         public static bool IsIoTDeviceFamily { get { return deviceFamily; } }
     }
 }

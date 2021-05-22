@@ -10,32 +10,20 @@ using Windows.Networking.Sockets;
 
 namespace WakeOnDoor.Services
 {
-    internal class LogReceiveServer : ICommService
+    public class LogReceiveServer : ICommService
     {
         private const string SERVERHOST = "::1";
         private static readonly Regex SyslogRegex = new Regex(@"^<(?<pri>\d{1,3})>(?<month>[^ ]{3}) (?<day>\d\d) (?<hour>\d\d):(?<min>\d\d):(?<sec>\d\d) (?<host>[^ ]+)( (?<tag>\[[^ ]+\]))? (?<msg>.*)$");
-
-        private static LogReceiveServer singleton;
 
         private readonly SemaphoreSlim semaphore;
         private bool IsConnected;
         private DatagramSocket socket;
         private readonly StringBuilder builder;
 
-        private LogReceiveServer()
+        public LogReceiveServer()
         {
             semaphore = new SemaphoreSlim(1, 1);
             builder = new StringBuilder();
-        }
-
-        public static LogReceiveServer GetInstance()
-        {
-            if (singleton == null)
-            {
-                var instance = new LogReceiveServer();
-                singleton = instance;
-            }
-            return singleton;
         }
 
         public event TypedEventHandler<ICommService, MessageEventArgs> Received;
