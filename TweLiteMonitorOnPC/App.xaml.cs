@@ -1,5 +1,6 @@
 ﻿using Prism.DryIoc;
 using Prism.Ioc;
+using Prism.Modularity;
 using TweLiteMonitorOnPC.Views;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;

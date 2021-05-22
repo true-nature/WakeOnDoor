@@ -185,7 +185,7 @@
       <Version>6.2.12</Version>
     </PackageReference>
     <PackageReference Include="ReactiveProperty.UWP">
-      <Version>7.8.0</Version>
+      <Version>7.10.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

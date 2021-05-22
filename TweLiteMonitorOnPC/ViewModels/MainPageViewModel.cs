@@ -10,13 +10,13 @@ using Windows.System.Profile;
 
 namespace TweLiteMonitorOnPC.ViewModels
 {
-    public class MainPageViewModel : BindableBase
+    public class MainPageViewModel
     {
-        private const int LOG_CAPACITY = 40;
         public MainPageViewModel()
         {            
         }
 
+        private const int LOG_CAPACITY = 40;
         private readonly List<string> textLog = new List<string>();
 
         public ReactiveProperty<string> LogText { get; } = new ReactiveProperty<string>(String.Empty);
@@ -33,6 +33,7 @@ namespace TweLiteMonitorOnPC.ViewModels
 
         private bool InPage { get; set; }
         private BackgroundTaskRegistration taskRegistration;
+
         private async Task<ApplicationTriggerResult> StarTaskAsync()
         {
             const string TaskName = "TweLiteMonitor-uwp";
@@ -66,7 +67,7 @@ namespace TweLiteMonitorOnPC.ViewModels
             return result;
         }
 
-        public async void OnNavigatedTo(NavigationContext navigationContext)
+        public async void OnLoad()
         {
             InPage = true;
             if (!"Windows.IoT".Equals(AnalyticsInfo.VersionInfo.DeviceFamily) && taskRegistration == null)
@@ -75,7 +76,7 @@ namespace TweLiteMonitorOnPC.ViewModels
             }
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public void OnClosing()
         {
             InPage = false;
             taskRegistration?.Unregister(true);
