@@ -1,6 +1,7 @@
 ﻿using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
+using TweLiteMonitorOnPC.ViewModels;
 using TweLiteMonitorOnPC.Views;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
@@ -12,6 +13,8 @@ namespace TweLiteMonitorOnPC
     /// </summary>
     sealed partial class App : PrismApplication
     {
+        private FrameworkElement MainPage { get; set; }
+
         /// <summary>
         /// 単一アプリケーション オブジェクトを初期化します。これは、実行される作成したコードの
         ///最初の行であるため、main() または WinMain() と論理的に等価です。
@@ -19,6 +22,7 @@ namespace TweLiteMonitorOnPC
         public App()
         {
             this.InitializeComponent();
+            this.Resuming += App_Resuming;
             this.Suspending += OnSuspending;
         }
 
@@ -28,7 +32,14 @@ namespace TweLiteMonitorOnPC
 
         protected override UIElement CreateShell()
         {
-            return Container.Resolve<MainPage>();
+            MainPage = Container.Resolve<MainPage>();
+            return MainPage;
+        }
+
+        private void App_Resuming(object sender, object e)
+        {
+            var vm = MainPage.DataContext as MainPageViewModel;
+            vm?.OnLoad();
         }
 
         /// <summary>
@@ -41,7 +52,9 @@ namespace TweLiteMonitorOnPC
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: アプリケーションの状態を保存してバックグラウンドの動作があれば停止します
+            // アプリケーションの状態を保存してバックグラウンドの動作があれば停止します
+            var vm = MainPage.DataContext as MainPageViewModel;
+            vm?.OnClosing();
             deferral.Complete();
         }
     }

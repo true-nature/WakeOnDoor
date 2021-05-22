@@ -1,6 +1,4 @@
-﻿using Prism.Mvvm;
-using Prism.Regions;
-using Reactive.Bindings;
+﻿using Reactive.Bindings;
 using SerialMonitor;
 using System;
 using System.Collections.Generic;
